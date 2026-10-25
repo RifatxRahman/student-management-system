@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: studentmanagement
+  profiles:
+    default: dev
+  datasource:
+    url: jdbc:mysql://localhost:3306/${DB_NAME:sms_db}?useUnicode=true&characterEncoding=utf8
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+
+server:
+  error:
+    include-stacktrace: never
+    include-message: never
+    include-binding-errors: never
