@@ -1,16 +1,25 @@
-# React + Vite
+# Student Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+একটি আধুনিক, নিরাপদ ও হালকা Student Management System।
 
-Currently, two official plugins are available:
+## প্রযুক্তি
+- Backend: Java, Spring Boot, Spring Data JPA, Spring Security
+- Database: MySQL, Flyway
+- Frontend: React, Vite, Tailwind CSS
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## চালানোর নিয়ম (ডেভেলপমেন্ট)
 
-## React Compiler
+### Backend
+1. MySQL-এ `sms_db` ডেটাবেস ও একটি ব্যবহারকারী তৈরি করুন
+2. Environment Variable সেট করুন: `DB_USER`, `DB_PASSWORD`
+3. `backend` ফোল্ডার থেকে চালান: `./mvnw spring-boot:run`
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Frontend
+```
+cd frontend
+npm install
+npm run dev
+```
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## অবস্থা
+প্রজেক্ট চলমান (Phase 0 সম্পন্ন)।
