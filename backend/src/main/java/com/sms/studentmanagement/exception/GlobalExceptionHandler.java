@@ -28,4 +28,15 @@ public class GlobalExceptionHandler {
                 400, "Bad Request", "Validation failed", Instant.now(), fields);
         return ResponseEntity.badRequest().body(body);
     }
+
+    @ExceptionHandler(ApiException.class)
+    public ResponseEntity<ErrorResponse> handleApi(ApiException ex) {
+        ErrorResponse body = new ErrorResponse(
+                ex.getStatus().value(),
+                ex.getStatus().getReasonPhrase(),
+                ex.getMessage(),
+                Instant.now(),
+                null);
+        return ResponseEntity.status(ex.getStatus()).body(body);
+    }
 }

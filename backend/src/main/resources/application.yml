@@ -19,3 +19,16 @@ server:
     include-stacktrace: never
     include-message: never
     include-binding-errors: never
+
+
+app:
+  security:
+    jwt-secret: ${JWT_SECRET}
+    access-token-minutes: 15
+    refresh-token-days: 7
+    cookie-secure: false
+    max-failed-attempts: 5
+    lock-minutes: 15
+  bootstrap:
+    admin-username: ${ADMIN_USERNAME:}
+    admin-password: ${ADMIN_PASSWORD:}

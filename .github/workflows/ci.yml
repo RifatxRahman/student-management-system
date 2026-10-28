@@ -27,6 +27,7 @@ jobs:
     env:
       DB_USER: ci_user
       DB_PASSWORD: ci_test_password
+      JWT_SECRET: ci-only-fake-secret-key-for-tests-at-least-32-characters-long
 
     steps:
       - uses: actions/checkout@v4
