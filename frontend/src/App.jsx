@@ -1,27 +1,53 @@
-import { useEffect, useState } from 'react'
+import { Route, Routes } from 'react-router'
+import ProtectedRoute from './auth/ProtectedRoute.jsx'
+import Layout from './components/Layout.jsx'
+import ChangePasswordPage from './pages/ChangePasswordPage.jsx'
+import ClassDetailPage from './pages/ClassDetailPage.jsx'
+import ClassesPage from './pages/ClassesPage.jsx'
+import DashboardPage from './pages/DashboardPage.jsx'
+import LoginPage from './pages/LoginPage.jsx'
+import NotFoundPage from './pages/NotFoundPage.jsx'
+import SessionsPage from './pages/SessionsPage.jsx'
+import SubjectsPage from './pages/SubjectsPage.jsx'
+import UsersPage from './pages/UsersPage.jsx'
 
-function App() {
-  const [status, setStatus] = useState('লোড হচ্ছে...')
-
-  useEffect(() => {
-    fetch('/api/ping')
-      .then((res) => res.json())
-      .then((data) => setStatus(data.status))
-      .catch(() => setStatus('সংযোগ ব্যর্থ'))
-  }, [])
-
+export default function App() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="bg-white rounded-xl shadow p-8 text-center">
-        <h1 className="text-2xl font-semibold text-gray-800">
-          Student Management System
-        </h1>
-        <p className="mt-3 text-gray-600">
-          Backend অবস্থা: <span className="font-medium">{status}</span>
-        </p>
-      </div>
-    </div>
+    <Routes>
+      <Route path="/login" element={<LoginPage />} />
+
+      <Route
+        path="/change-password"
+        element={
+          <ProtectedRoute>
+            <ChangePasswordPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        element={
+          <ProtectedRoute>
+            <Layout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<DashboardPage />} />
+        <Route path="sessions" element={<SessionsPage />} />
+        <Route path="classes" element={<ClassesPage />} />
+        <Route path="classes/:id" element={<ClassDetailPage />} />
+        <Route path="subjects" element={<SubjectsPage />} />
+        <Route
+          path="users"
+          element={
+            <ProtectedRoute roles={['ADMIN']}>
+              <UsersPage />
+            </ProtectedRoute>
+          }
+        />
+      </Route>
+
+      <Route path="*" element={<NotFoundPage />} />
+    </Routes>
   )
 }
-
-export default App
