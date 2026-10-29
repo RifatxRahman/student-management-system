@@ -9,6 +9,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import org.springframework.dao.DataIntegrityViolationException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -38,5 +40,15 @@ public class GlobalExceptionHandler {
                 Instant.now(),
                 null);
         return ResponseEntity.status(ex.getStatus()).body(body);
+    }
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleConflict(DataIntegrityViolationException ex) {
+        ErrorResponse body = new ErrorResponse(
+                409,
+                "Conflict",
+                "এই তথ্য আগে থেকেই আছে অথবা কোনো নিয়মের সাথে মিলছে না",
+                Instant.now(),
+                null);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
     }
 }

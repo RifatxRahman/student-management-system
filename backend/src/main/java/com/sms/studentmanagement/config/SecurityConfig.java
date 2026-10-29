@@ -4,6 +4,7 @@ import com.sms.studentmanagement.repository.UserRepository;
 import com.sms.studentmanagement.security.CurrentUserCheckFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -32,11 +33,18 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // ১) সবার জন্য খোলা
                         .requestMatchers("/api/ping").permitAll()
                         .requestMatchers("/api/auth/login", "/api/auth/refresh", "/api/auth/logout").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        // ২) লগইন করা যে কেউ
+                        .requestMatchers("/api/auth/me", "/api/auth/change-password").authenticated()
+                        // ৩) শুধু Admin
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .anyRequest().authenticated())
+                        // ৪) পড়া: লগইন করা যে কেউ
+                        .requestMatchers(HttpMethod.GET, "/api/**").authenticated()
+                        // ৫) বাকি সব (বদলানো): ডিফল্টভাবে শুধু Admin
+                        .anyRequest().hasRole("ADMIN"))
                 .oauth2ResourceServer(oauth -> oauth
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
                 .addFilterAfter(new CurrentUserCheckFilter(userRepository), BearerTokenAuthenticationFilter.class);
