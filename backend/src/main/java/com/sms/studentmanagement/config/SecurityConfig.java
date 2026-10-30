@@ -39,11 +39,16 @@ public class SecurityConfig {
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         // ২) লগইন করা যে কেউ
                         .requestMatchers("/api/auth/me", "/api/auth/change-password").authenticated()
-                        // ৩) শুধু Admin
+                        // ৩) শিক্ষক শুধু নিজের তথ্য দেখতে পারেন
+                        .requestMatchers("/api/teachers/me/**").authenticated()
+                        // ৪) ব্যক্তিগত তথ্য: শুধু Admin (পড়া ও বদলানো দুটোই)
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        // ৪) পড়া: লগইন করা যে কেউ
+                        .requestMatchers(
+                                "/api/students/**", "/api/guardians/**", "/api/teachers/**", "/api/enrollments/**")
+                        .hasRole("ADMIN")
+                        // ৫) সাধারণ তথ্য পড়া (সেশন, ক্লাস, বিষয়): লগইন করা যে কেউ
                         .requestMatchers(HttpMethod.GET, "/api/**").authenticated()
-                        // ৫) বাকি সব (বদলানো): ডিফল্টভাবে শুধু Admin
+                        // ৬) বাকি সব (বদলানো): ডিফল্টভাবে শুধু Admin
                         .anyRequest().hasRole("ADMIN"))
                 .oauth2ResourceServer(oauth -> oauth
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
