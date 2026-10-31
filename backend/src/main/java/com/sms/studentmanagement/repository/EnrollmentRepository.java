@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import java.time.LocalDate;
 
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
 
@@ -49,4 +50,22 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
             @Param("sessionId") Long sessionId,
             @Param("sectionId") Long sectionId,
             @Param("status") EnrollmentStatus status);
+
+    /**
+     * এই সেকশনে [fromDate, toDate] সময়ের মধ্যে যাঁরা ছিলেন।
+     * শেষ তারিখ "বাদ" ধরা হয়: বদলির দিনে শিক্ষার্থী নতুন সেকশনে গণ্য।
+     * একটা দিনের জন্য fromDate ও toDate একই দিন দিন।
+     */
+    @Query("""
+            select e from Enrollment e
+            join fetch e.student
+            where e.section.id = :sectionId
+              and e.startDate <= :toDate
+              and (e.endDate is null or e.endDate > :fromDate)
+            order by e.rollNumber, e.id
+            """)
+    List<Enrollment> findInSection(
+            @Param("sectionId") Long sectionId,
+            @Param("fromDate") LocalDate fromDate,
+            @Param("toDate") LocalDate toDate);
 }

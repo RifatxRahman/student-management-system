@@ -1,7 +1,9 @@
 package com.sms.studentmanagement.config;
 
 import com.sms.studentmanagement.repository.UserRepository;
+import com.sms.studentmanagement.security.AdminActionAuditFilter;
 import com.sms.studentmanagement.security.CurrentUserCheckFilter;
+import com.sms.studentmanagement.service.AuditService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -25,7 +27,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http, UserRepository userRepository)
+    SecurityFilterChain securityFilterChain(
+            HttpSecurity http, UserRepository userRepository, AuditService auditService)
             throws Exception {
         http
                 // টোকেন Authorization হেডারে যায় (কুকিতে নয়), তাই সাধারণ CSRF দরকার নেই।
@@ -41,18 +44,21 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/me", "/api/auth/change-password").authenticated()
                         // ৩) শিক্ষক শুধু নিজের তথ্য দেখতে পারেন
                         .requestMatchers("/api/teachers/me/**").authenticated()
-                        // ৪) ব্যক্তিগত তথ্য: শুধু Admin (পড়া ও বদলানো দুটোই)
+                        // ৪) হাজিরা: Admin ও Teacher (কোন সেকশন, সেটা Service যাচাই করে)
+                        .requestMatchers("/api/attendance/**").hasAnyRole("ADMIN", "TEACHER")
+                        // ৫) ব্যক্তিগত তথ্য: শুধু Admin (পড়া ও বদলানো দুটোই)
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers(
                                 "/api/students/**", "/api/guardians/**", "/api/teachers/**", "/api/enrollments/**")
                         .hasRole("ADMIN")
-                        // ৫) সাধারণ তথ্য পড়া (সেশন, ক্লাস, বিষয়): লগইন করা যে কেউ
+                        // ৬) সাধারণ তথ্য পড়া (সেশন, ক্লাস, বিষয়, ছুটি): লগইন করা যে কেউ
                         .requestMatchers(HttpMethod.GET, "/api/**").authenticated()
-                        // ৬) বাকি সব (বদলানো): ডিফল্টভাবে শুধু Admin
+                        // ৭) বাকি সব (বদলানো, যেমন ছুটি যোগ/মোছা): ডিফল্টভাবে শুধু Admin
                         .anyRequest().hasRole("ADMIN"))
                 .oauth2ResourceServer(oauth -> oauth
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
-                .addFilterAfter(new CurrentUserCheckFilter(userRepository), BearerTokenAuthenticationFilter.class);
+                .addFilterAfter(new CurrentUserCheckFilter(userRepository), BearerTokenAuthenticationFilter.class)
+                .addFilterAfter(new AdminActionAuditFilter(auditService), CurrentUserCheckFilter.class);
         return http.build();
     }
 

@@ -32,3 +32,7 @@ app:
   bootstrap:
     admin-username: ${ADMIN_USERNAME:}
     admin-password: ${ADMIN_PASSWORD:}
+
+  attendance:
+    edit-window-days: 3
+    weekly-off-days: FRIDAY

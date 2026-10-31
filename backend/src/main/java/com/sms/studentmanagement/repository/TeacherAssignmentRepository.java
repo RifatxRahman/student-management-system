@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import java.time.LocalDate;
 
 public interface TeacherAssignmentRepository extends JpaRepository<TeacherAssignment, Long> {
 
@@ -22,4 +23,30 @@ public interface TeacherAssignmentRepository extends JpaRepository<TeacherAssign
             """)
     List<TeacherAssignment> findAllForTeacher(
             @Param("teacherId") Long teacherId, @Param("sessionId") Long sessionId);
+
+    /** এই শিক্ষকের এই সেকশনে (ওই সময়ে চালু সেশনে) কয়টা বরাদ্দ আছে। 0 মানে অনুমতি নেই। */
+    @Query("""
+            select count(ta) from TeacherAssignment ta
+            where ta.teacher.id = :teacherId
+              and ta.section.id = :sectionId
+              and ta.session.startDate <= :toDate
+              and ta.session.endDate >= :fromDate
+            """)
+    long countCoverage(
+            @Param("teacherId") Long teacherId,
+            @Param("sectionId") Long sectionId,
+            @Param("fromDate") LocalDate fromDate,
+            @Param("toDate") LocalDate toDate);
+
+    @Query("""
+            select ta from TeacherAssignment ta
+            join fetch ta.section sec
+            join fetch sec.schoolClass cls
+            where ta.teacher.id = :teacherId
+              and ta.session.startDate <= :date
+              and ta.session.endDate >= :date
+            order by cls.displayOrder, sec.name
+            """)
+    List<TeacherAssignment> findForTeacherOnDate(
+            @Param("teacherId") Long teacherId, @Param("date") LocalDate date);
 }
