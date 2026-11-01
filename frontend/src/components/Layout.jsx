@@ -22,7 +22,7 @@ export default function Layout() {
           <span className="font-semibold text-gray-900">Student Management</span>
         </header>
 
-        <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+        <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
           <Outlet />
         </main>
       </div>

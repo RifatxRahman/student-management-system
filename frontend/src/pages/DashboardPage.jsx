@@ -2,6 +2,7 @@ import { Link } from 'react-router'
 import { useAuth } from '../auth/useAuth.js'
 import { Card, PageHeader } from '../components/ui.jsx'
 import { useFetch } from '../hooks/useFetch.js'
+import { useQuery } from '../hooks/useQuery.js'
 import { formatDate } from '../utils/format.js'
 
 function Stat({ label, value, hint, to }) {
@@ -17,9 +18,13 @@ function Stat({ label, value, hint, to }) {
 
 export default function DashboardPage() {
   const { user } = useAuth()
+  const isAdmin = user.role === 'ADMIN'
   const session = useFetch('/api/sessions/active')
   const classes = useFetch('/api/classes')
   const subjects = useFetch('/api/subjects')
+  // শিক্ষার্থী ও শিক্ষকের সংখ্যা শুধু Admin দেখেন (ব্যক্তিগত তথ্যের এলাকা)
+  const students = useQuery(isAdmin ? '/api/students?status=ACTIVE&size=1' : null)
+  const teachers = useQuery(isAdmin ? '/api/teachers' : null)
 
   const noActiveSession = session.error?.status === 404
 
@@ -30,12 +35,20 @@ export default function DashboardPage() {
 
   const sessionHint = session.data
     ? `${formatDate(session.data.startDate)} থেকে ${formatDate(session.data.endDate)}`
-    : noActiveSession && user.role === 'ADMIN'
+    : noActiveSession && isAdmin
       ? 'সেশন পাতা থেকে একটা সেশন সক্রিয় করুন'
       : undefined
 
   const activeClasses = classes.data ? classes.data.filter((c) => c.active).length : '...'
   const activeSubjects = subjects.data ? subjects.data.filter((s) => s.active).length : '...'
+
+  let studentCount = '...'
+  if (students.error) studentCount = '—'
+  else if (students.data) studentCount = students.data.totalElements
+
+  let teacherCount = '...'
+  if (teachers.error) teacherCount = '—'
+  else if (teachers.data) teacherCount = teachers.data.filter((t) => t.active).length
 
   return (
     <>
@@ -46,6 +59,13 @@ export default function DashboardPage() {
         <Stat label="সক্রিয় ক্লাস" value={activeClasses} to="/classes" />
         <Stat label="সক্রিয় বিষয়" value={activeSubjects} to="/subjects" />
       </div>
+
+      {isAdmin && (
+        <div className="mt-4 grid gap-4 sm:grid-cols-3">
+          <Stat label="সক্রিয় শিক্ষার্থী" value={studentCount} to="/students" />
+          <Stat label="সক্রিয় শিক্ষক" value={teacherCount} to="/teachers" />
+        </div>
+      )}
     </>
   )
 }

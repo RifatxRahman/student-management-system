@@ -5,11 +5,22 @@ import ChangePasswordPage from './pages/ChangePasswordPage.jsx'
 import ClassDetailPage from './pages/ClassDetailPage.jsx'
 import ClassesPage from './pages/ClassesPage.jsx'
 import DashboardPage from './pages/DashboardPage.jsx'
+import DeletedStudentsPage from './pages/DeletedStudentsPage.jsx'
+import GuardiansPage from './pages/GuardiansPage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import NotFoundPage from './pages/NotFoundPage.jsx'
 import SessionsPage from './pages/SessionsPage.jsx'
+import StudentDetailPage from './pages/StudentDetailPage.jsx'
+import StudentNewPage from './pages/StudentNewPage.jsx'
+import StudentsPage from './pages/StudentsPage.jsx'
 import SubjectsPage from './pages/SubjectsPage.jsx'
+import TeacherDetailPage from './pages/TeacherDetailPage.jsx'
+import TeachersPage from './pages/TeachersPage.jsx'
 import UsersPage from './pages/UsersPage.jsx'
+
+function AdminOnly({ children }) {
+  return <ProtectedRoute roles={['ADMIN']}>{children}</ProtectedRoute>
+}
 
 export default function App() {
   return (
@@ -37,12 +48,69 @@ export default function App() {
         <Route path="classes" element={<ClassesPage />} />
         <Route path="classes/:id" element={<ClassDetailPage />} />
         <Route path="subjects" element={<SubjectsPage />} />
+
+        <Route
+          path="students"
+          element={
+            <AdminOnly>
+              <StudentsPage />
+            </AdminOnly>
+          }
+        />
+        <Route
+          path="students/new"
+          element={
+            <AdminOnly>
+              <StudentNewPage />
+            </AdminOnly>
+          }
+        />
+        <Route
+          path="students/deleted"
+          element={
+            <AdminOnly>
+              <DeletedStudentsPage />
+            </AdminOnly>
+          }
+        />
+        <Route
+          path="students/:id"
+          element={
+            <AdminOnly>
+              <StudentDetailPage />
+            </AdminOnly>
+          }
+        />
+        <Route
+          path="guardians"
+          element={
+            <AdminOnly>
+              <GuardiansPage />
+            </AdminOnly>
+          }
+        />
+        <Route
+          path="teachers"
+          element={
+            <AdminOnly>
+              <TeachersPage />
+            </AdminOnly>
+          }
+        />
+        <Route
+          path="teachers/:id"
+          element={
+            <AdminOnly>
+              <TeacherDetailPage />
+            </AdminOnly>
+          }
+        />
         <Route
           path="users"
           element={
-            <ProtectedRoute roles={['ADMIN']}>
+            <AdminOnly>
               <UsersPage />
-            </ProtectedRoute>
+            </AdminOnly>
           }
         />
       </Route>

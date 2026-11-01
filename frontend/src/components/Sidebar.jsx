@@ -8,6 +8,9 @@ const LINKS = [
   { to: '/sessions', label: 'শিক্ষাবর্ষ (সেশন)' },
   { to: '/classes', label: 'ক্লাস ও সেকশন' },
   { to: '/subjects', label: 'বিষয়' },
+  { to: '/students', label: 'শিক্ষার্থী', roles: ['ADMIN'] },
+  { to: '/guardians', label: 'অভিভাবক', roles: ['ADMIN'] },
+  { to: '/teachers', label: 'শিক্ষক', roles: ['ADMIN'] },
   { to: '/users', label: 'ইউজার', roles: ['ADMIN'] },
 ]
 
