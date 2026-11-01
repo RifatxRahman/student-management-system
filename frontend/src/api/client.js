@@ -56,10 +56,19 @@ export function refreshSession() {
   return refreshPromise
 }
 
-export async function api(path, { method = 'GET', body, auth = true, retry = true } = {}) {
+// সব অনুরোধ এই এক জায়গা দিয়ে যায়
+//   form = true  : body হলো FormData (ছবি আপলোড)
+//   as = 'blob'  : উত্তর ফাইল হিসেবে আনা (ছবি দেখা)
+async function request(path, { method = 'GET', body, form = false, as = 'json', auth = true, retry = true } = {}) {
   const headers = {}
+  let payload
   if (body !== undefined) {
-    headers['Content-Type'] = 'application/json'
+    if (form) {
+      payload = body // FormData: ব্রাউজার নিজে Content-Type (boundary-সহ) বসায়
+    } else {
+      headers['Content-Type'] = 'application/json'
+      payload = JSON.stringify(body)
+    }
   }
   if (auth && accessToken) {
     headers.Authorization = `Bearer ${accessToken}`
@@ -69,7 +78,7 @@ export async function api(path, { method = 'GET', body, auth = true, retry = tru
     method,
     headers,
     credentials: 'same-origin',
-    body: body !== undefined ? JSON.stringify(body) : undefined,
+    body: payload,
   })
 
   // টোকেনের মেয়াদ শেষ হলে একবার নতুন টোকেন এনে আবার চেষ্টা
@@ -81,7 +90,7 @@ export async function api(path, { method = 'GET', body, auth = true, retry = tru
       unauthorizedHandler()
       throw new ApiError(401, 'সেশন শেষ হয়েছে, আবার লগইন করুন')
     }
-    return api(path, { method, body, auth, retry: false })
+    return request(path, { method, body, form, as, auth, retry: false })
   }
 
   if (!res.ok) {
@@ -90,5 +99,17 @@ export async function api(path, { method = 'GET', body, auth = true, retry = tru
   if (res.status === 204) {
     return null
   }
-  return res.json()
+  return as === 'blob' ? res.blob() : res.json()
+}
+
+export function api(path, options) {
+  return request(path, options)
+}
+
+export function apiUpload(path, formData) {
+  return request(path, { method: 'POST', body: formData, form: true })
+}
+
+export function apiBlob(path) {
+  return request(path, { as: 'blob' })
 }
