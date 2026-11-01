@@ -51,6 +51,7 @@ public class AttendanceService {
     private final AttendanceCalendar calendar;
     private final AttendanceProperties properties;
     private final AuditService auditService;
+    private final NotificationService notificationService;
 
     // ---------- কোন সেকশনের হাজিরা নেওয়া যাবে ----------
     @Transactional(readOnly = true)
@@ -140,6 +141,8 @@ public class AttendanceService {
 
         // (৫) সেভ ও Audit Log
         List<Attendance> createdRows = new ArrayList<>();
+        List<Enrollment> becameAbsent = new ArrayList<>();
+        List<Enrollment> noLongerAbsent = new ArrayList<>();
         int changed = 0;
         int unchanged = 0;
         for (MarkEntry entry : request.entries()) {
@@ -155,14 +158,23 @@ public class AttendanceService {
                 row.setRemark(remark);
                 row.setMarkedBy(actor.userId());
                 createdRows.add(row);
+                if (entry.status() == AttendanceStatus.ABSENT) {
+                    becameAbsent.add(enrollment);
+                }
             } else if (differs(existing, entry)) {
                 String line = describeChange(enrollment, date, existing, entry);
+                AttendanceStatus oldStatus = existing.getStatus();
                 existing.setStatus(entry.status());
                 existing.setRemark(remark);
                 existing.setMarkedBy(actor.userId());
                 changed++;
                 auditService.log("ATTENDANCE_CORRECTED", "ATTENDANCE", existing.getId(),
                         line + " | কারণ: " + reason);
+                if (oldStatus != AttendanceStatus.ABSENT && entry.status() == AttendanceStatus.ABSENT) {
+                    becameAbsent.add(enrollment);
+                } else if (oldStatus == AttendanceStatus.ABSENT && entry.status() != AttendanceStatus.ABSENT) {
+                    noLongerAbsent.add(enrollment);
+                }
             } else {
                 unchanged++;
             }
@@ -182,6 +194,15 @@ public class AttendanceService {
                     date + " | " + section.getSchoolClass().getName() + " " + section.getName()
                             + " | " + createdRows.size() + " জন (" + summarize(createdRows) + ")");
         }
+
+        // (৬) অভিভাবকের বার্তা: নতুন Absent-দের জন্য জমা, Absent থেকে সরে যাওয়াদের না-যাওয়া বার্তা বাতিল
+        for (Enrollment e : becameAbsent) {
+            notificationService.queueAbsence(e.getStudent(), date);
+        }
+        for (Enrollment e : noLongerAbsent) {
+            notificationService.cancelUnsentAbsence(e.getStudent().getId(), date);
+        }
+
         return new MarkResult(createdRows.size(), changed, unchanged);
     }
 

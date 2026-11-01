@@ -64,6 +64,9 @@ class AttendanceServiceTest {
     @Mock
     AuditService auditService;
 
+    @Mock
+    NotificationService notificationService;
+
     AttendanceService service;
 
     final Actor admin = new Actor(1L, true);
@@ -74,7 +77,7 @@ class AttendanceServiceTest {
     void setUp() {
         service = new AttendanceService(
                 sectionRepository, assignmentRepository, enrollmentRepository, attendanceRepository,
-                access, calendar, new AttendanceProperties(), auditService);
+                access, calendar, new AttendanceProperties(), auditService, notificationService);
 
         SchoolClass schoolClass = new SchoolClass();
         schoolClass.setId(1L);
@@ -218,5 +221,36 @@ class AttendanceServiceTest {
 
         assertEquals(1, result.unchanged());
         verify(auditService, never()).log(eq("ATTENDANCE_CORRECTED"), anyString(), any(), anyString());
+    }
+    @Test
+    void absentQueuesNotification() {
+        Enrollment e = enrollment(100L, 1);
+        rosterOf(e);
+
+        service.mark(admin, request(today, null, new MarkEntry(100L, AttendanceStatus.ABSENT, null)));
+
+        verify(notificationService).queueAbsence(e.getStudent(), today);
+    }
+
+    @Test
+    void presentDoesNotQueueNotification() {
+        rosterOf(enrollment(100L, 1));
+
+        service.mark(admin, request(today, null, new MarkEntry(100L, AttendanceStatus.PRESENT, null)));
+
+        verify(notificationService, never()).queueAbsence(any(), any());
+    }
+
+    @Test
+    void correctingAbsentToPresentCancelsUnsentNotification() {
+        Enrollment e = enrollment(100L, 1);
+        rosterOf(e);
+        when(attendanceRepository.findForSectionOnDate(10L, today))
+                .thenReturn(List.of(saved(55L, e, today, AttendanceStatus.ABSENT)));
+
+        service.mark(admin, request(today, "ভুল করে অনুপস্থিত দিয়েছিলাম",
+                new MarkEntry(100L, AttendanceStatus.PRESENT, null)));
+
+        verify(notificationService).cancelUnsentAbsence(100L, today);
     }
 }
