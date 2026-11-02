@@ -81,3 +81,49 @@ const ENROLLMENT_STATUS = {
 export function enrollmentStatusInfo(status) {
   return ENROLLMENT_STATUS[status] ?? { label: status, tone: 'gray' }
 }
+
+
+
+// ---------- তারিখ ও সময় ----------
+function pad(number) {
+  return String(number).padStart(2, '0')
+}
+
+// ব্রাউজারের স্থানীয় তারিখ -> "2026-11-02"
+export function toISODate(date) {
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
+}
+
+export function todayISO() {
+  return toISODate(new Date())
+}
+
+// "2026-11-02" -> "সোমবার"
+export function formatWeekday(iso) {
+  const [year, month, day] = iso.split('-').map(Number)
+  return new Date(year, month - 1, day).toLocaleDateString('bn-BD', { weekday: 'long' })
+}
+
+// "2026-10" -> "অক্টোবর ২০২৬"
+export function formatMonth(yearMonth) {
+  const [year, month] = yearMonth.split('-').map(Number)
+  return new Date(year, month - 1, 1).toLocaleDateString('bn-BD', { year: 'numeric', month: 'long' })
+}
+
+// সার্ভারের সময় (ISO) -> ঢাকার সময়ে তারিখ ও সময়
+export function formatDateTime(iso) {
+  if (!iso) return '—'
+  return new Date(iso).toLocaleString('bn-BD', {
+    timeZone: 'Asia/Dhaka',
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  })
+}
+
+// ---------- হাজিরার অবস্থা ----------
+export const ATTENDANCE_STATUSES = [
+  { value: 'PRESENT', label: 'উপস্থিত' },
+  { value: 'ABSENT', label: 'অনুপস্থিত' },
+  { value: 'LATE', label: 'দেরি' },
+  { value: 'LEAVE', label: 'ছুটি' },
+]

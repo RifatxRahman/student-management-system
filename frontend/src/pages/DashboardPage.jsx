@@ -60,6 +60,16 @@ export default function DashboardPage() {
         <Stat label="সক্রিয় বিষয়" value={activeSubjects} to="/subjects" />
       </div>
 
+      <div className="mt-4 grid gap-4 sm:grid-cols-3">
+        {user.role !== 'ADMIN' && user.role !== 'TEACHER' ? null : (
+          <>
+            <Stat label="হাজিরা" value="নিন / দেখুন" to="/attendance" />
+            <Stat label="মাসিক রিপোর্ট" value="দেখুন" to="/attendance/report" />
+          </>
+        )}
+        <Stat label="ছুটির দিন" value="দেখুন" to="/holidays" />
+      </div>
+
       {isAdmin && (
         <div className="mt-4 grid gap-4 sm:grid-cols-3">
           <Stat label="সক্রিয় শিক্ষার্থী" value={studentCount} to="/students" />

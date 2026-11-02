@@ -5,12 +5,17 @@ import { Badge, Button } from './ui.jsx'
 
 const LINKS = [
   { to: '/', label: 'ড্যাশবোর্ড', end: true },
+  { to: '/attendance', label: 'হাজিরা', end: true, roles: ['ADMIN', 'TEACHER'] },
+  { to: '/attendance/report', label: 'মাসিক রিপোর্ট', roles: ['ADMIN', 'TEACHER'] },
+  { to: '/holidays', label: 'ছুটির দিন' },
   { to: '/sessions', label: 'শিক্ষাবর্ষ (সেশন)' },
   { to: '/classes', label: 'ক্লাস ও সেকশন' },
   { to: '/subjects', label: 'বিষয়' },
   { to: '/students', label: 'শিক্ষার্থী', roles: ['ADMIN'] },
   { to: '/guardians', label: 'অভিভাবক', roles: ['ADMIN'] },
   { to: '/teachers', label: 'শিক্ষক', roles: ['ADMIN'] },
+  { to: '/notifications', label: 'অভিভাবকের বার্তা', roles: ['ADMIN'] },
+  { to: '/audit-logs', label: 'অডিট লগ', roles: ['ADMIN'] },
   { to: '/users', label: 'ইউজার', roles: ['ADMIN'] },
 ]
 

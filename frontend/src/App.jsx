@@ -1,14 +1,19 @@
 import { Route, Routes } from 'react-router'
 import ProtectedRoute from './auth/ProtectedRoute.jsx'
 import Layout from './components/Layout.jsx'
+import AttendancePage from './pages/AttendancePage.jsx'
+import AttendanceReportPage from './pages/AttendanceReportPage.jsx'
+import AuditLogsPage from './pages/AuditLogsPage.jsx'
 import ChangePasswordPage from './pages/ChangePasswordPage.jsx'
 import ClassDetailPage from './pages/ClassDetailPage.jsx'
 import ClassesPage from './pages/ClassesPage.jsx'
 import DashboardPage from './pages/DashboardPage.jsx'
 import DeletedStudentsPage from './pages/DeletedStudentsPage.jsx'
 import GuardiansPage from './pages/GuardiansPage.jsx'
+import HolidaysPage from './pages/HolidaysPage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import NotFoundPage from './pages/NotFoundPage.jsx'
+import NotificationsPage from './pages/NotificationsPage.jsx'
 import SessionsPage from './pages/SessionsPage.jsx'
 import StudentDetailPage from './pages/StudentDetailPage.jsx'
 import StudentNewPage from './pages/StudentNewPage.jsx'
@@ -18,8 +23,11 @@ import TeacherDetailPage from './pages/TeacherDetailPage.jsx'
 import TeachersPage from './pages/TeachersPage.jsx'
 import UsersPage from './pages/UsersPage.jsx'
 
-function AdminOnly({ children }) {
-  return <ProtectedRoute roles={['ADMIN']}>{children}</ProtectedRoute>
+const ADMIN = ['ADMIN']
+const ATTENDANCE_ROLES = ['ADMIN', 'TEACHER']
+
+function Only({ roles, children }) {
+  return <ProtectedRoute roles={roles}>{children}</ProtectedRoute>
 }
 
 export default function App() {
@@ -48,69 +56,103 @@ export default function App() {
         <Route path="classes" element={<ClassesPage />} />
         <Route path="classes/:id" element={<ClassDetailPage />} />
         <Route path="subjects" element={<SubjectsPage />} />
+        <Route path="holidays" element={<HolidaysPage />} />
+
+        <Route
+          path="attendance"
+          element={
+            <Only roles={ATTENDANCE_ROLES}>
+              <AttendancePage />
+            </Only>
+          }
+        />
+        <Route
+          path="attendance/report"
+          element={
+            <Only roles={ATTENDANCE_ROLES}>
+              <AttendanceReportPage />
+            </Only>
+          }
+        />
 
         <Route
           path="students"
           element={
-            <AdminOnly>
+            <Only roles={ADMIN}>
               <StudentsPage />
-            </AdminOnly>
+            </Only>
           }
         />
         <Route
           path="students/new"
           element={
-            <AdminOnly>
+            <Only roles={ADMIN}>
               <StudentNewPage />
-            </AdminOnly>
+            </Only>
           }
         />
         <Route
           path="students/deleted"
           element={
-            <AdminOnly>
+            <Only roles={ADMIN}>
               <DeletedStudentsPage />
-            </AdminOnly>
+            </Only>
           }
         />
         <Route
           path="students/:id"
           element={
-            <AdminOnly>
+            <Only roles={ADMIN}>
               <StudentDetailPage />
-            </AdminOnly>
+            </Only>
           }
         />
         <Route
           path="guardians"
           element={
-            <AdminOnly>
+            <Only roles={ADMIN}>
               <GuardiansPage />
-            </AdminOnly>
+            </Only>
           }
         />
         <Route
           path="teachers"
           element={
-            <AdminOnly>
+            <Only roles={ADMIN}>
               <TeachersPage />
-            </AdminOnly>
+            </Only>
           }
         />
         <Route
           path="teachers/:id"
           element={
-            <AdminOnly>
+            <Only roles={ADMIN}>
               <TeacherDetailPage />
-            </AdminOnly>
+            </Only>
+          }
+        />
+        <Route
+          path="notifications"
+          element={
+            <Only roles={ADMIN}>
+              <NotificationsPage />
+            </Only>
+          }
+        />
+        <Route
+          path="audit-logs"
+          element={
+            <Only roles={ADMIN}>
+              <AuditLogsPage />
+            </Only>
           }
         />
         <Route
           path="users"
           element={
-            <AdminOnly>
+            <Only roles={ADMIN}>
               <UsersPage />
-            </AdminOnly>
+            </Only>
           }
         />
       </Route>
