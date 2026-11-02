@@ -96,4 +96,16 @@ class MySqlIntegrationTest {
             assertTrue(codes.contains(String.format("2099-%05d", i)), "২০৯৯-" + i + " নম্বর ID নেই");
         }
     }
+
+    @Test
+    void gradeScaleIsSeededAndExamTablesExist() {
+        Integer bands = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM grade_scales", Integer.class);
+        assertEquals(7, bands);
+
+        Integer tables = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE() "
+                        + "AND table_name IN ('grade_scales', 'exams', 'exam_subjects')",
+                Integer.class);
+        assertEquals(3, tables);
+    }
 }

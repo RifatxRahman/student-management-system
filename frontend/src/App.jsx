@@ -12,6 +12,7 @@ import DeletedStudentsPage from './pages/DeletedStudentsPage.jsx'
 import GuardiansPage from './pages/GuardiansPage.jsx'
 import HolidaysPage from './pages/HolidaysPage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
+import MarksheetPrototypePage from './pages/MarksheetPrototypePage.jsx'
 import NotFoundPage from './pages/NotFoundPage.jsx'
 import NotificationsPage from './pages/NotificationsPage.jsx'
 import SessionsPage from './pages/SessionsPage.jsx'
@@ -156,6 +157,15 @@ export default function App() {
           }
         />
       </Route>
+
+      <Route
+        path="/prototype/marksheet"
+        element={
+          <ProtectedRoute roles={['ADMIN']}>
+            <MarksheetPrototypePage />
+          </ProtectedRoute>
+        }
+      />
 
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

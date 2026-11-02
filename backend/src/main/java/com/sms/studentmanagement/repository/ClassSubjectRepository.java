@@ -16,4 +16,5 @@ public interface ClassSubjectRepository extends JpaRepository<ClassSubject, Long
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("delete from ClassSubject cs where cs.schoolClass.id = :classId and cs.subject.id = :subjectId")
     int deleteAssignment(@Param("classId") Long classId, @Param("subjectId") Long subjectId);
+    boolean existsBySchoolClassIdAndSubjectId(Long classId, Long subjectId);
 }
