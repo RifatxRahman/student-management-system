@@ -13,6 +13,10 @@ spring:
     open-in-view: false
   flyway:
     enabled: true
+  servlet:
+    multipart:
+      max-file-size: 3MB
+      max-request-size: 4MB
 
 server:
   error:
@@ -36,9 +40,3 @@ app:
   attendance:
     edit-window-days: 3
     weekly-off-days: FRIDAY
-
-servlet:
-  multipart:
-    max-file-size: 3MB
-    max-request-size: 4MB
-
