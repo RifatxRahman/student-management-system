@@ -7,7 +7,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
+import com.sms.studentmanagement.repository.MarkRepository;
 import com.sms.studentmanagement.dto.ExamDtos.ExamDetail;
 import com.sms.studentmanagement.dto.ExamDtos.ExamRequest;
 import com.sms.studentmanagement.dto.ExamDtos.ExamSubjectRequest;
@@ -65,6 +65,9 @@ class ExamServiceTest {
     @Mock
     AuditService auditService;
 
+    @Mock
+    MarkRepository markRepository;
+
     ExamService service;
 
     AcademicSession session;
@@ -74,7 +77,7 @@ class ExamServiceTest {
     void setUp() {
         service = new ExamService(
                 examRepository, examSubjectRepository, sessionRepository, classRepository,
-                subjectRepository, classSubjectRepository, auditService);
+                subjectRepository, classSubjectRepository, auditService, markRepository);
 
         session = new AcademicSession();
         session.setId(1L);
@@ -225,5 +228,48 @@ class ExamServiceTest {
         verify(examSubjectRepository).save(any(ExamSubject.class));
         verify(auditService).log(org.mockito.ArgumentMatchers.eq("EXAM_SUBJECT_ADDED"), anyString(),
                 org.mockito.ArgumentMatchers.eq(7L), anyString());
+    }
+
+    private ExamSubject examSubject(long id, Exam exam) {
+        ExamSubject es = new ExamSubject();
+        es.setId(id);
+        es.setExam(exam);
+        es.setSubject(subject(9L, "Music"));
+        es.setFullMarks(new BigDecimal("100"));
+        es.setPassMarks(new BigDecimal("33"));
+        return es;
+    }
+
+    @Test
+    void examWithMarksCannotBeDeleted() {
+        exam(ExamStatus.DRAFT);
+        when(markRepository.existsByExamSubjectExamId(7L)).thenReturn(true);
+
+        ApiException error = assertThrows(ApiException.class, () -> service.delete(7L));
+        assertEquals(HttpStatus.CONFLICT, error.getStatus());
+        verify(examRepository, never()).delete(any());
+    }
+
+    @Test
+    void subjectWithMarksCannotBeRemoved() {
+        Exam exam = exam(ExamStatus.DRAFT);
+        when(examSubjectRepository.findWithRefs(70L)).thenReturn(Optional.of(examSubject(70L, exam)));
+        when(markRepository.existsByExamSubjectId(70L)).thenReturn(true);
+
+        ApiException error = assertThrows(ApiException.class, () -> service.removeSubject(70L));
+        assertEquals(HttpStatus.CONFLICT, error.getStatus());
+        verify(examSubjectRepository, never()).delete(any(ExamSubject.class));
+    }
+
+    @Test
+    void fullMarksCannotGoBelowAlreadyEnteredMarks() {
+        Exam exam = exam(ExamStatus.DRAFT);
+        when(examSubjectRepository.findWithRefs(70L)).thenReturn(Optional.of(examSubject(70L, exam)));
+        when(markRepository.maxMarks(70L)).thenReturn(new BigDecimal("80"));
+
+        ApiException error = assertThrows(ApiException.class, () -> service.updateSubject(
+                70L, new com.sms.studentmanagement.dto.ExamDtos.ExamSubjectUpdateRequest(
+                        new BigDecimal("50"), new BigDecimal("17"), false)));
+        assertEquals(HttpStatus.BAD_REQUEST, error.getStatus());
     }
 }

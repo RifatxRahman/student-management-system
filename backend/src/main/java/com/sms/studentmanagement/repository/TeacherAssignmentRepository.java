@@ -49,4 +49,10 @@ public interface TeacherAssignmentRepository extends JpaRepository<TeacherAssign
             """)
     List<TeacherAssignment> findForTeacherOnDate(
             @Param("teacherId") Long teacherId, @Param("date") LocalDate date);
+
+
+    boolean existsByTeacherIdAndSessionIdAndSectionIdAndSubjectId(
+            Long teacherId, Long sessionId, Long sectionId, Long subjectId);
+
+    boolean existsByTeacherIdAndSessionIdAndSectionId(Long teacherId, Long sessionId, Long sectionId);
 }

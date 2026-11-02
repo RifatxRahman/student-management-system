@@ -28,4 +28,12 @@ public interface ExamSubjectRepository extends JpaRepository<ExamSubject, Long> 
     boolean existsByExamIdAndSubjectId(Long examId, Long subjectId);
 
     long deleteByExamId(Long examId);
+
+    @Query("""
+            select es from ExamSubject es
+            join fetch es.subject
+            where es.exam.id = :examId and es.subject.id = :subjectId
+            """)
+    Optional<ExamSubject> findByExamIdAndSubjectId(
+            @Param("examId") Long examId, @Param("subjectId") Long subjectId);
 }

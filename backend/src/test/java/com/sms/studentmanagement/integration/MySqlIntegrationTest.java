@@ -108,4 +108,13 @@ class MySqlIntegrationTest {
                 Integer.class);
         assertEquals(3, tables);
     }
+
+    @Test
+    void marksAndResultTablesExist() {
+        Integer tables = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE() "
+                        + "AND table_name IN ('marks', 'results', 'result_subjects')",
+                Integer.class);
+        assertEquals(3, tables);
+    }
 }

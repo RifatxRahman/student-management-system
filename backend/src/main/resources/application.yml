@@ -40,3 +40,7 @@ app:
   attendance:
     edit-window-days: 3
     weekly-off-days: FRIDAY
+
+  result:
+    optional-base-gpa: 2.00
+    max-gpa: 5.00

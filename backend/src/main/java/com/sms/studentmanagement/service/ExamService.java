@@ -19,6 +19,7 @@ import com.sms.studentmanagement.repository.AcademicSessionRepository;
 import com.sms.studentmanagement.repository.ClassSubjectRepository;
 import com.sms.studentmanagement.repository.ExamRepository;
 import com.sms.studentmanagement.repository.ExamSubjectRepository;
+import com.sms.studentmanagement.repository.MarkRepository;
 import com.sms.studentmanagement.repository.SchoolClassRepository;
 import com.sms.studentmanagement.repository.SubjectRepository;
 import com.sms.studentmanagement.util.Changes;
@@ -43,6 +44,7 @@ public class ExamService {
     private final SubjectRepository subjectRepository;
     private final ClassSubjectRepository classSubjectRepository;
     private final AuditService auditService;
+    private final MarkRepository markRepository;
 
     // ---------- দেখা ----------
     @Transactional(readOnly = true)
@@ -119,7 +121,9 @@ public class ExamService {
     public void delete(Long id) {
         Exam exam = findExam(id);
         requireDraft(exam);
-        // ২খ-তে এখানে "মার্কস এন্ট্রি হয়ে থাকলে মোছা যাবে না" নিয়ম যোগ হবে
+        if (markRepository.existsByExamSubjectExamId(exam.getId())) {
+            throw conflict("এই পরীক্ষায় মার্কস এন্ট্রি হয়ে গেছে, তাই মোছা যায় না");
+        }
         examSubjectRepository.deleteByExamId(exam.getId());
         examRepository.delete(exam);
         auditService.log("EXAM_DELETED", "EXAM", id, exam.getName());
@@ -158,7 +162,12 @@ public class ExamService {
         requireDraft(exam);
         validateMarks(request.fullMarks(), request.passMarks());
 
-        // ২খ-তে এখানে "এন্ট্রি হওয়া মার্কস নতুন ফুল মার্কসের বেশি হলে আটকানো" নিয়ম যোগ হবে
+        BigDecimal highest = markRepository.maxMarks(examSubject.getId());
+        if (highest != null && request.fullMarks().compareTo(highest) < 0) {
+            throw bad("এই বিষয়ে ইতিমধ্যে " + highest.stripTrailingZeros().toPlainString()
+                    + " নম্বর এন্ট্রি হয়েছে, তাই ফুল মার্কস তার কম করা যায় না");
+        }
+
         Changes changes = new Changes()
                 .track("ফুল মার্কস", examSubject.getFullMarks().stripTrailingZeros(), request.fullMarks().stripTrailingZeros())
                 .track("পাস মার্কস", examSubject.getPassMarks().stripTrailingZeros(), request.passMarks().stripTrailingZeros())
@@ -178,7 +187,9 @@ public class ExamService {
         ExamSubject examSubject = findExamSubject(examSubjectId);
         Exam exam = examSubject.getExam();
         requireDraft(exam);
-        // ২খ-তে এখানে "মার্কস এন্ট্রি হয়ে থাকলে সরানো যাবে না" নিয়ম যোগ হবে
+        if (markRepository.existsByExamSubjectId(examSubject.getId())) {
+            throw conflict("এই বিষয়ে মার্কস এন্ট্রি হয়ে গেছে, তাই সরানো যায় না");
+        }
         examSubjectRepository.delete(examSubject);
         auditService.log("EXAM_SUBJECT_REMOVED", "EXAM", exam.getId(), examSubject.getSubject().getName());
         return detail(exam);

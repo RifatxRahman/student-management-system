@@ -68,4 +68,19 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
             @Param("sectionId") Long sectionId,
             @Param("fromDate") LocalDate fromDate,
             @Param("toDate") LocalDate toDate);
+
+    /** এই সেশনে এই ক্লাসের সব সেকশনের শিক্ষার্থীরা (নির্দিষ্ট অবস্থার), সেকশন ও রোল অনুযায়ী। */
+    @Query("""
+            select e from Enrollment e
+            join fetch e.student
+            join fetch e.section sec
+            where e.session.id = :sessionId
+              and e.schoolClass.id = :classId
+              and e.status = :status
+            order by sec.name, e.rollNumber
+            """)
+    List<Enrollment> findInClassAndSession(
+            @Param("sessionId") Long sessionId,
+            @Param("classId") Long classId,
+            @Param("status") EnrollmentStatus status);
 }

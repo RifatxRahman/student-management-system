@@ -46,6 +46,11 @@ public class SecurityConfig {
                         .requestMatchers("/api/teachers/me/**").authenticated()
                         // ৪) হাজিরা: Admin ও Teacher (কোন সেকশন, সেটা Service যাচাই করে)
                         .requestMatchers("/api/attendance/**").hasAnyRole("ADMIN", "TEACHER")
+                        // ৪ক) মার্কস এন্ট্রি: Admin ও Teacher (কোন সেকশন-বিষয়, সেটা Service যাচাই করে)
+                        .requestMatchers("/api/marks/**").hasAnyRole("ADMIN", "TEACHER")
+                        // ৪খ) রেজাল্ট প্রিভিউ ও প্রকাশ: শুধু Admin। প্রকাশিত ফল: Admin ও Teacher (নিজের সেকশন)
+                        .requestMatchers("/api/exams/*/preview", "/api/exams/*/publish").hasRole("ADMIN")
+                        .requestMatchers("/api/exams/*/results").hasAnyRole("ADMIN", "TEACHER")
                         // ৫) ব্যক্তিগত তথ্য: শুধু Admin (পড়া ও বদলানো দুটোই)
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers(
