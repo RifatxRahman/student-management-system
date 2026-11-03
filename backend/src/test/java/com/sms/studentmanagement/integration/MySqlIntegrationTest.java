@@ -117,4 +117,21 @@ class MySqlIntegrationTest {
                 Integer.class);
         assertEquals(3, tables);
     }
+
+
+    @Test
+    void routineTablesExistAndTimetableRejectsDoubleBooking() {
+        Integer tables = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE() "
+                        + "AND table_name IN ('rooms', 'time_slots', 'timetable')",
+                Integer.class);
+        assertEquals(3, tables);
+
+        // সংঘাত-তালা সত্যিই আছে কি না: তিনটা UNIQUE
+        Integer locks = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM information_schema.table_constraints WHERE table_schema = DATABASE() "
+                        + "AND table_name = 'timetable' AND constraint_type = 'UNIQUE'",
+                Integer.class);
+        assertEquals(3, locks);
+    }
 }

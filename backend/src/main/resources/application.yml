@@ -41,6 +41,11 @@ app:
     edit-window-days: 3
     weekly-off-days: FRIDAY
 
+  institution:
+    name: "আদর্শ উচ্চ বিদ্যালয়"
+    address: "ঢাকা, বাংলাদেশ"
+    phone: "০১৭১২-৩৪৫৬৭৮"
+
   result:
     optional-base-gpa: 2.00
     max-gpa: 5.00

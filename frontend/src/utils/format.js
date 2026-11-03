@@ -127,3 +127,38 @@ export const ATTENDANCE_STATUSES = [
   { value: 'LATE', label: 'দেরি' },
   { value: 'LEAVE', label: 'ছুটি' },
 ]
+
+
+// ---------- মার্কশিটের জন্য ----------
+const BANGLA_DIGITS = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯']
+
+// "2026-00001" -> "২০২৬-০০০০১"
+export function toBanglaDigits(text) {
+  return String(text ?? '').replace(/[0-9]/g, (digit) => BANGLA_DIGITS[Number(digit)])
+}
+
+// 82 -> "৮২", 82.5 -> "৮২.৫", (4.5, 2, 2) -> "৪.৫০"
+export function bnNumber(value, minimumFractionDigits = 0, maximumFractionDigits = 2) {
+  if (value === null || value === undefined) return '—'
+  return Number(value).toLocaleString('bn-BD', {
+    minimumFractionDigits,
+    maximumFractionDigits: Math.max(minimumFractionDigits, maximumFractionDigits),
+  })
+}
+
+const EXAM_TYPE_LABELS = { MIDTERM: 'মধ্যবর্তী পরীক্ষা', FINAL: 'চূড়ান্ত পরীক্ষা', TEST: 'ক্লাস টেস্ট' }
+
+export function examTypeLabel(type) {
+  return EXAM_TYPE_LABELS[type] ?? type
+}
+
+// সার্ভারের সময় (ISO) -> ঢাকার তারিখ ("২ নভেম্বর ২০২৬")
+export function formatInstantDate(iso) {
+  if (!iso) return '—'
+  return new Date(iso).toLocaleDateString('bn-BD', {
+    timeZone: 'Asia/Dhaka',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+}

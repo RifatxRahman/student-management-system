@@ -12,7 +12,8 @@ import DeletedStudentsPage from './pages/DeletedStudentsPage.jsx'
 import GuardiansPage from './pages/GuardiansPage.jsx'
 import HolidaysPage from './pages/HolidaysPage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
-import MarksheetPrototypePage from './pages/MarksheetPrototypePage.jsx'
+import MarksheetPage from './pages/MarksheetPage.jsx'
+import ResultSheetPage from './pages/ResultSheetPage.jsx'
 import NotFoundPage from './pages/NotFoundPage.jsx'
 import NotificationsPage from './pages/NotificationsPage.jsx'
 import SessionsPage from './pages/SessionsPage.jsx'
@@ -159,11 +160,19 @@ export default function App() {
       </Route>
 
       <Route
-        path="/prototype/marksheet"
+        path="/exams/:examId/marksheets"
         element={
-          <ProtectedRoute roles={['ADMIN']}>
-            <MarksheetPrototypePage />
-          </ProtectedRoute>
+          <Only roles={ATTENDANCE_ROLES}>
+            <MarksheetPage />
+          </Only>
+        }
+      />
+      <Route
+        path="/exams/:examId/result-sheet"
+        element={
+          <Only roles={ATTENDANCE_ROLES}>
+            <ResultSheetPage />
+          </Only>
         }
       />
 

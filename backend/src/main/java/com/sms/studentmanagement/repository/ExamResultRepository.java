@@ -18,4 +18,17 @@ public interface ExamResultRepository extends JpaRepository<ExamResult, Long> {
     List<ExamResult> findAllForExam(@Param("examId") Long examId);
 
     long deleteByExamId(Long examId);
+
+
+    @Query("""
+            select r from ExamResult r
+            join fetch r.exam ex
+            join fetch ex.session ses
+            join fetch ex.schoolClass
+            join fetch r.enrollment e
+            join fetch e.section
+            where e.student.id = :studentId
+            order by ses.startDate desc, ex.id desc
+            """)
+    List<ExamResult> findAllForStudent(@Param("studentId") Long studentId);
 }
