@@ -8,6 +8,8 @@ const LINKS = [
   { to: '/attendance', label: 'হাজিরা', end: true, roles: ['ADMIN', 'TEACHER'] },
   { to: '/attendance/report', label: 'মাসিক রিপোর্ট', roles: ['ADMIN', 'TEACHER'] },
   { to: '/holidays', label: 'ছুটির দিন' },
+  { to: '/exams', label: 'পরীক্ষা ও ফল' },
+  { to: '/grade-scale', label: 'গ্রেড স্কেল' },
   { to: '/sessions', label: 'শিক্ষাবর্ষ (সেশন)' },
   { to: '/classes', label: 'ক্লাস ও সেকশন' },
   { to: '/subjects', label: 'বিষয়' },

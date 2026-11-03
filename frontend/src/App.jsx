@@ -9,13 +9,19 @@ import ClassDetailPage from './pages/ClassDetailPage.jsx'
 import ClassesPage from './pages/ClassesPage.jsx'
 import DashboardPage from './pages/DashboardPage.jsx'
 import DeletedStudentsPage from './pages/DeletedStudentsPage.jsx'
+import ExamDetailPage from './pages/ExamDetailPage.jsx'
+import ExamsPage from './pages/ExamsPage.jsx'
+import GradeScalePage from './pages/GradeScalePage.jsx'
 import GuardiansPage from './pages/GuardiansPage.jsx'
 import HolidaysPage from './pages/HolidaysPage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
+import MarksEntryPage from './pages/MarksEntryPage.jsx'
 import MarksheetPage from './pages/MarksheetPage.jsx'
-import ResultSheetPage from './pages/ResultSheetPage.jsx'
 import NotFoundPage from './pages/NotFoundPage.jsx'
 import NotificationsPage from './pages/NotificationsPage.jsx'
+import PublishPage from './pages/PublishPage.jsx'
+import ResultSheetPage from './pages/ResultSheetPage.jsx'
+import ResultsPage from './pages/ResultsPage.jsx'
 import SessionsPage from './pages/SessionsPage.jsx'
 import StudentDetailPage from './pages/StudentDetailPage.jsx'
 import StudentNewPage from './pages/StudentNewPage.jsx'
@@ -46,6 +52,24 @@ export default function App() {
         }
       />
 
+      {/* মার্কশিট ও রেজাল্ট শিট: Sidebar ছাড়া পাতা, যাতে প্রিন্টে শুধু মার্কশিট ছাপে */}
+      <Route
+        path="/exams/:examId/marksheets"
+        element={
+          <Only roles={ATTENDANCE_ROLES}>
+            <MarksheetPage />
+          </Only>
+        }
+      />
+      <Route
+        path="/exams/:examId/result-sheet"
+        element={
+          <Only roles={ATTENDANCE_ROLES}>
+            <ResultSheetPage />
+          </Only>
+        }
+      />
+
       <Route
         element={
           <ProtectedRoute>
@@ -59,6 +83,34 @@ export default function App() {
         <Route path="classes/:id" element={<ClassDetailPage />} />
         <Route path="subjects" element={<SubjectsPage />} />
         <Route path="holidays" element={<HolidaysPage />} />
+
+        <Route path="grade-scale" element={<GradeScalePage />} />
+        <Route path="exams" element={<ExamsPage />} />
+        <Route path="exams/:id" element={<ExamDetailPage />} />
+        <Route
+          path="exams/:examId/marks"
+          element={
+            <Only roles={ATTENDANCE_ROLES}>
+              <MarksEntryPage />
+            </Only>
+          }
+        />
+        <Route
+          path="exams/:examId/results"
+          element={
+            <Only roles={ATTENDANCE_ROLES}>
+              <ResultsPage />
+            </Only>
+          }
+        />
+        <Route
+          path="exams/:examId/publish"
+          element={
+            <Only roles={ADMIN}>
+              <PublishPage />
+            </Only>
+          }
+        />
 
         <Route
           path="attendance"
@@ -158,23 +210,6 @@ export default function App() {
           }
         />
       </Route>
-
-      <Route
-        path="/exams/:examId/marksheets"
-        element={
-          <Only roles={ATTENDANCE_ROLES}>
-            <MarksheetPage />
-          </Only>
-        }
-      />
-      <Route
-        path="/exams/:examId/result-sheet"
-        element={
-          <Only roles={ATTENDANCE_ROLES}>
-            <ResultSheetPage />
-          </Only>
-        }
-      />
 
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

@@ -11,6 +11,7 @@ import {
   WithdrawModal,
 } from '../components/StudentModals.jsx'
 import StudentPhoto from '../components/StudentPhoto.jsx'
+import StudentResultsCard from '../components/StudentResultsCard.jsx'
 import { Alert, Badge, Button, Card, EmptyState, LoadState, Modal, PageHeader, Table, Td } from '../components/ui.jsx'
 import { useQuery } from '../hooks/useQuery.js'
 import {
@@ -289,6 +290,11 @@ export default function StudentDetailPage() {
                   )}
                 </Card>
               </section>
+            </div>
+
+
+            <div className="mt-6">
+              <StudentResultsCard studentId={student.id} />
             </div>
 
             {/* ---------- জানালাগুলো ---------- */}

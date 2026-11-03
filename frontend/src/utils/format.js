@@ -162,3 +162,20 @@ export function formatInstantDate(iso) {
     day: 'numeric',
   })
 }
+
+
+// ---------- পরীক্ষা (অ্যাডমিন স্ক্রিনের জন্য) ----------
+export const EXAM_TYPE_OPTIONS = [
+  { value: 'MIDTERM', label: 'মধ্যবর্তী পরীক্ষা' },
+  { value: 'FINAL', label: 'চূড়ান্ত পরীক্ষা' },
+  { value: 'TEST', label: 'ক্লাস টেস্ট' },
+]
+
+export function examStatusInfo(status) {
+  return status === 'PUBLISHED' ? { label: 'প্রকাশিত', tone: 'green' } : { label: 'খসড়া', tone: 'amber' }
+}
+
+// 100.00 -> "100", 82.5 -> "82.5", null -> "—"
+export function plain(value) {
+  return value === null || value === undefined ? '—' : String(Number(value))
+}
