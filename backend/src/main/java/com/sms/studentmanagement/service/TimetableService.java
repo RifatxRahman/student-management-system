@@ -30,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.sms.studentmanagement.dto.RoutineDtos.RoutineOption;
 
 @Service
 @RequiredArgsConstructor
@@ -76,6 +77,16 @@ public class TimetableService {
     public List<TimetableResponse> myRoutine(Actor actor, Long sessionId) {
         Teacher teacher = access.activeTeacher(actor);
         return teacherRoutine(teacher.getId(), sessionId);
+    }
+    /** এই সেকশনে এই সেশনে কোন শিক্ষক কোন বিষয় পড়ান। রুটিনের ঘরে শুধু এই জোড়াগুলোই বসানো যায়। */
+    @Transactional(readOnly = true)
+    public List<RoutineOption> options(Long sectionId, Long sessionId) {
+        Long session = resolveSession(sessionId);
+        return assignmentRepository.findForSectionAndSession(session, sectionId).stream()
+                .map(a -> new RoutineOption(
+                        a.getSubject().getId(), a.getSubject().getName(), a.getSubject().getCode(),
+                        a.getTeacher().getId(), a.getTeacher().getFullName()))
+                .toList();
     }
 
     // ---------- তৈরি, বদল, মোছা (শুধু Admin) ----------

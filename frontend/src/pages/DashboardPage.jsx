@@ -69,6 +69,7 @@ export default function DashboardPage() {
         )}
         <Stat label="ছুটির দিন" value="দেখুন" to="/holidays" />
         <Stat label="পরীক্ষা ও ফল" value="দেখুন" to="/exams" />
+        <Stat label="ক্লাস রুটিন" value="দেখুন" to="/routine" />
       </div>
 
       {isAdmin && (

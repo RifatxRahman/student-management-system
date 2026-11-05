@@ -9,7 +9,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
 import com.sms.studentmanagement.config.AttendanceProperties;
 import com.sms.studentmanagement.dto.RoutineDtos.TimetableRequest;
 import com.sms.studentmanagement.dto.RoutineDtos.TimetableUpdateRequest;
@@ -41,6 +40,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.http.HttpStatus;
+import com.sms.studentmanagement.dto.RoutineDtos.RoutineOption;
+import com.sms.studentmanagement.entity.TeacherAssignment;
+import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -256,5 +258,20 @@ class TimetableServiceTest {
         ApiException error = assertThrows(ApiException.class,
                 () -> service.update(500L, new TimetableUpdateRequest(9L, 3L, 30L)));
         assertEquals(HttpStatus.CONFLICT, error.getStatus());
+    }
+
+    @Test
+    void optionsAreBuiltFromTheAssignmentsOfThatSectionAndSession() {
+        TeacherAssignment assignment = new TeacherAssignment();
+        assignment.setSubject(subject);
+        assignment.setTeacher(teacher);
+        when(assignmentRepository.findForSectionAndSession(1L, 10L)).thenReturn(List.of(assignment));
+
+        List<RoutineOption> options = service.options(10L, 1L);
+
+        assertEquals(1, options.size());
+        assertEquals("Math", options.get(0).subjectName());
+        assertEquals("Rahim Sir", options.get(0).teacherName());
+        assertEquals(3L, options.get(0).teacherId());
     }
 }

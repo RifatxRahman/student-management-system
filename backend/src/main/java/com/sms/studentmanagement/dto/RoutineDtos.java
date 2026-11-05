@@ -76,4 +76,9 @@ public final class RoutineDtos {
                     t.getRoom() == null ? null : t.getRoom().getName());
         }
     }
+
+    /** রুটিনের ঘরে বসানোর বৈধ "বিষয় + শিক্ষক" জোড়া (Teacher Assignment থেকে) */
+    public record RoutineOption(
+            Long subjectId, String subjectName, String subjectCode, Long teacherId, String teacherName) {
+    }
 }

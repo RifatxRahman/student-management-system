@@ -179,3 +179,32 @@ export function examStatusInfo(status) {
 export function plain(value) {
   return value === null || value === undefined ? '—' : String(Number(value))
 }
+
+
+// ---------- রুটিন ----------
+// বাংলাদেশের সপ্তাহের ক্রম: শনিবার থেকে শুক্রবার
+export const WEEK_DAYS = ['SATURDAY', 'SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY']
+
+const DAY_LABELS = {
+  SATURDAY: 'শনিবার',
+  SUNDAY: 'রবিবার',
+  MONDAY: 'সোমবার',
+  TUESDAY: 'মঙ্গলবার',
+  WEDNESDAY: 'বুধবার',
+  THURSDAY: 'বৃহস্পতিবার',
+  FRIDAY: 'শুক্রবার',
+}
+
+export function dayLabel(day) {
+  return DAY_LABELS[day] ?? day
+}
+
+// "09:00:00" -> "০৯:০০"
+export function shortTime(time) {
+  return time ? toBanglaDigits(time.slice(0, 5)) : ''
+}
+
+// "09:00:00" -> "09:00" (সময়ের ঘরে বসানোর জন্য)
+export function timeInputValue(time) {
+  return time ? time.slice(0, 5) : ''
+}

@@ -7,6 +7,7 @@ const LINKS = [
   { to: '/', label: 'ড্যাশবোর্ড', end: true },
   { to: '/attendance', label: 'হাজিরা', end: true, roles: ['ADMIN', 'TEACHER'] },
   { to: '/attendance/report', label: 'মাসিক রিপোর্ট', roles: ['ADMIN', 'TEACHER'] },
+  { to: '/routine', label: 'ক্লাস রুটিন' },
   { to: '/holidays', label: 'ছুটির দিন' },
   { to: '/exams', label: 'পরীক্ষা ও ফল' },
   { to: '/grade-scale', label: 'গ্রেড স্কেল' },

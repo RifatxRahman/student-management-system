@@ -55,4 +55,19 @@ public interface TeacherAssignmentRepository extends JpaRepository<TeacherAssign
             Long teacherId, Long sessionId, Long sectionId, Long subjectId);
 
     boolean existsByTeacherIdAndSessionIdAndSectionId(Long teacherId, Long sessionId, Long sectionId);
+
+
+    /** এই সেশনে এই সেকশনে কোন (সক্রিয়) শিক্ষক কোন (সক্রিয়) বিষয় পড়ান। রুটিনের বাছাই-তালিকার উৎস। */
+    @Query("""
+            select ta from TeacherAssignment ta
+            join fetch ta.teacher t
+            join fetch ta.subject s
+            where ta.session.id = :sessionId
+              and ta.section.id = :sectionId
+              and t.active = true
+              and s.active = true
+            order by s.name, t.fullName
+            """)
+    List<TeacherAssignment> findForSectionAndSession(
+            @Param("sessionId") Long sessionId, @Param("sectionId") Long sectionId);
 }

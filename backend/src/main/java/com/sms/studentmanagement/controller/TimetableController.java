@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import com.sms.studentmanagement.dto.RoutineDtos.RoutineOption;
 
 @RestController
 @RequestMapping("/api/timetable")
@@ -44,6 +45,11 @@ public class TimetableController {
     @GetMapping("/me")
     public List<TimetableResponse> me(Authentication authentication, @RequestParam(required = false) Long sessionId) {
         return service.myRoutine(Actor.from(authentication), sessionId);
+    }
+    @GetMapping("/options")
+    public List<RoutineOption> options(
+            @RequestParam Long sectionId, @RequestParam(required = false) Long sessionId) {
+        return service.options(sectionId, sessionId);
     }
 
     // বদলানো: শুধু Admin
