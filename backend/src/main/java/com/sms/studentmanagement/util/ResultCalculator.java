@@ -49,7 +49,8 @@ public final class ResultCalculator {
         int counted = 0;
         boolean allPassed = true;
 
-        for (SubjectInput in : inputs) {
+        for (int i = 0; i < inputs.size(); i++) {
+            SubjectInput in = inputs.get(i);
             if (!in.entered() && !in.optional()) {
                 throw new IllegalStateException("আবশ্যিক বিষয়ের মার্কস এন্ট্রি বাকি");
             }

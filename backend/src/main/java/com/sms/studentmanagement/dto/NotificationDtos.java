@@ -14,6 +14,7 @@ public final class NotificationDtos {
     public record NotificationResponse(
             Long id, Long studentId, String studentCode, String studentName,
             Long guardianId, String guardianName, String phone, String message,
+            String language, int smsParts,
             NotificationType type, LocalDate eventDate, NotificationStatus status,
             int attempts, String lastError, Instant sentAt) {
 
@@ -21,7 +22,8 @@ public final class NotificationDtos {
             return new NotificationResponse(
                     n.getId(), n.getStudent().getId(), n.getStudent().getStudentCode(),
                     n.getStudent().getFullName(), n.getGuardian().getId(), n.getGuardian().getFullName(),
-                    n.getPhone(), n.getMessage(), n.getNotificationType(), n.getEventDate(),
+                    n.getPhone(), n.getMessage(), n.getLanguage(), n.getSmsParts(),
+                    n.getNotificationType(), n.getEventDate(),
                     n.getStatus(), n.getAttempts(), n.getLastError(), n.getSentAt());
         }
     }

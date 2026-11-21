@@ -78,15 +78,80 @@ public class TimetableService {
         Teacher teacher = access.activeTeacher(actor);
         return teacherRoutine(teacher.getId(), sessionId);
     }
+
+    /** শিক্ষকের সাপ্তাহিক কাজের চাপ (Workload) বিশ্লেষণ ও পিরিয়ড বণ্টন */
+    @Transactional(readOnly = true)
+    public com.sms.studentmanagement.dto.RoutineDtos.TeacherWorkloadResponse teacherWorkload(Long sessionId) {
+        Long session = resolveSession(sessionId);
+        AcademicSession academicSession = sessionRepository.findById(session)
+                .orElseThrow(() -> new NotFoundException("সেশন পাওয়া যায়নি"));
+
+        List<Teacher> teachers = teacherRepository.findAllWithUser();
+        List<TimetableEntry> entries = timetableRepository.findAllForSession(session);
+
+        java.util.Map<Long, java.util.Map<String, Integer>> teacherDayCounts = new java.util.HashMap<>();
+        java.util.Map<Long, Integer> teacherTotals = new java.util.HashMap<>();
+
+        for (int i = 0; i < entries.size(); i++) {
+            TimetableEntry entry = entries.get(i);
+            Long teacherId = entry.getTeacher().getId();
+            String day = entry.getDayOfWeek().name();
+
+            teacherTotals.put(teacherId, teacherTotals.getOrDefault(teacherId, 0) + 1);
+
+            java.util.Map<String, Integer> dayMap = teacherDayCounts.computeIfAbsent(teacherId, k -> new java.util.HashMap<>());
+            dayMap.put(day, dayMap.getOrDefault(day, 0) + 1);
+        }
+
+        java.util.List<com.sms.studentmanagement.dto.RoutineDtos.TeacherWorkloadRow> rows = new java.util.ArrayList<>();
+        int totalAssigned = 0;
+        int maxNormalPeriods = 25;
+
+        for (int i = 0; i < teachers.size(); i++) {
+            Teacher teacher = teachers.get(i);
+            if (!teacher.isActive()) {
+                continue;
+            }
+            Long teacherId = teacher.getId();
+            int total = teacherTotals.getOrDefault(teacherId, 0);
+            totalAssigned += total;
+
+            java.util.Map<String, Integer> dayMap = teacherDayCounts.getOrDefault(teacherId, java.util.Collections.emptyMap());
+            boolean overloaded = total > maxNormalPeriods;
+
+            rows.add(new com.sms.studentmanagement.dto.RoutineDtos.TeacherWorkloadRow(
+                    teacherId,
+                    teacher.getEmployeeId(),
+                    teacher.getFullName(),
+                    teacher.getDesignation(),
+                    total,
+                    dayMap,
+                    overloaded));
+        }
+
+        rows.sort((a, b) -> Integer.compare(b.totalWeeklyPeriods(), a.totalWeeklyPeriods()));
+
+        return new com.sms.studentmanagement.dto.RoutineDtos.TeacherWorkloadResponse(
+                academicSession.getId(),
+                academicSession.getName(),
+                rows,
+                rows.size(),
+                totalAssigned);
+    }
     /** এই সেকশনে এই সেশনে কোন শিক্ষক কোন বিষয় পড়ান। রুটিনের ঘরে শুধু এই জোড়াগুলোই বসানো যায়। */
     @Transactional(readOnly = true)
     public List<RoutineOption> options(Long sectionId, Long sessionId) {
         Long session = resolveSession(sessionId);
-        return assignmentRepository.findForSectionAndSession(session, sectionId).stream()
-                .map(a -> new RoutineOption(
-                        a.getSubject().getId(), a.getSubject().getName(), a.getSubject().getCode(),
-                        a.getTeacher().getId(), a.getTeacher().getFullName()))
-                .toList();
+        List<com.sms.studentmanagement.entity.TeacherAssignment> assignments =
+                assignmentRepository.findForSectionAndSession(session, sectionId);
+        java.util.List<RoutineOption> list = new java.util.ArrayList<>();
+        for (int i = 0; i < assignments.size(); i++) {
+            com.sms.studentmanagement.entity.TeacherAssignment a = assignments.get(i);
+            list.add(new RoutineOption(
+                    a.getSubject().getId(), a.getSubject().getName(), a.getSubject().getCode(),
+                    a.getTeacher().getId(), a.getTeacher().getFullName()));
+        }
+        return list;
     }
 
     // ---------- তৈরি, বদল, মোছা (শুধু Admin) ----------
@@ -236,12 +301,15 @@ public class TimetableService {
 
     /** বার (শনিবার থেকে) ও তারপর পিরিয়ডের সময় অনুযায়ী */
     private static List<TimetableResponse> sorted(List<TimetableEntry> entries) {
-        return entries.stream()
-                .sorted(Comparator
-                        .comparingInt((TimetableEntry t) -> DAY_ORDER.indexOf(t.getDayOfWeek()))
-                        .thenComparing(t -> t.getTimeSlot().getStartTime()))
-                .map(TimetableResponse::from)
-                .toList();
+        List<TimetableEntry> copy = new java.util.ArrayList<>(entries);
+        copy.sort(Comparator
+                .comparingInt((TimetableEntry t) -> DAY_ORDER.indexOf(t.getDayOfWeek()))
+                .thenComparing(t -> t.getTimeSlot().getStartTime()));
+        List<TimetableResponse> responses = new java.util.ArrayList<>();
+        for (int i = 0; i < copy.size(); i++) {
+            responses.add(TimetableResponse.from(copy.get(i)));
+        }
+        return responses;
     }
 
     private static String describe(TimetableEntry t) {

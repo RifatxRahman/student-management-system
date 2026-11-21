@@ -63,21 +63,29 @@ public class MarksService {
         List<MarkTarget> result = new ArrayList<>();
 
         if (actor.admin()) {
-            for (Section section : sectionRepository.findBySchoolClassIdOrderByName(exam.getSchoolClass().getId())) {
+            List<Section> sections = sectionRepository.findBySchoolClassIdOrderByName(exam.getSchoolClass().getId());
+            for (int i = 0; i < sections.size(); i++) {
+                Section section = sections.get(i);
                 if (!section.isActive()) {
                     continue;
                 }
-                for (ExamSubject es : subjects) {
-                    result.add(target(section, es));
+                for (int j = 0; j < subjects.size(); j++) {
+                    result.add(target(section, subjects.get(j)));
                 }
             }
             return result;
         }
 
         Teacher teacher = access.activeTeacher(actor);
-        Map<Long, ExamSubject> bySubject = subjects.stream()
-                .collect(Collectors.toMap(es -> es.getSubject().getId(), es -> es));
-        for (TeacherAssignment ta : assignmentRepository.findAllForTeacher(teacher.getId(), exam.getSession().getId())) {
+        Map<Long, ExamSubject> bySubject = new HashMap<>();
+        for (int i = 0; i < subjects.size(); i++) {
+            ExamSubject es = subjects.get(i);
+            bySubject.put(es.getSubject().getId(), es);
+        }
+
+        List<TeacherAssignment> assignments = assignmentRepository.findAllForTeacher(teacher.getId(), exam.getSession().getId());
+        for (int i = 0; i < assignments.size(); i++) {
+            TeacherAssignment ta = assignments.get(i);
             ExamSubject es = bySubject.get(ta.getSubject().getId());
             boolean sameClass = ta.getSection().getSchoolClass().getId().equals(exam.getSchoolClass().getId());
             if (es != null && sameClass) {
@@ -98,7 +106,9 @@ public class MarksService {
 
         Map<Long, Mark> saved = savedByEnrollment(es.getId(), section.getId());
         List<MarkRow> rows = new ArrayList<>();
-        for (Enrollment e : sectionRoster(exam, section.getId())) {
+        List<Enrollment> roster = sectionRoster(exam, section.getId());
+        for (int i = 0; i < roster.size(); i++) {
+            Enrollment e = roster.get(i);
             Mark mark = saved.get(e.getId());
             rows.add(new MarkRow(
                     e.getId(), e.getStudent().getId(), e.getStudent().getStudentCode(), e.getStudent().getFullName(),
@@ -135,11 +145,15 @@ public class MarksService {
 
         // (৩) যাদের মার্কস পাঠানো হলো তারা কি সত্যিই এই সেকশনের চলমান শিক্ষার্থী? নম্বর কি ঠিক?
         Map<Long, Enrollment> roster = new HashMap<>();
-        for (Enrollment e : sectionRoster(exam, section.getId())) {
+        List<Enrollment> rosterList = sectionRoster(exam, section.getId());
+        for (int i = 0; i < rosterList.size(); i++) {
+            Enrollment e = rosterList.get(i);
             roster.put(e.getId(), e);
         }
         Set<Long> seen = new HashSet<>();
-        for (MarkEntryRequest entry : request.entries()) {
+        List<MarkEntryRequest> entries = request.entries();
+        for (int i = 0; i < entries.size(); i++) {
+            MarkEntryRequest entry = entries.get(i);
             if (!roster.containsKey(entry.enrollmentId())) {
                 throw bad("তালিকার বাইরের একজন শিক্ষার্থীর মার্কস পাঠানো হয়েছে");
             }
@@ -151,10 +165,15 @@ public class MarksService {
 
         // (৪) প্রকাশের পর যেকোনো বদল বা নতুন এন্ট্রিতে কারণ লাগবে
         Map<Long, Mark> saved = savedByEnrollment(es.getId(), section.getId());
-        boolean anyChange = request.entries().stream().anyMatch(entry -> {
+        boolean anyChange = false;
+        for (int i = 0; i < entries.size(); i++) {
+            MarkEntryRequest entry = entries.get(i);
             Mark existing = saved.get(entry.enrollmentId());
-            return existing == null || differs(existing, entry);
-        });
+            if (existing == null || differs(existing, entry)) {
+                anyChange = true;
+                break;
+            }
+        }
         String reason = request.reason() == null ? "" : request.reason().trim();
         if (published && anyChange && reason.length() < MIN_REASON_LENGTH) {
             throw bad("প্রকাশিত ফলের মার্কস বদলাতে কারণ লিখতে হবে (কমপক্ষে " + MIN_REASON_LENGTH + " অক্ষর)");
@@ -164,7 +183,8 @@ public class MarksService {
         List<Mark> toCreate = new ArrayList<>();
         int changed = 0;
         int unchanged = 0;
-        for (MarkEntryRequest entry : request.entries()) {
+        for (int i = 0; i < entries.size(); i++) {
+            MarkEntryRequest entry = entries.get(i);
             Enrollment enrollment = roster.get(entry.enrollmentId());
             Mark existing = saved.get(entry.enrollmentId());
             if (existing == null) {
@@ -283,10 +303,114 @@ public class MarksService {
 
     private Map<Long, Mark> savedByEnrollment(Long examSubjectId, Long sectionId) {
         Map<Long, Mark> map = new HashMap<>();
-        for (Mark mark : markRepository.findForSectionAndExamSubject(examSubjectId, sectionId)) {
+        List<Mark> marks = markRepository.findForSectionAndExamSubject(examSubjectId, sectionId);
+        for (int i = 0; i < marks.size(); i++) {
+            Mark mark = marks.get(i);
             map.put(mark.getEnrollment().getId(), mark);
         }
         return map;
+    }
+
+    // ---------- মার্কস এন্ট্রি অগ্রগতি (Progress / Status) ----------
+    @Transactional(readOnly = true)
+    public com.sms.studentmanagement.dto.MarkDtos.ExamMarksProgressResponse progress(Long examId) {
+        Exam exam = findExam(examId);
+        List<ExamSubject> examSubjects = examSubjectRepository.findAllWithSubject(exam.getId());
+        List<Section> sections = sectionRepository.findBySchoolClassIdOrderByName(exam.getSchoolClass().getId());
+
+        List<com.sms.studentmanagement.dto.MarkDtos.SubjectMarksProgress> progressList = new ArrayList<>();
+        int totalSheets = 0;
+        int completedSheets = 0;
+        int totalExpectedMarks = 0;
+        int totalEnteredMarks = 0;
+
+        for (int i = 0; i < sections.size(); i++) {
+            Section section = sections.get(i);
+            if (!section.isActive()) {
+                continue;
+            }
+
+            List<Enrollment> roster = sectionRoster(exam, section.getId());
+            int studentCount = roster.size();
+
+            for (int j = 0; j < examSubjects.size(); j++) {
+                ExamSubject es = examSubjects.get(j);
+                totalSheets++;
+
+                Map<Long, Mark> saved = savedByEnrollment(es.getId(), section.getId());
+                int entered = 0;
+                int absent = 0;
+
+                for (int k = 0; k < roster.size(); k++) {
+                    Mark m = saved.get(roster.get(k).getId());
+                    if (m != null) {
+                        if (m.isAbsent()) {
+                            absent++;
+                        } else {
+                            entered++;
+                        }
+                    }
+                }
+
+                int totalRecorded = entered + absent;
+                int pending = Math.max(0, studentCount - totalRecorded);
+                totalExpectedMarks += studentCount;
+                totalEnteredMarks += totalRecorded;
+
+                BigDecimal percentage = BigDecimal.ZERO;
+                if (studentCount > 0) {
+                    percentage = BigDecimal.valueOf(totalRecorded)
+                            .multiply(BigDecimal.valueOf(100))
+                            .divide(BigDecimal.valueOf(studentCount), 2, RoundingMode.HALF_UP);
+                }
+
+                String status = (totalRecorded == studentCount && studentCount > 0) ? "COMPLETED" :
+                        (totalRecorded > 0 ? "PARTIAL" : "NOT_STARTED");
+                if ("COMPLETED".equals(status)) {
+                    completedSheets++;
+                }
+
+                String teacherName = "অনির্ধারিত";
+                java.util.Optional<TeacherAssignment> ta = assignmentRepository
+                        .findBySessionIdAndSectionIdAndSubjectId(exam.getSession().getId(), section.getId(), es.getSubject().getId());
+                if (ta.isPresent()) {
+                    teacherName = ta.get().getTeacher().getFullName();
+                }
+
+                progressList.add(new com.sms.studentmanagement.dto.MarkDtos.SubjectMarksProgress(
+                        section.getId(),
+                        section.getName(),
+                        es.getSubject().getId(),
+                        es.getSubject().getName(),
+                        es.getSubject().getCode(),
+                        teacherName,
+                        studentCount,
+                        entered,
+                        absent,
+                        pending,
+                        percentage,
+                        status));
+            }
+        }
+
+        BigDecimal overallPercentage = BigDecimal.ZERO;
+        if (totalExpectedMarks > 0) {
+            overallPercentage = BigDecimal.valueOf(totalEnteredMarks)
+                    .multiply(BigDecimal.valueOf(100))
+                    .divide(BigDecimal.valueOf(totalExpectedMarks), 2, RoundingMode.HALF_UP);
+        }
+
+        return new com.sms.studentmanagement.dto.MarkDtos.ExamMarksProgressResponse(
+                exam.getId(),
+                exam.getName(),
+                exam.getSchoolClass().getName(),
+                exam.getSession().getName(),
+                totalSheets,
+                completedSheets,
+                totalExpectedMarks,
+                totalEnteredMarks,
+                overallPercentage,
+                progressList);
     }
 
     private Exam findExam(Long id) {

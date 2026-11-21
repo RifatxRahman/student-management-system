@@ -314,4 +314,26 @@ class MarksServiceTest {
         verify(resultService, never()).recalculate(any());
         verify(auditService).log(eq("MARKS_SAVED"), eq("EXAM"), eq(7L), anyString());
     }
+
+    @Test
+    void progress_calculatesCompletionPercentageUsingBigDecimal() {
+        when(examSubjectRepository.findAllWithSubject(7L)).thenReturn(List.of(examSubject));
+        when(sectionRepository.findBySchoolClassIdOrderByName(any())).thenReturn(List.of(section));
+        when(enrollmentRepository.findInClassAndSession(any(), any(), any())).thenReturn(List.of(enrollment));
+
+        Mark m = new Mark();
+        m.setEnrollment(enrollment);
+        m.setMarksObtained(new BigDecimal("85.00"));
+        when(markRepository.findForSectionAndExamSubject(any(), any())).thenReturn(List.of(m));
+        when(assignmentRepository.findBySessionIdAndSectionIdAndSubjectId(any(), any(), any()))
+                .thenReturn(Optional.empty());
+
+        com.sms.studentmanagement.dto.MarkDtos.ExamMarksProgressResponse res = service.progress(7L);
+
+        assertEquals(1, res.totalSheets());
+        assertEquals(1, res.completedSheets());
+        assertEquals(1, res.totalStudents());
+        assertEquals(1, res.totalEnteredMarks());
+        assertEquals(new BigDecimal("100.00"), res.overallCompletionPercentage());
+    }
 }

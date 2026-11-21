@@ -52,4 +52,33 @@ public final class MarkDtos {
 
     public record SaveMarksResult(int created, int changed, int unchanged) {
     }
+
+    // ---------- মার্কস এন্ট্রি অগ্রগতি (Progress / Status) ----------
+    public record SubjectMarksProgress(
+            Long sectionId,
+            String sectionName,
+            Long subjectId,
+            String subjectName,
+            String subjectCode,
+            String assignedTeacherName,
+            int totalStudents,
+            int enteredCount,
+            int absentCount,
+            int pendingCount,
+            BigDecimal completionPercentage,
+            String status) {
+    }
+
+    public record ExamMarksProgressResponse(
+            Long examId,
+            String examName,
+            String className,
+            String sessionName,
+            int totalSheets,
+            int completedSheets,
+            int totalStudents,
+            int totalEnteredMarks,
+            BigDecimal overallCompletionPercentage,
+            List<SubjectMarksProgress> progressList) {
+    }
 }

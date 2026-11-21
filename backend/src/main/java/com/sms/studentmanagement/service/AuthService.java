@@ -7,6 +7,8 @@ import com.sms.studentmanagement.entity.UserStatus;
 import com.sms.studentmanagement.exception.ApiException;
 import com.sms.studentmanagement.repository.RefreshTokenRepository;
 import com.sms.studentmanagement.repository.UserRepository;
+import com.sms.studentmanagement.security.HttpRequestContext;
+import com.sms.studentmanagement.security.LoginRateLimiter;
 import jakarta.annotation.PostConstruct;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -33,6 +35,8 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AppProperties props;
+    private final AuditService auditService;
+    private final LoginRateLimiter loginRateLimiter;
 
     private String dummyHash;
 
@@ -47,14 +51,21 @@ public class AuthService {
 
     @Transactional(noRollbackFor = ApiException.class)
     public Tokens login(String username, String password) {
+        String clientIp = HttpRequestContext.getClientIpAddress();
+        loginRateLimiter.checkRateLimit(clientIp);
+
         User user = userRepository.findByUsername(username).orElse(null);
         if (user == null) {
             passwordEncoder.matches(password, dummyHash);
+            auditService.log("AUTH_LOGIN_FAILED", "USER", null,
+                    "অস্তিত্বহীন ব্যবহারকারী (" + username + ") দিয়ে লগইনের চেষ্টা", "FAILED", 0L);
             throw invalidCredentials();
         }
 
         Instant now = Instant.now();
         if (user.getLockedUntil() != null && user.getLockedUntil().isAfter(now)) {
+            auditService.log("AUTH_ACCOUNT_LOCKED", "USER", user.getId(),
+                    "লকড অ্যাকাউন্টে (" + username + ") লগইনের চেষ্টা", "FAILED", 0L);
             throw new ApiException(HttpStatus.TOO_MANY_REQUESTS,
                     "অনেকবার ভুল চেষ্টা হয়েছে। কিছুক্ষণ পরে আবার চেষ্টা করুন।");
         }
@@ -62,11 +73,16 @@ public class AuthService {
         boolean passwordOk = passwordEncoder.matches(password, user.getPasswordHash());
         if (!passwordOk || user.getStatus() != UserStatus.ACTIVE) {
             registerFailure(user, now);
+            auditService.log("AUTH_LOGIN_FAILED", "USER", user.getId(),
+                    "ভুল পাসওয়ার্ড দিয়ে লগইনের চেষ্টা (ব্যর্থতা সংখ্যা: " + user.getFailedLoginAttempts() + ")", "FAILED", 0L);
             throw invalidCredentials();
         }
 
         user.setFailedLoginAttempts(0);
         user.setLockedUntil(null);
+        loginRateLimiter.reset(clientIp);
+        auditService.log("AUTH_LOGIN_SUCCESS", "USER", user.getId(),
+                "ব্যবহারকারী (" + username + ") সফলভাবে লগইন করেছেন।", "SUCCESS", 0L);
         return issueTokens(user);
     }
 
@@ -84,6 +100,8 @@ public class AuthService {
             if (token.getRevokedAt().isBefore(now.minusSeconds(10))) {
                 // পুরনো বাতিল চাবি আবার এসেছে: চুরির সন্দেহ, সব চাবি বাতিল
                 refreshTokenRepository.revokeAllActive(token.getUser().getId(), now);
+                auditService.log("SECURITY_TOKEN_THEFT_DETECTED", "USER", token.getUser().getId(),
+                        "বাতিল রিফ্রেশ টোকেন পুনরায় ব্যবহারের চেষ্টা শনাক্ত হয়েছে! সব অ্যাক্টিভ টোকেন রিভোক করা হয়েছে।", "FAILED", 0L);
             }
             throw invalidSession();
         }
@@ -107,6 +125,8 @@ public class AuthService {
         refreshTokenRepository.findByTokenHash(sha256(rawToken)).ifPresent(token -> {
             if (token.getRevokedAt() == null) {
                 token.setRevokedAt(Instant.now());
+                auditService.log("AUTH_LOGOUT", "USER", token.getUser().getId(),
+                        "ব্যবহারকারী (" + token.getUser().getUsername() + ") সফলভাবে লগআউট করেছেন।");
             }
         });
     }
@@ -115,6 +135,7 @@ public class AuthService {
     public void changePassword(Long userId, String currentPassword, String newPassword) {
         User user = getUser(userId);
         if (!passwordEncoder.matches(currentPassword, user.getPasswordHash())) {
+            auditService.log("AUTH_PASSWORD_CHANGE_FAILED", "USER", userId, "ভুল বর্তমান পাসওয়ার্ড দিয়ে পরিবর্তনের চেষ্টা।", "FAILED", 0L);
             throw new ApiException(HttpStatus.BAD_REQUEST, "বর্তমান পাসওয়ার্ড ভুল");
         }
         PasswordPolicy.validate(newPassword, user.getUsername());
@@ -124,6 +145,7 @@ public class AuthService {
         user.setPasswordHash(passwordEncoder.encode(newPassword));
         user.setMustChangePassword(false);
         refreshTokenRepository.revokeAllActive(userId, Instant.now());
+        auditService.log("AUTH_PASSWORD_CHANGED", "USER", userId, "পাসওয়ার্ড সফলভাবে পরিবর্তন করা হয়েছে।");
     }
 
     @Transactional(readOnly = true)
@@ -136,6 +158,8 @@ public class AuthService {
         if (attempts >= props.security().maxFailedAttempts()) {
             user.setLockedUntil(now.plus(props.security().lockMinutes(), ChronoUnit.MINUTES));
             user.setFailedLoginAttempts(0);
+            auditService.log("AUTH_ACCOUNT_LOCKED", "USER", user.getId(),
+                    "সর্বোচ্চ ব্যর্থ প্রচেষ্টার পর অ্যাকাউন্ট " + props.security().lockMinutes() + " মিনিটের জন্য লক করা হয়েছে।", "FAILED", 0L);
         } else {
             user.setFailedLoginAttempts(attempts);
         }

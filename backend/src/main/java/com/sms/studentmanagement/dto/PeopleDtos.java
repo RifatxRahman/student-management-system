@@ -27,22 +27,47 @@ public final class PeopleDtos {
 
     // ---------- শিক্ষক ----------
     public record TeacherRequest(
+            String employeeId,
             @NotBlank @Size(max = 100) String fullName,
             @Size(max = 30) String phone,
+            @Email @Size(max = 100) String email,
             @Size(max = 100) String designation,
+            @Size(max = 150) String qualification,
+            LocalDate joiningDate,
+            @Size(max = 200) String address,
             Long userId) {
     }
 
     public record TeacherResponse(
-            Long id, Long userId, String username, String fullName, String phone, String designation,
+            Long id,
+            String employeeId,
+            Long userId,
+            String username,
+            String fullName,
+            String phone,
+            String email,
+            String designation,
+            String qualification,
+            LocalDate joiningDate,
+            String photoPath,
+            String address,
             boolean active) {
 
         public static TeacherResponse from(Teacher t) {
             return new TeacherResponse(
                     t.getId(),
+                    t.getEmployeeId(),
                     t.getUser() == null ? null : t.getUser().getId(),
                     t.getUser() == null ? null : t.getUser().getUsername(),
-                    t.getFullName(), t.getPhone(), t.getDesignation(), t.isActive());
+                    t.getFullName(),
+                    t.getPhone(),
+                    t.getEmail(),
+                    t.getDesignation(),
+                    t.getQualification(),
+                    t.getJoiningDate(),
+                    t.getPhotoPath(),
+                    t.getAddress(),
+                    t.isActive());
         }
     }
 
@@ -177,12 +202,14 @@ public final class PeopleDtos {
     // ---------- Audit Log ----------
     public record AuditLogResponse(
             Long id, Instant createdAt, Long actorUserId, String actorUsername, String action,
-            String entityType, Long entityId, String details) {
+            String entityType, Long entityId, String details,
+            String ipAddress, String userAgent, String status, long executionTimeMs) {
 
         public static AuditLogResponse from(AuditLog a, String actorUsername) {
             return new AuditLogResponse(
                     a.getId(), a.getCreatedAt(), a.getActorUserId(), actorUsername, a.getAction(),
-                    a.getEntityType(), a.getEntityId(), a.getDetails());
+                    a.getEntityType(), a.getEntityId(), a.getDetails(),
+                    a.getIpAddress(), a.getUserAgent(), a.getStatus(), a.getExecutionTimeMs());
         }
     }
 }
