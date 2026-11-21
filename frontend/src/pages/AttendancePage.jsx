@@ -121,6 +121,24 @@ function SheetEditor({ sheet, onSaved }) {
     }
   }
 
+  async function finalize() {
+    if (!window.confirm('আপনি কি নিশ্চিত যে এই দিনের হাজিরা ফাইনাল ও লক করতে চান? একবার লক করলে সাধারণ শিক্ষকরা আর পরিবর্তন করতে পারবেন না।')) {
+      return
+    }
+    setBusy(true)
+    setError('')
+    try {
+      await api(`/api/attendance/finalize?sectionId=${sheet.sectionId}&date=${sheet.date}`, {
+        method: 'POST',
+      })
+      onSaved({ finalized: true })
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setBusy(false)
+    }
+  }
+
   return (
     <div className="space-y-4">
       {locked && <Alert type="info">{sheet.lockReason}</Alert>}
@@ -138,6 +156,7 @@ function SheetEditor({ sheet, onSaved }) {
                 <Badge tone="red">অনুপস্থিত {counts.ABSENT}</Badge>
                 <Badge tone="amber">দেরি {counts.LATE}</Badge>
                 <Badge tone="indigo">ছুটি {counts.LEAVE}</Badge>
+                {sheet.finalized && <Badge tone="red">লক করা (Finalized)</Badge>}
                 {unmarked > 0 && <Badge>বাকি {unmarked}</Badge>}
               </div>
               {!locked && unmarked > 0 && (
@@ -210,7 +229,14 @@ function SheetEditor({ sheet, onSaved }) {
                   অনুপস্থিত শিক্ষার্থীর প্রধান অভিভাবকের জন্য একটা বার্তা জমা হবে (Admin পরে পাঠাবেন)।
                 </p>
               )}
-              <div className="flex justify-end">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  {sheet.alreadyMarked && !sheet.finalized && (
+                    <Button variant="danger" size="sm" disabled={busy} onClick={finalize}>
+                      ফাইনাল ও লক করুন
+                    </Button>
+                  )}
+                </div>
                 <Button disabled={!canSave || busy} onClick={save}>
                   {busy ? 'অপেক্ষা করুন...' : sheet.alreadyMarked ? 'সংশোধন সংরক্ষণ করুন' : 'হাজিরা সংরক্ষণ করুন'}
                 </Button>
@@ -260,7 +286,11 @@ export default function AttendancePage() {
   }
 
   function saved(result) {
-    setMessage(`সংরক্ষণ হয়েছে: নতুন ${result.created}, সংশোধন ${result.changed}, অপরিবর্তিত ${result.unchanged}`)
+    if (result.finalized) {
+      setMessage('হাজিরা ফাইনাল ও লক করা হয়েছে।')
+    } else {
+      setMessage(`সংরক্ষণ হয়েছে: নতুন ${result.created}, সংশোধন ${result.changed}, অপরিবর্তিত ${result.unchanged}`)
+    }
     sheet.reload()
   }
 
