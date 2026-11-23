@@ -11,6 +11,7 @@ import com.sms.studentmanagement.entity.UserStatus;
 import com.sms.studentmanagement.exception.ApiException;
 import com.sms.studentmanagement.repository.RefreshTokenRepository;
 import com.sms.studentmanagement.repository.UserRepository;
+import com.sms.studentmanagement.security.LoginRateLimiter;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,12 @@ class AuthServiceTest {
     @Mock
     JwtService jwtService;
 
+    @Mock
+    AuditService auditService;
+
+    @Mock
+    LoginRateLimiter loginRateLimiter;
+
     PasswordEncoder encoder = new BCryptPasswordEncoder();
     AuthService service;
     User user;
@@ -42,7 +49,15 @@ class AuthServiceTest {
         AppProperties props = new AppProperties(
                 new AppProperties.Security("x".repeat(40), 15, 7, false, 3, 15),
                 new AppProperties.Bootstrap("", ""));
-        service = new AuthService(userRepository, refreshTokenRepository, encoder, jwtService, props);
+        service = new AuthService(
+                userRepository,
+                refreshTokenRepository,
+                encoder,
+                jwtService,
+                props,
+                auditService,
+                loginRateLimiter
+        );
         service.init();
 
         user = new User();

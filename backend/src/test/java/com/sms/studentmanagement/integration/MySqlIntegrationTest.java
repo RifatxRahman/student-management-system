@@ -86,8 +86,8 @@ class MySqlIntegrationTest {
         go.countDown();
 
         Set<String> codes = new HashSet<>();
-        for (Future<String> future : futures) {
-            codes.add(future.get(30, TimeUnit.SECONDS));
+        for (int i = 0; i < futures.size(); i++) {
+            codes.add(futures.get(i).get(30, TimeUnit.SECONDS));
         }
         pool.shutdown();
 
@@ -118,7 +118,6 @@ class MySqlIntegrationTest {
         assertEquals(3, tables);
     }
 
-
     @Test
     void routineTablesExistAndTimetableRejectsDoubleBooking() {
         Integer tables = jdbcTemplate.queryForObject(
@@ -133,5 +132,29 @@ class MySqlIntegrationTest {
                         + "AND table_name = 'timetable' AND constraint_type = 'UNIQUE'",
                 Integer.class);
         assertEquals(3, locks);
+    }
+
+    @Test
+    void feeAndAccountsTablesExist() {
+        Integer tables = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE() "
+                        + "AND table_name IN ('fee_heads', 'fee_structures', 'student_waivers', "
+                        + "'invoices', 'invoice_items', 'fee_payments', 'expense_categories', 'expenses')",
+                Integer.class);
+        assertEquals(8, tables);
+    }
+
+    @Test
+    void notificationCampaignAndRbacTablesExist() {
+        Integer tables = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE() "
+                        + "AND table_name IN ('notification_templates', 'notification_campaigns', "
+                        + "'permissions', 'role_permissions', 'user_permissions')",
+                Integer.class);
+        assertEquals(5, tables);
+
+        // সিডকৃত পারমিশন সংখ্যা যাচাই (কমপক্ষে ১৫টি)
+        Integer perms = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM permissions", Integer.class);
+        assertTrue(perms != null && perms >= 15);
     }
 }

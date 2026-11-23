@@ -49,7 +49,12 @@ public class ExamService {
     // ---------- দেখা ----------
     @Transactional(readOnly = true)
     public List<ExamResponse> list(Long sessionId, Long classId) {
-        return examRepository.search(sessionId, classId).stream().map(ExamResponse::from).toList();
+        List<Exam> exams = examRepository.search(sessionId, classId);
+        List<ExamResponse> list = new java.util.ArrayList<>();
+        for (int i = 0; i < exams.size(); i++) {
+            list.add(ExamResponse.from(exams.get(i)));
+        }
+        return list;
     }
 
     @Transactional(readOnly = true)
@@ -82,10 +87,15 @@ public class ExamService {
 
         int copied = 0;
         if (request.copySubjects()) {
-            List<ExamSubject> rows = classSubjectRepository.findAllWithSubject(schoolClass.getId()).stream()
-                    .filter(cs -> cs.getSubject().isActive())
-                    .map(cs -> newExamSubject(exam, cs.getSubject(), DEFAULT_FULL_MARKS, DEFAULT_PASS_MARKS, false))
-                    .toList();
+            List<com.sms.studentmanagement.entity.ClassSubject> classSubjects =
+                    classSubjectRepository.findAllWithSubject(schoolClass.getId());
+            List<ExamSubject> rows = new java.util.ArrayList<>();
+            for (int i = 0; i < classSubjects.size(); i++) {
+                com.sms.studentmanagement.entity.ClassSubject cs = classSubjects.get(i);
+                if (cs.getSubject().isActive()) {
+                    rows.add(newExamSubject(exam, cs.getSubject(), DEFAULT_FULL_MARKS, DEFAULT_PASS_MARKS, false));
+                }
+            }
             examSubjectRepository.saveAll(rows);
             copied = rows.size();
         }
@@ -197,13 +207,17 @@ public class ExamService {
 
     // ---------- ভেতরের সাহায্যকারী ----------
     private ExamDetail detail(Exam exam) {
-        List<ExamSubjectResponse> subjects = examSubjectRepository.findAllWithSubject(exam.getId()).stream()
-                .map(ExamSubjectResponse::from)
-                .toList();
-        BigDecimal total = subjects.stream()
-                .filter(s -> !s.optional())
-                .map(ExamSubjectResponse::fullMarks)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        List<ExamSubject> list = examSubjectRepository.findAllWithSubject(exam.getId());
+        List<ExamSubjectResponse> subjects = new java.util.ArrayList<>();
+        BigDecimal total = BigDecimal.ZERO;
+        for (int i = 0; i < list.size(); i++) {
+            ExamSubject es = list.get(i);
+            ExamSubjectResponse res = ExamSubjectResponse.from(es);
+            subjects.add(res);
+            if (!res.optional()) {
+                total = total.add(res.fullMarks());
+            }
+        }
         return new ExamDetail(ExamResponse.from(exam), subjects, total);
     }
 

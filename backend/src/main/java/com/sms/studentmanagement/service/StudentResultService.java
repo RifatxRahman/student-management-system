@@ -3,6 +3,7 @@ package com.sms.studentmanagement.service;
 import com.sms.studentmanagement.dto.StudentResultDtos.StudentResultSummary;
 import com.sms.studentmanagement.entity.Enrollment;
 import com.sms.studentmanagement.entity.Exam;
+import com.sms.studentmanagement.entity.ExamResult;
 import com.sms.studentmanagement.exception.NotFoundException;
 import com.sms.studentmanagement.repository.ExamResultRepository;
 import com.sms.studentmanagement.repository.StudentRepository;
@@ -23,19 +24,21 @@ public class StudentResultService {
     public List<StudentResultSummary> history(Long studentId) {
         studentRepository.findById(studentId)
                 .orElseThrow(() -> new NotFoundException("শিক্ষার্থী পাওয়া যায়নি"));
-        return resultRepository.findAllForStudent(studentId).stream()
-                .map(r -> {
-                    Exam exam = r.getExam();
-                    Enrollment enrollment = r.getEnrollment();
-                    return new StudentResultSummary(
-                            r.getId(), exam.getId(), exam.getName(), exam.getExamType(),
-                            exam.getSession().getId(), exam.getSession().getName(), exam.getSchoolClass().getName(),
-                            enrollment.getSection().getId(), enrollment.getSection().getName(),
-                            enrollment.getId(), enrollment.getRollNumber(),
-                            r.getTotalMarks(), r.getTotalFullMarks(), r.getAverageMarks(),
-                            r.getGpa(), r.getGrade(), r.isPassed(),
-                            r.getPositionInClass(), r.getPositionInSection(), exam.getPublishedAt());
-                })
-                .toList();
+        List<ExamResult> results = resultRepository.findAllForStudent(studentId);
+        java.util.List<StudentResultSummary> summaries = new java.util.ArrayList<>();
+        for (int i = 0; i < results.size(); i++) {
+            ExamResult r = results.get(i);
+            Exam exam = r.getExam();
+            Enrollment enrollment = r.getEnrollment();
+            summaries.add(new StudentResultSummary(
+                    r.getId(), exam.getId(), exam.getName(), exam.getExamType(),
+                    exam.getSession().getId(), exam.getSession().getName(), exam.getSchoolClass().getName(),
+                    enrollment.getSection().getId(), enrollment.getSection().getName(),
+                    enrollment.getId(), enrollment.getRollNumber(),
+                    r.getTotalMarks(), r.getTotalFullMarks(), r.getAverageMarks(),
+                    r.getGpa(), r.getGrade(), r.isPassed(),
+                    r.getPositionInClass(), r.getPositionInSection(), exam.getPublishedAt()));
+        }
+        return summaries;
     }
 }

@@ -52,6 +52,12 @@ public class NotificationLog extends BaseEntity {
     @Column(nullable = false, length = 500)
     private String message;
 
+    @Column(nullable = false, length = 5)
+    private String language = "BN";
+
+    @Column(name = "sms_parts", nullable = false)
+    private int smsParts = 1;
+
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.VARCHAR)
     @Column(nullable = false, length = 10)

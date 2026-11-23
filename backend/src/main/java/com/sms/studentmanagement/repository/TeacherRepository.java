@@ -12,6 +12,10 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 
     boolean existsByUserId(Long userId);
 
+    boolean existsByEmployeeId(String employeeId);
+
+    Optional<Teacher> findByEmployeeId(String employeeId);
+
     @Query("select t from Teacher t left join fetch t.user order by t.fullName")
     List<Teacher> findAllWithUser();
 }

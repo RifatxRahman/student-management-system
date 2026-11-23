@@ -30,6 +30,11 @@ public class MarksController {
         return service.targets(Actor.from(authentication), examId);
     }
 
+    @GetMapping("/progress")
+    public com.sms.studentmanagement.dto.MarkDtos.ExamMarksProgressResponse progress(@RequestParam Long examId) {
+        return service.progress(examId);
+    }
+
     @GetMapping("/sheet")
     public MarkSheet sheet(
             Authentication authentication,

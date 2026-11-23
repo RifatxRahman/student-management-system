@@ -44,6 +44,9 @@ public class Attendance extends BaseEntity {
     @Column(length = 255)
     private String remark;
 
+    @Column(nullable = false)
+    private boolean finalized = false;
+
     @Column(name = "marked_by", nullable = false)
     private Long markedBy;
 }

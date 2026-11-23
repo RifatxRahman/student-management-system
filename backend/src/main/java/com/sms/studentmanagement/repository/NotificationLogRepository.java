@@ -19,6 +19,16 @@ public interface NotificationLogRepository extends JpaRepository<NotificationLog
 
     List<NotificationLog> findByStatusOrderByIdAsc(NotificationStatus status, Pageable pageable);
 
+    @Query("""
+            select n from NotificationLog n
+            where n.status = :status and n.attempts < :maxAttempts
+            order by n.id asc
+            """)
+    List<NotificationLog> findRetryableFailed(
+            @Param("status") NotificationStatus status,
+            @Param("maxAttempts") int maxAttempts,
+            Pageable pageable);
+
     long deleteByStudentIdAndNotificationTypeAndEventDateAndStatusIn(
             Long studentId, NotificationType notificationType, LocalDate eventDate,
             Collection<NotificationStatus> statuses);

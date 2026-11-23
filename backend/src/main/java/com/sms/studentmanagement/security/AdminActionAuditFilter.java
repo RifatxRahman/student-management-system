@@ -13,14 +13,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-/** /api/admin/users-এ সফল বদলানোর অনুরোধ Audit Log-এ লেখে। শরীরের (body) তথ্য কখনো পড়ে না। */
+/**
+ * /api/admin/*-এ মিউটেটিং অনুরোধগুলো পরিমাপ করে এবং Audit Log-এ সংরক্ষণ করে।
+ * শরীরের (body) সংবেদনশীল তথ্য স্পর্শ করে না।
+ */
 public class AdminActionAuditFilter extends OncePerRequestFilter {
 
     private static final Logger log = LoggerFactory.getLogger(AdminActionAuditFilter.class);
 
-    // Swagger-এ Admin ব্যবহারকারীর ঠিকানা অন্য হলে শুধু এই দুটো লাইন বদলান
-    private static final String PREFIX = "/api/admin/users";
+    private static final String ADMIN_PREFIX = "/api/admin";
     private static final Pattern USER_ID = Pattern.compile("^/api/admin/users/(\\d+)(/.*)?$");
+    private static final Pattern RBAC_USER_ID = Pattern.compile("^/api/admin/rbac/users/(\\d+)(/.*)?$");
 
     private static final Set<String> READ_ONLY = Set.of("GET", "HEAD", "OPTIONS");
 
@@ -34,22 +37,45 @@ public class AdminActionAuditFilter extends OncePerRequestFilter {
     protected void doFilterInternal(
             HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-        chain.doFilter(request, response);
 
-        String path = request.getRequestURI();
-        int status = response.getStatus();
-        if (READ_ONLY.contains(request.getMethod()) || !path.startsWith(PREFIX)
-                || status < 200 || status >= 300) {
-            return;
-        }
+        long startTime = System.currentTimeMillis();
         try {
-            Matcher matcher = USER_ID.matcher(path);
-            Long userId = matcher.matches() ? Long.valueOf(matcher.group(1)) : null;
-            auditService.log("ADMIN_USER_ACTION", "USER", userId,
-                    request.getMethod() + " " + path + " (" + status + ")");
-        } catch (RuntimeException e) {
-            // লগ লিখতে না পারলেও মূল কাজ যেন না ভাঙে
-            log.warn("Audit log লেখা যায়নি: {}", e.getMessage());
+            chain.doFilter(request, response);
+        } finally {
+            long duration = System.currentTimeMillis() - startTime;
+            String path = request.getRequestURI();
+            int statusCode = response.getStatus();
+
+            if (!READ_ONLY.contains(request.getMethod()) && path.startsWith(ADMIN_PREFIX)) {
+                try {
+                    String action = "ADMIN_ACTION";
+                    String entityType = "SYSTEM";
+                    Long entityId = null;
+
+                    Matcher userMatcher = USER_ID.matcher(path);
+                    Matcher rbacUserMatcher = RBAC_USER_ID.matcher(path);
+
+                    if (userMatcher.matches()) {
+                        action = "ADMIN_USER_ACTION";
+                        entityType = "USER";
+                        entityId = Long.valueOf(userMatcher.group(1));
+                    } else if (rbacUserMatcher.matches()) {
+                        action = "RBAC_USER_OVERRIDE";
+                        entityType = "USER_PERMISSIONS";
+                        entityId = Long.valueOf(rbacUserMatcher.group(1));
+                    } else if (path.startsWith("/api/admin/rbac/roles")) {
+                        action = "RBAC_ROLE_MATRIX_UPDATE";
+                        entityType = "ROLE";
+                    }
+
+                    String status = (statusCode >= 200 && statusCode < 300) ? "SUCCESS" : "FAILED";
+                    String details = request.getMethod() + " " + path + " [HTTP " + statusCode + ", " + duration + "ms]";
+
+                    auditService.log(action, entityType, entityId, details, status, duration);
+                } catch (RuntimeException e) {
+                    log.warn("Audit log সংরক্ষণ করা সম্ভব হয়নি: {}", e.getMessage());
+                }
+            }
         }
     }
 }

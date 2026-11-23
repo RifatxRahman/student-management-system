@@ -5,6 +5,7 @@ import com.sms.studentmanagement.config.JwtConfig;
 import com.sms.studentmanagement.entity.User;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwsHeader;
@@ -19,16 +20,21 @@ public class JwtService {
 
     private final JwtEncoder jwtEncoder;
     private final AppProperties props;
+    private final RbacService rbacService;
 
     public String createAccessToken(User user) {
         Instant now = Instant.now();
+        List<String> authorities = rbacService.getUserAuthorities(user);
+
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer(JwtConfig.ISSUER)
                 .issuedAt(now)
                 .expiresAt(now.plus(props.security().accessTokenMinutes(), ChronoUnit.MINUTES))
                 .subject(String.valueOf(user.getId()))
                 .claim("role", user.getRole().name())
+                .claim("authorities", authorities)
                 .build();
+
         JwsHeader header = JwsHeader.with(MacAlgorithm.HS256).build();
         return jwtEncoder.encode(JwtEncoderParameters.from(header, claims)).getTokenValue();
     }

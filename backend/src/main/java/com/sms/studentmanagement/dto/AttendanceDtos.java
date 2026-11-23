@@ -55,7 +55,7 @@ public final class AttendanceDtos {
     /** editable=false হলে lockReason-এ কারণ থাকে। alreadyMarked=true মানে এই দিনের হাজিরা আগে নেওয়া হয়েছে। */
     public record Sheet(
             Long sectionId, String sectionName, String className, LocalDate date,
-            boolean editable, String lockReason, boolean alreadyMarked, List<SheetRow> rows) {
+            boolean editable, boolean finalized, String lockReason, boolean alreadyMarked, List<SheetRow> rows) {
     }
 
     public record MarkEntry(
@@ -84,5 +84,43 @@ public final class AttendanceDtos {
     public record MonthlyReport(
             Long sectionId, String sectionName, String className, String month,
             long workingDays, long markedDays, List<StudentSummary> students) {
+    }
+
+    // ---------- দৈনিক সারসংক্ষেপ ----------
+    /** একটি সেকশনে নির্দিষ্ট তারিখে কতজন কোন অবস্থায়। */
+    public record DailySummary(
+            Long sectionId, String sectionName, String className, LocalDate date,
+            long total, long present, long late, long absent, long leave,
+            BigDecimal presentPercent) {
+    }
+
+    // ---------- ছাত্রের দিনভিত্তিক ইতিহাস ----------
+    /** একটি দিনের হাজিরা। */
+    public record DayEntry(LocalDate date, AttendanceStatus status, String remark) {
+    }
+
+    /** একজন ছাত্রের নির্দিষ্ট সময়ে সব দিনের হাজিরা + সারসংক্ষেপ। */
+    public record StudentHistory(
+            Long studentId, String studentCode, String studentName,
+            String className, String sectionName, int rollNumber,
+            LocalDate from, LocalDate to,
+            long present, long late, long absent, long leave,
+            BigDecimal percentage,
+            List<DayEntry> days) {
+    }
+
+    // ---------- কম হাজিরার তালিকা ----------
+    /** threshold-এর নিচে যাদের attendance। */
+    public record LowAttendanceRow(
+            Long enrollmentId, Long studentId, String studentCode, String studentName,
+            int rollNumber,
+            long present, long late, long absent, long leave,
+            BigDecimal percentage) {
+    }
+
+    public record LowAttendanceReport(
+            Long sectionId, String sectionName, String className,
+            LocalDate from, LocalDate to, int threshold,
+            List<LowAttendanceRow> students) {
     }
 }

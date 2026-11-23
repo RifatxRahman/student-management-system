@@ -1,5 +1,7 @@
 package com.sms.studentmanagement.service;
 
+import com.sms.studentmanagement.config.InstitutionProperties;
+import com.sms.studentmanagement.config.SmsProperties;
 import com.sms.studentmanagement.dto.NotificationDtos.DispatchResult;
 import com.sms.studentmanagement.dto.NotificationDtos.NotificationResponse;
 import com.sms.studentmanagement.dto.PageResponse;
@@ -13,13 +15,17 @@ import com.sms.studentmanagement.exception.ApiException;
 import com.sms.studentmanagement.exception.NotFoundException;
 import com.sms.studentmanagement.repository.NotificationLogRepository;
 import com.sms.studentmanagement.repository.StudentGuardianRepository;
+import com.sms.studentmanagement.util.SmsCalculator;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,12 +33,16 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class NotificationService {
 
+    private static final Logger log = LoggerFactory.getLogger(NotificationService.class);
     private static final int DISPATCH_BATCH = 50;
+    private static final int MAX_RETRY_ATTEMPTS = 3;
 
     private final NotificationLogRepository repository;
     private final StudentGuardianRepository studentGuardianRepository;
     private final SmsSender smsSender;
     private final AuditService auditService;
+    private final SmsProperties smsProperties;
+    private final InstitutionProperties institutionProperties;
 
     // ---------- জমা করা (হাজিরা থেকে ডাকা হয়) ----------
 
@@ -49,17 +59,33 @@ public class NotificationService {
         }
         Guardian guardian = links.get(0).getGuardian();
 
-        NotificationLog log = new NotificationLog();
-        log.setStudent(student);
-        log.setGuardian(guardian);
-        log.setNotificationType(NotificationType.ABSENCE);
-        log.setEventDate(date);
-        log.setPhone(guardian.getPhone());
-        log.setMessage("আপনার সন্তান " + student.getFullName() + " (" + student.getStudentCode() + ") "
-                + date + " তারিখে অনুপস্থিত ছিল।");
-        log.setStatus(NotificationStatus.PENDING);
-        log.setAttempts(0);
-        repository.save(log);
+        String lang = smsProperties.getDefaultLanguage();
+        String schoolName = institutionProperties.getName();
+        String message = buildAbsenceMessage(schoolName, student, date, lang);
+        int parts = SmsCalculator.calculateParts(message);
+
+        NotificationLog logEntry = new NotificationLog();
+        logEntry.setStudent(student);
+        logEntry.setGuardian(guardian);
+        logEntry.setNotificationType(NotificationType.ABSENCE);
+        logEntry.setEventDate(date);
+        logEntry.setPhone(guardian.getPhone());
+        logEntry.setMessage(message);
+        logEntry.setLanguage(lang);
+        logEntry.setSmsParts(parts);
+        logEntry.setStatus(NotificationStatus.PENDING);
+        logEntry.setAttempts(0);
+        repository.save(logEntry);
+    }
+
+    private String buildAbsenceMessage(String schoolName, Student student, LocalDate date, String lang) {
+        if ("EN".equalsIgnoreCase(lang)) {
+            return String.format("[%s] Dear Guardian, your child %s (%s) was absent on %s.",
+                    schoolName, student.getFullName(), student.getStudentCode(), date);
+        } else {
+            return String.format("[%s] সম্মানিত অভিভাবক, আপনার সন্তান %s (%s) আজ %s তারিখে বিদ্যালয়ে অনুপস্থিত ছিল।",
+                    schoolName, student.getFullName(), student.getStudentCode(), date);
+        }
     }
 
     /** ABSENT ভুল ছিল: যে বার্তা এখনো যায়নি (PENDING/FAILED) সেটা মুছে ফেলা। SENT থাকে। */
@@ -82,7 +108,8 @@ public class NotificationService {
 
         int sent = 0;
         int failed = 0;
-        for (NotificationLog n : batch) {
+        for (int i = 0; i < batch.size(); i++) {
+            NotificationLog n = batch.get(i);
             try {
                 smsSender.send(n.getPhone(), n.getMessage());
                 n.setStatus(NotificationStatus.SENT);
@@ -104,9 +131,32 @@ public class NotificationService {
                     "পাঠানো " + sent + ", ব্যর্থ " + failed + (demo ? " (ডেমো মোড)" : ""));
         }
         String note = demo
-                ? "ডেমো মোড: আসল SMS পাঠানো হয়নি। আসল Gateway Phase 5-এ যুক্ত হবে।"
+                ? "ডেমো মোড: আসল SMS পাঠানো হয়নি (কনসোলে লগ হয়েছে)।"
                 : "পাঠানোর চেষ্টা শেষ।";
         return new DispatchResult(sent, failed, demo, note);
+    }
+
+    // ---------- স্বয়ংক্রিয় শিডিউলার (Cron Job) ----------
+    @Scheduled(cron = "0 15,30,45 11-14 * * SUN-THU", zone = "Asia/Dhaka")
+    public void scheduledAutoDispatch() {
+        if (!smsProperties.isSchedulerEnabled()) {
+            return;
+        }
+        log.info("[SCHEDULED] Auto SMS dispatch job started.");
+
+        DispatchResult result = dispatchPending();
+        if (result.sent() > 0 || result.failed() > 0) {
+            log.info("[SCHEDULED] Auto SMS dispatch: Sent={}, Failed={}", result.sent(), result.failed());
+        }
+
+        List<NotificationLog> failedList = repository.findRetryableFailed(
+                NotificationStatus.FAILED, MAX_RETRY_ATTEMPTS, PageRequest.of(0, 20));
+
+        for (int i = 0; i < failedList.size(); i++) {
+            NotificationLog item = failedList.get(i);
+            item.setStatus(NotificationStatus.PENDING);
+            repository.save(item);
+        }
     }
 
     @Transactional
