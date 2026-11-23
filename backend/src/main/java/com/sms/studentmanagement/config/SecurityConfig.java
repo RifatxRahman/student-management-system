@@ -51,12 +51,16 @@ public class SecurityConfig {
                         .requestMatchers("/api/ping").permitAll()
                         .requestMatchers("/api/auth/login", "/api/auth/refresh", "/api/auth/logout").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        .requestMatchers("/actuator/health", "/actuator/info", "/actuator/prometheus").permitAll()
                         // ২) লগইন করা যে কেউ
                         .requestMatchers("/api/auth/me", "/api/auth/change-password").authenticated()
+                        .requestMatchers("/api/payments/**").authenticated()
                         // ৩) শিক্ষক শুধু নিজের তথ্য দেখতে পারেন
                         .requestMatchers("/api/teachers/me/**").authenticated()
                         // ৩খ) শিক্ষক নিজের হাজিরা ও ছুটির আবেদন
-                        .requestMatchers("/api/teacher-attendance/me/**", "/api/leaves/me/**").authenticated()
+                        .requestMatchers("/api/teacher-attendance/me", "/api/teacher-attendance/me/**",
+                                "/api/leaves/me", "/api/leaves/me/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/leaves/*/cancel").authenticated()
                         // ৩গ) শিক্ষক/স্টাফ হাজিরা ও ছুটি প্রশাসন
                         .requestMatchers("/api/teacher-attendance/**", "/api/leaves/**").hasRole("ADMIN")
                         // ৩ঘ) ড্যাশবোর্ড: Admin ও Teacher

@@ -157,4 +157,80 @@ class LeaveApplicationServiceTest {
         assertEquals("Not enough staff on that day", res.actionReason());
         verify(auditService).log(any(), any(), any(), any());
     }
+
+    @Test
+    void cancel_byTeacher_ownLeave_success() {
+        com.sms.studentmanagement.entity.User user = new com.sms.studentmanagement.entity.User();
+        user.setId(5L);
+
+        Teacher teacher = new Teacher();
+        teacher.setId(1L);
+        teacher.setFullName("Sir Karim");
+        teacher.setUser(user);
+
+        LeaveApplication leave = new LeaveApplication();
+        leave.setId(100L);
+        leave.setTeacher(teacher);
+        leave.setStatus(LeaveStatus.PENDING);
+
+        when(leaveRepository.findById(100L)).thenReturn(Optional.of(leave));
+
+        LeaveApplicationResponse res = service.cancel(100L, 5L, false);
+
+        assertEquals(LeaveStatus.CANCELLED, res.status());
+        assertEquals("আবেদনকারী কর্তৃক বাতিলকৃত", leave.getActionReason());
+        verify(leaveRepository).save(leave);
+        verify(auditService).log(any(), any(), any(), any());
+    }
+
+    @Test
+    void cancel_byOtherTeacher_throwsForbidden() {
+        com.sms.studentmanagement.entity.User user = new com.sms.studentmanagement.entity.User();
+        user.setId(5L);
+
+        Teacher teacher = new Teacher();
+        teacher.setId(1L);
+        teacher.setUser(user);
+
+        LeaveApplication leave = new LeaveApplication();
+        leave.setId(100L);
+        leave.setTeacher(teacher);
+        leave.setStatus(LeaveStatus.PENDING);
+
+        when(leaveRepository.findById(100L)).thenReturn(Optional.of(leave));
+
+        ApiException ex = assertThrows(ApiException.class, () -> service.cancel(100L, 99L, false));
+        assertEquals(HttpStatus.FORBIDDEN, ex.getStatus());
+    }
+
+    @Test
+    void cancel_byAdmin_success() {
+        Teacher teacher = new Teacher();
+        teacher.setId(1L);
+        teacher.setFullName("Sir Karim");
+
+        LeaveApplication leave = new LeaveApplication();
+        leave.setId(100L);
+        leave.setTeacher(teacher);
+        leave.setStatus(LeaveStatus.PENDING);
+
+        when(leaveRepository.findById(100L)).thenReturn(Optional.of(leave));
+
+        LeaveApplicationResponse res = service.cancel(100L, 1L, true);
+
+        assertEquals(LeaveStatus.CANCELLED, res.status());
+        verify(leaveRepository).save(leave);
+    }
+
+    @Test
+    void cancel_alreadyApproved_throwsBadRequest() {
+        LeaveApplication leave = new LeaveApplication();
+        leave.setId(100L);
+        leave.setStatus(LeaveStatus.APPROVED);
+
+        when(leaveRepository.findById(100L)).thenReturn(Optional.of(leave));
+
+        ApiException ex = assertThrows(ApiException.class, () -> service.cancel(100L, 1L, true));
+        assertEquals(HttpStatus.BAD_REQUEST, ex.getStatus());
+    }
 }

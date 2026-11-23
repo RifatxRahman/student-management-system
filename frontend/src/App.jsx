@@ -20,11 +20,13 @@ import MarksheetPage from './pages/MarksheetPage.jsx'
 import NotFoundPage from './pages/NotFoundPage.jsx'
 import NotificationsPage from './pages/NotificationsPage.jsx'
 import PublishPage from './pages/PublishPage.jsx'
+import PromotionPage from './pages/PromotionPage.jsx'
 import ResultSheetPage from './pages/ResultSheetPage.jsx'
 import ResultsPage from './pages/ResultsPage.jsx'
 import RoutinePage from './pages/RoutinePage.jsx'
 import RoutineSetupPage from './pages/RoutineSetupPage.jsx'
 import AcademicCalendarPage from './pages/AcademicCalendarPage.jsx'
+import AdmitCardPage from './pages/AdmitCardPage.jsx'
 import SessionsPage from './pages/SessionsPage.jsx'
 import StudentDetailPage from './pages/StudentDetailPage.jsx'
 import StudentNewPage from './pages/StudentNewPage.jsx'
@@ -74,6 +76,14 @@ export default function App() {
         element={
           <Only roles={ATTENDANCE_ROLES}>
             <ResultSheetPage />
+          </Only>
+        }
+      />
+      <Route
+        path="/exams/:examId/admit-cards"
+        element={
+          <Only roles={ATTENDANCE_ROLES}>
+            <AdmitCardPage />
           </Only>
         }
       />
@@ -176,6 +186,14 @@ export default function App() {
           element={
             <Only roles={ADMIN}>
               <StudentDetailPage />
+            </Only>
+          }
+        />
+        <Route
+          path="promotion"
+          element={
+            <Only roles={ADMIN}>
+              <PromotionPage />
             </Only>
           }
         />

@@ -186,29 +186,215 @@ function TemplateModal({ initial, onDone, onClose }) {
   )
 }
 
+// ----------------- Modal: Send Campaign SMS -----------------
+function SendCampaignModal({ classes, templates, onDone, onClose }) {
+  const [title, setTitle] = useState('')
+  const [audience, setAudience] = useState('ALL')
+  const [classId, setClassId] = useState('')
+  const [sectionId, setSectionId] = useState('')
+  const [message, setMessage] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState('')
+
+  const { data: sections } = useQuery(
+    audience === 'SECTION' && classId ? `/api/classes/${classId}/sections` : null
+  )
+
+  const isUnicode = /[\u0980-\u09FF]/.test(message)
+  const charCount = message.length
+  let smsParts = 0
+  if (charCount > 0) {
+    if (isUnicode) {
+      smsParts = charCount <= 70 ? 1 : Math.ceil(charCount / 67)
+    } else {
+      smsParts = charCount <= 160 ? 1 : Math.ceil(charCount / 153)
+    }
+  }
+
+  function handleSelectTemplate(code) {
+    if (!code) return
+    const t = templates?.find((x) => x.code === code)
+    if (t) {
+      setMessage(t.templateBody)
+      if (!title) setTitle(t.name)
+    }
+  }
+
+  function insertVar(v) {
+    setMessage((prev) => prev + v)
+  }
+
+  async function submit(e) {
+    e.preventDefault()
+    setBusy(true)
+    setError('')
+    try {
+      const body = {
+        title,
+        channel: 'SMS',
+        targetAudience: audience,
+        targetClassId: classId ? Number(classId) : null,
+        targetSectionId: sectionId ? Number(sectionId) : null,
+        message,
+      }
+      const res = await api('/api/notification-campaigns', { method: 'POST', body })
+      onDone(res)
+    } catch (err) {
+      setError(err.message)
+      setBusy(false)
+    }
+  }
+
+  return (
+    <Modal title="নতুন এসএমএস প্রেরণ ও ব্রডকাস্ট" onClose={onClose}>
+      <form onSubmit={submit} className="space-y-4">
+        {error && <Alert>{error}</Alert>}
+        <TextField
+          label="ক্যাম্পেইন বা বার্তার শিরোনাম"
+          placeholder="যেমন: নভেম্বর মাসের বকেয়া ফি তাগাদা"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          required
+        />
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <SelectField
+            label="টার্গেট প্রাপক গ্রুপ"
+            value={audience}
+            onChange={(e) => {
+              setAudience(e.target.value)
+              if (e.target.value !== 'SECTION') setSectionId('')
+              if (e.target.value === 'ALL' || e.target.value === 'FEE_DEFAULTERS') setClassId('')
+            }}
+            required
+          >
+            {AUDIENCE_OPTIONS.map((a) => (
+              <option key={a.value} value={a.value}>
+                {a.label}
+              </option>
+            ))}
+          </SelectField>
+
+          <SelectField
+            label="টেমপ্লেট থেকে লোড করুন (ঐচ্ছিক)"
+            onChange={(e) => handleSelectTemplate(e.target.value)}
+          >
+            <option value="">কাস্টম মেসেজ লিখুন</option>
+            {templates?.map((t) => (
+              <option key={t.code} value={t.code}>
+                {t.name}
+              </option>
+            ))}
+          </SelectField>
+        </div>
+
+        {audience === 'CLASS' && (
+          <SelectField
+            label="শ্রেণি নির্বাচন"
+            value={classId}
+            onChange={(e) => setClassId(e.target.value)}
+            required
+          >
+            <option value="">শ্রেণি পছন্দ করুন</option>
+            {classes?.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </SelectField>
+        )}
+
+        {audience === 'SECTION' && (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <SelectField
+              label="শ্রেণি নির্বাচন"
+              value={classId}
+              onChange={(e) => {
+                setClassId(e.target.value)
+                setSectionId('')
+              }}
+              required
+            >
+              <option value="">শ্রেণি পছন্দ করুন</option>
+              {classes?.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </SelectField>
+
+            <SelectField
+              label="সেকশন নির্বাচন"
+              value={sectionId}
+              onChange={(e) => setSectionId(e.target.value)}
+              required
+              disabled={!classId}
+            >
+              <option value="">{classId ? 'সেকশন পছন্দ করুন' : 'আগে শ্রেণি পছন্দ করুন'}</option>
+              {sections?.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name}
+                </option>
+              ))}
+            </SelectField>
+          </div>
+        )}
+
+        <div>
+          <div className="flex justify-between items-center mb-1">
+            <label className="block text-xs font-semibold text-gray-700">এসএমএস মেসেজ বডি</label>
+            <span className="text-xs font-mono text-gray-500">
+              {charCount} অক্ষর | {smsParts} টি SMS ({isUnicode ? 'বাংলা' : 'ইংরেজি'})
+            </span>
+          </div>
+
+          <div className="mb-2 flex flex-wrap gap-1.5 text-xs">
+            <button type="button" onClick={() => insertVar('{student_name}')} className="rounded bg-indigo-50 text-indigo-700 px-2 py-0.5 hover:bg-indigo-100">
+              + নাম
+            </button>
+            <button type="button" onClick={() => insertVar('{class_name}')} className="rounded bg-indigo-50 text-indigo-700 px-2 py-0.5 hover:bg-indigo-100">
+              + শ্রেণি
+            </button>
+            <button type="button" onClick={() => insertVar('{due_amount}')} className="rounded bg-indigo-50 text-indigo-700 px-2 py-0.5 hover:bg-indigo-100">
+              + বকেয়া
+            </button>
+            <button type="button" onClick={() => insertVar('{school_name}')} className="rounded bg-indigo-50 text-indigo-700 px-2 py-0.5 hover:bg-indigo-100">
+              + প্রতিষ্ঠান
+            </button>
+          </div>
+
+          <textarea
+            rows={4}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="এসএমএস টেক্সট লিখুন..."
+            className="w-full rounded-lg border border-gray-300 p-3 text-sm focus:border-indigo-500 focus:outline-none"
+            required
+          />
+        </div>
+
+        <div className="rounded-lg bg-gray-50 p-2.5 text-xs flex justify-between items-center text-gray-600">
+          <div>
+            <span className="font-semibold text-gray-800">কাউন্টার: </span>
+            {charCount} ক্যারেক্টার | {smsParts} পার্ট
+          </div>
+          <Badge tone={isUnicode ? 'indigo' : 'green'}>
+            {isUnicode ? 'বাংলা ইউনিকোড (৭০ অক্ষর/পার্ট)' : 'ইংরেজি GSM (১৬০ অক্ষর/পার্ট)'}
+          </Badge>
+        </div>
+
+        <FormActions busy={busy} onCancel={onClose} submitLabel="এসএমএস প্রেরণ করুন" />
+      </form>
+    </Modal>
+  )
+}
+
 // ----------------- Main Page Component -----------------
 export default function NotificationsPage() {
   const { user } = useAuth()
   const isAdmin = user.role === 'ADMIN'
 
   const [activeTab, setActiveTab] = useState('campaign') // 'campaign' | 'templates' | 'logs'
-
-  // Master Data
-  const { data: classes } = useQuery('/api/classes')
-  const { data: templates, reload: reloadTemplates } = useQuery('/api/notification-templates')
-  const { data: campaigns, reload: reloadCampaigns } = useQuery('/api/notification-campaigns')
-
-  // Log View State
-  const [logStatus, setLogStatus] = useState('')
-  const [logPage, setLogPage] = useState(0)
-  const [logBusy, setLogBusy] = useState(false)
-  const [logNotice, setLogNotice] = useState(null)
-
-  const logParams = new URLSearchParams({ page: String(logPage), size: '20' })
-  if (logStatus) logParams.set('status', logStatus)
-  const { data: logData, error: logError, loading: logLoading, reload: reloadLogs } = useQuery(
-    `/api/admin/notifications?${logParams}`
-  )
 
   // Campaign Form State
   const [campTitle, setCampTitle] = useState('')
@@ -219,8 +405,29 @@ export default function NotificationsPage() {
   const [campBusy, setCampBusy] = useState(false)
   const [campNotice, setCampNotice] = useState(null)
 
+  // Log View State
+  const [logStatus, setLogStatus] = useState('')
+  const [logPage, setLogPage] = useState(0)
+  const [logBusy, setLogBusy] = useState(false)
+  const [logNotice, setLogNotice] = useState(null)
+
   // Template Modal State
   const [tempModal, setTempModal] = useState({ open: false, item: null })
+  const [sendSmsModal, setSendSmsModal] = useState(false)
+
+  // Master Data
+  const { data: classes } = useQuery('/api/classes')
+  const { data: templates, reload: reloadTemplates } = useQuery('/api/notification-templates')
+  const { data: campaigns, reload: reloadCampaigns } = useQuery('/api/notification-campaigns')
+  const { data: campSections } = useQuery(
+    campAudience === 'SECTION' && campClassId ? `/api/classes/${campClassId}/sections` : null
+  )
+
+  const logParams = new URLSearchParams({ page: String(logPage), size: '20' })
+  if (logStatus) logParams.set('status', logStatus)
+  const { data: logData, error: logError, loading: logLoading, reload: reloadLogs } = useQuery(
+    `/api/admin/notifications?${logParams}`
+  )
 
   // SMS parts calculation helper
   const isUnicode = /[\u0980-\u09FF]/.test(campMessage)
@@ -324,7 +531,7 @@ export default function NotificationsPage() {
               <Button variant="secondary" onClick={() => setTempModal({ open: true, item: null })}>
                 + নতুন টেমপ্লেট
               </Button>
-              <Button onClick={() => setActiveTab('campaign')}>
+              <Button onClick={() => setSendSmsModal(true)}>
                 + এসএমএস প্রেরণ
               </Button>
             </div>
@@ -399,7 +606,11 @@ export default function NotificationsPage() {
                   <SelectField
                     label="টার্গেট প্রাপক গ্রুপ"
                     value={campAudience}
-                    onChange={(e) => setCampAudience(e.target.value)}
+                    onChange={(e) => {
+                      setCampAudience(e.target.value)
+                      if (e.target.value !== 'SECTION') setCampSectionId('')
+                      if (e.target.value === 'ALL' || e.target.value === 'FEE_DEFAULTERS') setCampClassId('')
+                    }}
                     required
                   >
                     {AUDIENCE_OPTIONS.map((a) => (
@@ -436,6 +647,42 @@ export default function NotificationsPage() {
                       </option>
                     ))}
                   </SelectField>
+                )}
+
+                {campAudience === 'SECTION' && (
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <SelectField
+                      label="শ্রেণি নির্বাচন"
+                      value={campClassId}
+                      onChange={(e) => {
+                        setCampClassId(e.target.value)
+                        setCampSectionId('')
+                      }}
+                      required
+                    >
+                      <option value="">শ্রেণি পছন্দ করুন</option>
+                      {classes?.map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.name}
+                        </option>
+                      ))}
+                    </SelectField>
+
+                    <SelectField
+                      label="সেকশন নির্বাচন"
+                      value={campSectionId}
+                      onChange={(e) => setCampSectionId(e.target.value)}
+                      required
+                      disabled={!campClassId}
+                    >
+                      <option value="">{campClassId ? 'সেকশন পছন্দ করুন' : 'আগে শ্রেণি পছন্দ করুন'}</option>
+                      {campSections?.map((s) => (
+                        <option key={s.id} value={s.id}>
+                          {s.name}
+                        </option>
+                      ))}
+                    </SelectField>
+                  </div>
                 )}
 
                 <div>
@@ -592,9 +839,9 @@ export default function NotificationsPage() {
                   {logData?.items?.map((n) => (
                     <tr key={n.id}>
                       <Td className="font-medium text-gray-900">{n.studentName}</Td>
-                      <Td className="text-gray-700">{n.guardianName}</Td>
+                      <Td className="text-gray-700">{n.guardianName || '—'}</Td>
                       <Td className="font-mono text-xs">{n.phone}</Td>
-                      <Td>{getCategoryBadge(n.notificationType)}</Td>
+                      <Td>{getCategoryBadge(n.type || n.notificationType)}</Td>
                       <Td className="text-xs">{formatDate(n.eventDate)}</Td>
                       <Td className="text-xs text-gray-600 max-w-xs truncate" title={n.message}>
                         {n.message}
@@ -630,6 +877,24 @@ export default function NotificationsPage() {
             reloadTemplates()
           }}
           onClose={() => setTempModal({ open: false, item: null })}
+        />
+      )}
+
+      {/* Send Campaign SMS Modal */}
+      {sendSmsModal && (
+        <SendCampaignModal
+          classes={classes}
+          templates={templates}
+          onDone={(res) => {
+            setSendSmsModal(false)
+            setCampNotice({
+              type: res.failedCount > 0 ? 'error' : 'success',
+              text: `ক্যাম্পেইন সম্পন্ন! মোট প্রাপক: ${res.totalRecipients} জন, সফল: ${res.sentCount} টি, ব্যর্থ: ${res.failedCount} টি।`,
+            })
+            reloadCampaigns()
+            reloadLogs()
+          }}
+          onClose={() => setSendSmsModal(false)}
         />
       )}
     </>

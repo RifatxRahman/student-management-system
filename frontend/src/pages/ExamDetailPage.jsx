@@ -76,6 +76,13 @@ export default function ExamDetailPage() {
                       মুছুন
                     </Button>
                   )}
+                  <Button
+                    variant="secondary"
+                    onClick={() => navigate(`/exams/${id}/admit-cards`)}
+                    title="পরীক্ষার্থীদের প্রবেশপত্র প্রিন্ট করুন"
+                  >
+                    🎫 প্রবেশপত্র প্রিন্ট
+                  </Button>
                   {canEdit && (
                     <Button onClick={() => navigate(`/exams/${id}/publish`)}>প্রিভিউ ও প্রকাশ</Button>
                   )}

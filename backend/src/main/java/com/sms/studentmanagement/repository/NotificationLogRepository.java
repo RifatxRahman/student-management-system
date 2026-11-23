@@ -35,8 +35,8 @@ public interface NotificationLogRepository extends JpaRepository<NotificationLog
 
     @Query(value = """
             select n from NotificationLog n
-            join fetch n.student
-            join fetch n.guardian
+            left join fetch n.student
+            left join fetch n.guardian
             where (:status is null or n.status = :status)
             order by n.id desc
             """,

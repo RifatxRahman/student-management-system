@@ -42,6 +42,23 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
 
     boolean existsByStudentIdAndSessionIdAndStatus(Long studentId, Long sessionId, EnrollmentStatus status);
 
+    boolean existsBySessionIdAndSectionIdAndRollNumberAndStatus(
+            Long sessionId, Long sectionId, int rollNumber, EnrollmentStatus status);
+
+    @Query("""
+            select e from Enrollment e
+            join fetch e.student
+            join fetch e.section sec
+            where e.session.id = :sessionId
+              and e.section.id = :sectionId
+              and e.status = :status
+            order by e.rollNumber
+            """)
+    List<Enrollment> findBySessionIdAndSectionIdAndStatus(
+            @Param("sessionId") Long sessionId,
+            @Param("sectionId") Long sectionId,
+            @Param("status") EnrollmentStatus status);
+
     @Query("""
             select coalesce(max(e.rollNumber), 0) from Enrollment e
             where e.session.id = :sessionId and e.section.id = :sectionId and e.status = :status

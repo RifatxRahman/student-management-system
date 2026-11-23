@@ -168,13 +168,13 @@ class FeeLifecycleIntegrationTest {
 
         CustomInvoiceRequest invReq = new CustomInvoiceRequest(
                 10L, 1L, "জানুয়ারি ২০২৬ বেতন ও পরীক্ষার ফি", "2026-01",
-                LocalDate.of(2026, 1, 5), LocalDate.of(2026, 1, 25), "নিয়মিত ফি", items
+                LocalDate.of(2026, 1, 5), LocalDate.of(2026, 1, 25), items, "নিয়মিত ফি"
         );
 
         when(studentRepository.findById(10L)).thenReturn(Optional.of(student));
         when(sessionRepository.findById(1L)).thenReturn(Optional.of(session));
-        when(enrollmentRepository.findByStudentIdAndSessionId(10L, 1L)).thenReturn(Optional.of(enrollment));
-        when(invoiceRepository.findByStudentIdAndSessionIdAndBillingMonth(10L, 1L, "2026-01")).thenReturn(new ArrayList<>());
+        when(enrollmentRepository.findForStudents(List.of(10L), 1L, EnrollmentStatus.ACTIVE)).thenReturn(List.of(enrollment));
+        when(invoiceRepository.existsByStudentIdAndSessionIdAndBillingMonthAndTitle(10L, 1L, "2026-01", "জানুয়ারি ২০২৬ বেতন ও পরীক্ষার ফি")).thenReturn(false);
         when(feeHeadRepository.findById(1L)).thenReturn(Optional.of(tuitionHead));
         when(feeHeadRepository.findById(2L)).thenReturn(Optional.of(examHead));
         when(invoiceRepository.save(any(Invoice.class))).thenAnswer(invocation -> {
@@ -196,6 +196,10 @@ class FeeLifecycleIntegrationTest {
         existingInvoice.setId(501L);
         existingInvoice.setStudent(student);
         existingInvoice.setSession(session);
+        existingInvoice.setSchoolClass(schoolClass);
+        existingInvoice.setSection(section);
+        existingInvoice.setTitle("জানুয়ারি ২০২৬ বেতন ও পরীক্ষার ফি");
+        existingInvoice.setBillingMonth("2026-01");
         existingInvoice.setInvoiceNumber("INV-202601-00001");
         existingInvoice.setNetAmount(new BigDecimal("1300.00"));
         existingInvoice.setPaidAmount(BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP));
@@ -211,18 +215,18 @@ class FeeLifecycleIntegrationTest {
         });
 
         PaymentCollectionRequest partialPaymentReq = new PaymentCollectionRequest(
-                501L, new BigDecimal("800.00"), PaymentMethod.CASH, null, LocalDate.now(), "প্রথম কিস্তি পরিশোধ"
+                501L, new BigDecimal("800.00"), PaymentMethod.CASH, null, "প্রথম কিস্তি পরিশোধ"
         );
 
         PaymentReceiptResponse partialReceipt = feeService.collectPayment(partialPaymentReq, "accountant1");
         assertNotNull(partialReceipt);
-        assertEquals(InvoiceStatus.PARTIALLY_PAID, existingInvoice.getStatus());
+        assertEquals(InvoiceStatus.PARTIAL, existingInvoice.getStatus());
         assertEquals(new BigDecimal("800.00"), existingInvoice.getPaidAmount());
         assertEquals(new BigDecimal("500.00"), existingInvoice.getDueAmount());
 
         // ৩. চূড়ান্ত কিস্তি পেমেন্ট (বাকি ৫০০ টাকা)
         PaymentCollectionRequest finalPaymentReq = new PaymentCollectionRequest(
-                501L, new BigDecimal("500.00"), PaymentMethod.BKASH, "TRX123456", LocalDate.now(), "চূড়ান্ত কিস্তি"
+                501L, new BigDecimal("500.00"), PaymentMethod.BKASH, "TRX123456", "চূড়ান্ত কিস্তি"
         );
 
         PaymentReceiptResponse finalReceipt = feeService.collectPayment(finalPaymentReq, "accountant1");
@@ -239,13 +243,13 @@ class FeeLifecycleIntegrationTest {
         invoice.setDueAmount(new BigDecimal("500.00"));
         invoice.setPaidAmount(new BigDecimal("500.00"));
         invoice.setNetAmount(new BigDecimal("1000.00"));
-        invoice.setStatus(InvoiceStatus.PARTIALLY_PAID);
+        invoice.setStatus(InvoiceStatus.PARTIAL);
 
         when(invoiceRepository.findByIdWithDetails(502L)).thenReturn(Optional.of(invoice));
 
         // প্রদেয় বকেয়া ৫০০ টাকার জায়গায় ৬০০ টাকা দিলে ব্যর্থ হবে
         PaymentCollectionRequest overpayReq = new PaymentCollectionRequest(
-                502L, new BigDecimal("600.00"), PaymentMethod.CASH, null, LocalDate.now(), "অতিরিক্ত পেমেন্ট"
+                502L, new BigDecimal("600.00"), PaymentMethod.CASH, null, "অতিরিক্ত পেমেন্ট"
         );
 
         ApiException ex = assertThrows(ApiException.class, () -> feeService.collectPayment(overpayReq, "admin"));
@@ -262,10 +266,10 @@ class FeeLifecycleIntegrationTest {
         when(invoiceRepository.findByIdWithDetails(503L)).thenReturn(Optional.of(invoice));
 
         PaymentCollectionRequest zeroReq = new PaymentCollectionRequest(
-                503L, BigDecimal.ZERO, PaymentMethod.CASH, null, LocalDate.now(), "শূন্য পেমেন্ট"
+                503L, BigDecimal.ZERO, PaymentMethod.CASH, null, "শূন্য পেমেন্ট"
         );
         PaymentCollectionRequest negativeReq = new PaymentCollectionRequest(
-                503L, new BigDecimal("-100.00"), PaymentMethod.CASH, null, LocalDate.now(), "নেগেটিভ পেমেন্ট"
+                503L, new BigDecimal("-100.00"), PaymentMethod.CASH, null, "নেগেটিভ পেমেন্ট"
         );
 
         assertEquals(HttpStatus.BAD_REQUEST, assertThrows(ApiException.class, () -> feeService.collectPayment(zeroReq, "admin")).getStatus());
@@ -282,7 +286,7 @@ class FeeLifecycleIntegrationTest {
         when(invoiceRepository.findByIdWithDetails(504L)).thenReturn(Optional.of(invoice));
 
         PaymentCollectionRequest payReq = new PaymentCollectionRequest(
-                504L, new BigDecimal("100.00"), PaymentMethod.CASH, null, LocalDate.now(), "পেইড ইনভয়েস"
+                504L, new BigDecimal("100.00"), PaymentMethod.CASH, null, "পেইড ইনভয়েস"
         );
 
         ApiException ex = assertThrows(ApiException.class, () -> feeService.collectPayment(payReq, "admin"));
@@ -296,19 +300,19 @@ class FeeLifecycleIntegrationTest {
         percentageWaiver.setStudent(student);
         percentageWaiver.setSession(session);
         percentageWaiver.setFeeHead(tuitionHead);
-        percentageWaiver.setWaiverType(WaiverType.PERCENTAGE);
-        percentageWaiver.setValue(new BigDecimal("50.00")); // ৫০% ছাড়
+        percentageWaiver.setDiscountType(WaiverType.PERCENTAGE);
+        percentageWaiver.setDiscountValue(new BigDecimal("50.00")); // ৫০% ছাড়
 
         when(studentRepository.findById(10L)).thenReturn(Optional.of(student));
         when(sessionRepository.findById(1L)).thenReturn(Optional.of(session));
         when(feeHeadRepository.findById(1L)).thenReturn(Optional.of(tuitionHead));
         when(waiverRepository.save(any(StudentWaiver.class))).thenReturn(percentageWaiver);
 
-        StudentWaiverRequest req = new StudentWaiverRequest(10L, 1L, 1L, WaiverType.PERCENTAGE, new BigDecimal("50.00"), "অর্ধেক বেতন ছাড়");
+        StudentWaiverRequest req = new StudentWaiverRequest(10L, 1L, 1L, WaiverType.PERCENTAGE, new BigDecimal("50.00"), "অর্ধেক বেতন ছাড়", true);
         StudentWaiverResponse res = feeService.createOrUpdateWaiver(req);
 
         assertNotNull(res);
-        assertEquals(WaiverType.PERCENTAGE, res.waiverType());
-        assertEquals(new BigDecimal("50.00"), res.value());
+        assertEquals(WaiverType.PERCENTAGE, res.discountType());
+        assertEquals(new BigDecimal("50.00"), res.discountValue());
     }
 }

@@ -2,12 +2,15 @@ package com.sms.studentmanagement.repository;
 
 import com.sms.studentmanagement.entity.Guardian;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface GuardianRepository extends JpaRepository<Guardian, Long> {
+
+    Optional<Guardian> findByPhone(String phone);
 
     @Query("""
             select g from Guardian g

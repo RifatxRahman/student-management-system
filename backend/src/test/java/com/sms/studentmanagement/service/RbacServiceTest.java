@@ -103,11 +103,6 @@ class RbacServiceTest {
 
     @Test
     void getRoleMatrix_returnsAllRolesWithAssignedPermissions() {
-        List<Permission> allPerms = new ArrayList<>();
-        allPerms.add(p1);
-        allPerms.add(p2);
-        when(permissionRepository.findAllByOrderByModuleAscCodeAsc()).thenReturn(allPerms);
-
         RolePermission rp1 = new RolePermission();
         rp1.setId(10L);
         rp1.setRole(Role.TEACHER);
@@ -146,11 +141,6 @@ class RbacServiceTest {
 
         when(permissionRepository.findById(1L)).thenReturn(Optional.of(p1));
         when(permissionRepository.findById(2L)).thenReturn(Optional.of(p2));
-
-        List<Permission> allPerms = new ArrayList<>();
-        allPerms.add(p1);
-        allPerms.add(p2);
-        when(permissionRepository.findAllByOrderByModuleAscCodeAsc()).thenReturn(allPerms);
 
         List<RolePermissionMatrixResponse> result = service.updateRolePermissions(request);
 
@@ -199,7 +189,8 @@ class RbacServiceTest {
         assertNotNull(response);
         assertEquals(5L, response.userId());
         assertEquals("teacher1", response.username());
-        assertEquals(2, response.effectiveAuthorities().size());
+        assertEquals(3, response.effectiveAuthorities().size());
+        assertTrue(response.effectiveAuthorities().contains("ROLE_TEACHER"));
         assertTrue(response.effectiveAuthorities().contains("STUDENTS_VIEW"));
         assertTrue(response.effectiveAuthorities().contains("FEES_COLLECT"));
     }
