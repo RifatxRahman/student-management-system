@@ -193,26 +193,6 @@ export default function NotificationsPage() {
 
   const [activeTab, setActiveTab] = useState('campaign') // 'campaign' | 'templates' | 'logs'
 
-  // Master Data
-  const { data: classes } = useQuery('/api/classes')
-  const { data: templates, reload: reloadTemplates } = useQuery('/api/notification-templates')
-  const { data: campaigns, reload: reloadCampaigns } = useQuery('/api/notification-campaigns')
-  const { data: campSections } = useQuery(
-    campAudience === 'SECTION' && campClassId ? `/api/classes/${campClassId}/sections` : null
-  )
-
-  // Log View State
-  const [logStatus, setLogStatus] = useState('')
-  const [logPage, setLogPage] = useState(0)
-  const [logBusy, setLogBusy] = useState(false)
-  const [logNotice, setLogNotice] = useState(null)
-
-  const logParams = new URLSearchParams({ page: String(logPage), size: '20' })
-  if (logStatus) logParams.set('status', logStatus)
-  const { data: logData, error: logError, loading: logLoading, reload: reloadLogs } = useQuery(
-    `/api/admin/notifications?${logParams}`
-  )
-
   // Campaign Form State
   const [campTitle, setCampTitle] = useState('')
   const [campAudience, setCampAudience] = useState('ALL')
@@ -222,8 +202,28 @@ export default function NotificationsPage() {
   const [campBusy, setCampBusy] = useState(false)
   const [campNotice, setCampNotice] = useState(null)
 
+  // Log View State
+  const [logStatus, setLogStatus] = useState('')
+  const [logPage, setLogPage] = useState(0)
+  const [logBusy, setLogBusy] = useState(false)
+  const [logNotice, setLogNotice] = useState(null)
+
   // Template Modal State
   const [tempModal, setTempModal] = useState({ open: false, item: null })
+
+  // Master Data
+  const { data: classes } = useQuery('/api/classes')
+  const { data: templates, reload: reloadTemplates } = useQuery('/api/notification-templates')
+  const { data: campaigns, reload: reloadCampaigns } = useQuery('/api/notification-campaigns')
+  const { data: campSections } = useQuery(
+    campAudience === 'SECTION' && campClassId ? `/api/classes/${campClassId}/sections` : null
+  )
+
+  const logParams = new URLSearchParams({ page: String(logPage), size: '20' })
+  if (logStatus) logParams.set('status', logStatus)
+  const { data: logData, error: logError, loading: logLoading, reload: reloadLogs } = useQuery(
+    `/api/admin/notifications?${logParams}`
+  )
 
   // SMS parts calculation helper
   const isUnicode = /[\u0980-\u09FF]/.test(campMessage)
