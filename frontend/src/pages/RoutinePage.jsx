@@ -4,7 +4,7 @@ import { useAuth } from '../auth/useAuth.js'
 import ClassSectionFields from '../components/ClassSectionFields.jsx'
 import RoutineGrid from '../components/RoutineGrid.jsx'
 import RoutineCellModal from '../components/RoutineModals.jsx'
-import { Alert, Button, Card, EmptyState, LoadState, PageHeader, SelectField } from '../components/ui.jsx'
+import { Alert, Badge, Button, Card, EmptyState, LoadState, PageHeader, SelectField, Table, Td } from '../components/ui.jsx'
 import { useQuery } from '../hooks/useQuery.js'
 
 export default function RoutinePage() {
@@ -34,11 +34,14 @@ export default function RoutinePage() {
     ? [
         { key: 'section', label: 'সেকশনের রুটিন' },
         { key: 'teacher', label: 'শিক্ষকের রুটিন' },
+        { key: 'workload', label: 'কাজের চাপ (Workload)' },
       ]
     : [
         { key: 'me', label: 'আমার রুটিন' },
         { key: 'section', label: 'সেকশনের রুটিন' },
       ]
+
+  const workload = useQuery(isAdmin && mode === 'workload' ? '/api/timetable/workload' : null)
 
   const canEdit = isAdmin && mode === 'section' && Boolean(session.data) && Boolean(place.sectionId)
   const noSession = session.error?.status === 404
@@ -124,6 +127,52 @@ export default function RoutinePage() {
             আছে তাঁকেই বসানো যায়, আর একই শিক্ষক বা রুম একই সময়ে দুজায়গায় বসানো যায় না।
           </Alert>
         </div>
+      )}
+
+      {mode === 'workload' && (
+        <Card>
+          <LoadState loading={workload.loading} error={workload.error}>
+            {workload.data?.rows?.length === 0 ? (
+              <EmptyState>কোনো শিক্ষক বা রুটিন পাওয়া যায়নি।</EmptyState>
+            ) : (
+              <div>
+                <div className="mb-4 flex flex-wrap items-center justify-between gap-4 border-b border-gray-100 pb-3">
+                  <div>
+                    <h3 className="text-base font-bold text-gray-800">শিক্ষক সাপ্তাহিক কাজের চাপ (Workload)</h3>
+                    <p className="text-xs text-gray-500">প্রতি শিক্ষকের সাপ্তাহিক পিরিয়ড ও কর্মবণ্টন সূচক</p>
+                  </div>
+                  <div className="flex gap-4 text-xs">
+                    <span className="font-medium text-gray-700">মোট শিক্ষক: <strong className="text-gray-900">{workload.data?.totalTeachers}</strong></span>
+                    <span className="font-medium text-gray-700">মোট বরাদ্দকৃত পিরিয়ড: <strong className="text-indigo-600">{workload.data?.totalAssignedPeriods}</strong></span>
+                  </div>
+                </div>
+                <Table headers={['শিক্ষক ও আইডি', 'পদবি', 'মোট ক্লাস (সপ্তাহে)', 'শনি', 'রবি', 'সোম', 'মঙ্গল', 'বুধ', 'বৃহঃ', 'অবস্থা']}>
+                  {workload.data?.rows?.map((row) => (
+                    <tr key={row.teacherId}>
+                      <Td>
+                        <p className="font-semibold text-gray-900">{row.teacherName}</p>
+                        <p className="font-mono text-xs text-indigo-600">{row.employeeId || '—'}</p>
+                      </Td>
+                      <Td className="text-xs text-gray-600">{row.designation || '—'}</Td>
+                      <Td className="font-bold text-sm text-gray-900">{row.totalWeeklyPeriods} টি</Td>
+                      <Td className="text-xs">{row.periodsPerDay?.SATURDAY || 0}</Td>
+                      <Td className="text-xs">{row.periodsPerDay?.SUNDAY || 0}</Td>
+                      <Td className="text-xs">{row.periodsPerDay?.MONDAY || 0}</Td>
+                      <Td className="text-xs">{row.periodsPerDay?.TUESDAY || 0}</Td>
+                      <Td className="text-xs">{row.periodsPerDay?.WEDNESDAY || 0}</Td>
+                      <Td className="text-xs">{row.periodsPerDay?.THURSDAY || 0}</Td>
+                      <Td>
+                        <Badge tone={row.overloaded ? 'red' : 'green'}>
+                          {row.overloaded ? 'অতিরিক্ত চাপ (>২৫)' : 'স্বাভাবিক'}
+                        </Badge>
+                      </Td>
+                    </tr>
+                  ))}
+                </Table>
+              </div>
+            )}
+          </LoadState>
+        </Card>
       )}
 
       {path === null && !noSession && (

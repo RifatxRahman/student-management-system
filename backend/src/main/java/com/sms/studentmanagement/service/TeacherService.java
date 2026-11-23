@@ -5,6 +5,7 @@ import com.sms.studentmanagement.dto.PeopleDtos.AssignmentResponse;
 import com.sms.studentmanagement.dto.PeopleDtos.TeacherRequest;
 import com.sms.studentmanagement.dto.PeopleDtos.TeacherResponse;
 import com.sms.studentmanagement.entity.AcademicSession;
+import com.sms.studentmanagement.entity.ClassSubject;
 import com.sms.studentmanagement.entity.Role;
 import com.sms.studentmanagement.entity.Section;
 import com.sms.studentmanagement.entity.Subject;
@@ -22,6 +23,7 @@ import com.sms.studentmanagement.repository.TeacherRepository;
 import com.sms.studentmanagement.repository.UserRepository;
 import com.sms.studentmanagement.util.Changes;
 import com.sms.studentmanagement.util.PhoneNumbers;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -43,7 +45,12 @@ public class TeacherService {
 
     @Transactional(readOnly = true)
     public List<TeacherResponse> list() {
-        return teacherRepository.findAllWithUser().stream().map(TeacherResponse::from).toList();
+        List<Teacher> list = teacherRepository.findAllWithUser();
+        List<TeacherResponse> responses = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            responses.add(TeacherResponse.from(list.get(i)));
+        }
+        return responses;
     }
 
     @Transactional(readOnly = true)
@@ -53,10 +60,21 @@ public class TeacherService {
 
     @Transactional
     public TeacherResponse create(TeacherRequest request) {
+        String empId = blankToNull(request.employeeId());
+        if (empId != null && teacherRepository.existsByEmployeeId(empId)) {
+            throw new ApiException(HttpStatus.CONFLICT, "এই কর্মচারী আইডি আগে থেকেই আছে");
+        }
+
         Teacher teacher = new Teacher();
+        teacher.setEmployeeId(empId);
         teacher.setFullName(request.fullName().trim());
         teacher.setPhone(PhoneNumbers.normalize(request.phone()));
+        teacher.setEmail(blankToNull(request.email()));
         teacher.setDesignation(blankToNull(request.designation()));
+        teacher.setQualification(blankToNull(request.qualification()));
+        teacher.setJoiningDate(request.joiningDate());
+        teacher.setAddress(blankToNull(request.address()));
+
         if (request.userId() != null) {
             teacher.setUser(loadLinkableUser(request.userId()));
         }
@@ -69,18 +87,34 @@ public class TeacherService {
     @Transactional
     public TeacherResponse update(Long id, TeacherRequest request) {
         Teacher teacher = find(id);
+        String empId = blankToNull(request.employeeId());
         String fullName = request.fullName().trim();
         String phone = PhoneNumbers.normalize(request.phone());
+        String email = blankToNull(request.email());
         String designation = blankToNull(request.designation());
+        String qualification = blankToNull(request.qualification());
+        String address = blankToNull(request.address());
+
+        if (empId != null && !empId.equals(teacher.getEmployeeId()) && teacherRepository.existsByEmployeeId(empId)) {
+            throw new ApiException(HttpStatus.CONFLICT, "এই কর্মচারী আইডি আগে থেকেই আছে");
+        }
 
         Changes changes = new Changes()
+                .track("আইডি", teacher.getEmployeeId(), empId)
                 .track("নাম", teacher.getFullName(), fullName)
                 .track("ফোন", teacher.getPhone(), phone)
-                .track("পদবি", teacher.getDesignation(), designation);
+                .track("ইমেইল", teacher.getEmail(), email)
+                .track("পদবি", teacher.getDesignation(), designation)
+                .track("যোগ্যতা", teacher.getQualification(), qualification);
 
+        teacher.setEmployeeId(empId);
         teacher.setFullName(fullName);
         teacher.setPhone(phone);
+        teacher.setEmail(email);
         teacher.setDesignation(designation);
+        teacher.setQualification(qualification);
+        teacher.setJoiningDate(request.joiningDate());
+        teacher.setAddress(address);
 
         boolean linkChanged = request.userId() != null
                 && (teacher.getUser() == null || !teacher.getUser().getId().equals(request.userId()));
@@ -109,17 +143,23 @@ public class TeacherService {
     @Transactional(readOnly = true)
     public List<AssignmentResponse> assignments(Long teacherId, Long sessionId) {
         find(teacherId);
-        return assignmentRepository.findAllForTeacher(teacherId, sessionId).stream()
-                .map(AssignmentResponse::from)
-                .toList();
+        List<TeacherAssignment> list = assignmentRepository.findAllForTeacher(teacherId, sessionId);
+        List<AssignmentResponse> responses = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            responses.add(AssignmentResponse.from(list.get(i)));
+        }
+        return responses;
     }
 
     @Transactional(readOnly = true)
     public List<AssignmentResponse> myAssignments(Long userId, Long sessionId) {
         Teacher teacher = findByUser(userId);
-        return assignmentRepository.findAllForTeacher(teacher.getId(), sessionId).stream()
-                .map(AssignmentResponse::from)
-                .toList();
+        List<TeacherAssignment> list = assignmentRepository.findAllForTeacher(teacher.getId(), sessionId);
+        List<AssignmentResponse> responses = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            responses.add(AssignmentResponse.from(list.get(i)));
+        }
+        return responses;
     }
 
     @Transactional
@@ -139,8 +179,14 @@ public class TeacherService {
             throw bad("নিষ্ক্রিয় সেকশন, ক্লাস বা বিষয়ে বরাদ্দ দেওয়া যায় না");
         }
         Long classId = section.getSchoolClass().getId();
-        boolean subjectInClass = classSubjectRepository.findAllWithSubject(classId).stream()
-                .anyMatch(cs -> cs.getSubject().getId().equals(subject.getId()));
+        List<ClassSubject> classSubjects = classSubjectRepository.findAllWithSubject(classId);
+        boolean subjectInClass = false;
+        for (int i = 0; i < classSubjects.size(); i++) {
+            if (classSubjects.get(i).getSubject().getId().equals(subject.getId())) {
+                subjectInClass = true;
+                break;
+            }
+        }
         if (!subjectInClass) {
             throw bad("এই বিষয়টি এই ক্লাসে যুক্ত নেই। আগে ক্লাসে বিষয় যোগ করুন।");
         }

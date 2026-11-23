@@ -274,4 +274,23 @@ class TimetableServiceTest {
         assertEquals("Rahim Sir", options.get(0).teacherName());
         assertEquals(3L, options.get(0).teacherId());
     }
+
+    @Test
+    void teacherWorkload_aggregatesWeeklyCounts() {
+        when(sessionRepository.findById(1L)).thenReturn(Optional.of(session));
+        when(teacherRepository.findAllWithUser()).thenReturn(List.of(teacher));
+
+        TimetableEntry entry = new TimetableEntry();
+        entry.setTeacher(teacher);
+        entry.setDayOfWeek(DayOfWeek.SUNDAY);
+        when(timetableRepository.findAllForSession(1L)).thenReturn(List.of(entry));
+
+        com.sms.studentmanagement.dto.RoutineDtos.TeacherWorkloadResponse res = service.teacherWorkload(1L);
+
+        assertEquals(1, res.totalTeachers());
+        assertEquals(1, res.totalAssignedPeriods());
+        assertEquals(1, res.rows().size());
+        assertEquals(1, res.rows().get(0).totalWeeklyPeriods());
+        assertEquals(1, res.rows().get(0).periodsPerDay().get("SUNDAY"));
+    }
 }

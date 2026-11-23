@@ -11,6 +11,9 @@ public interface TeacherAssignmentRepository extends JpaRepository<TeacherAssign
 
     boolean existsBySessionIdAndSectionIdAndSubjectId(Long sessionId, Long sectionId, Long subjectId);
 
+    java.util.Optional<TeacherAssignment> findBySessionIdAndSectionIdAndSubjectId(
+            Long sessionId, Long sectionId, Long subjectId);
+
     @Query("""
             select ta from TeacherAssignment ta
             join fetch ta.session ses

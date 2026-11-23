@@ -15,6 +15,7 @@ export default function ExamDetailPage() {
   const isAdmin = user.role === 'ADMIN'
   const { data, error, loading, reload } = useQuery(`/api/exams/${id}`)
   const targets = useQuery(`/api/marks/targets?examId=${id}`)
+  const progress = useQuery(`/api/marks/progress?examId=${id}`)
   const [modal, setModal] = useState(null) // { type, ...তথ্য }
 
   const exam = data?.exam
@@ -137,9 +138,25 @@ export default function ExamDetailPage() {
               </Card>
             </section>
 
-            {/* ---------- মার্কস এন্ট্রি ---------- */}
+            {/* ---------- মার্কস এন্ট্রি ও অগ্রগতি ---------- */}
             <section>
-              <h2 className="mb-3 text-lg font-semibold text-gray-900">মার্কস এন্ট্রি</h2>
+              <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+                <h2 className="text-lg font-semibold text-gray-900">মার্কস এন্ট্রি ও অগ্রগতি</h2>
+                {progress.data && (
+                  <div className="flex items-center gap-3 text-xs">
+                    <span className="text-gray-600">
+                      অগ্রগতি: <strong className="text-indigo-600 font-bold">{progress.data.overallCompletionPercentage}%</strong> ({progress.data.completedSheets}/{progress.data.totalSheets} বিষয় সম্পন্ন)
+                    </span>
+                    <div className="h-2 w-32 overflow-hidden rounded-full bg-gray-200">
+                      <div
+                        className="h-full bg-indigo-600 transition-all"
+                        style={{ width: `${progress.data.overallCompletionPercentage}%` }}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+
               <Card className="p-4">
                 <LoadState loading={targets.loading} error={targets.error}>
                   {groups.length === 0 ? (
@@ -149,21 +166,45 @@ export default function ExamDetailPage() {
                         : 'এই পরীক্ষায় মার্কস দেওয়ার মতো কোনো সেকশন-বিষয় আপনার বরাদ্দে নেই। Admin-কে বলুন।'}
                     </EmptyState>
                   ) : (
-                    <div className="space-y-4">
+                    <div className="space-y-6">
                       {groups.map((group) => (
-                        <div key={group.key}>
-                          <p className="mb-2 text-sm font-semibold text-gray-700">{group.name}</p>
-                          <div className="flex flex-wrap gap-2">
-                            {group.items.map((target) => (
-                              <Link
-                                key={`${target.sectionId}-${target.subjectId}`}
-                                to={`/exams/${id}/marks?sectionId=${target.sectionId}&subjectId=${target.subjectId}`}
-                                className="rounded-lg bg-white px-3 py-1.5 text-sm font-medium text-indigo-700 ring-1 ring-indigo-200 hover:bg-indigo-50"
-                              >
-                                {target.subjectName}
-                                {target.optional ? ' (ঐচ্ছিক)' : ''}
-                              </Link>
-                            ))}
+                        <div key={group.key} className="border-b border-gray-100 pb-4 last:border-b-0 last:pb-0">
+                          <p className="mb-3 text-sm font-bold text-gray-800">{group.name}</p>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            {group.items.map((target) => {
+                              const prog = progress.data?.progressList?.find(
+                                (p) => p.sectionId === target.sectionId && p.subjectId === target.subjectId
+                              )
+                              const isCompleted = prog?.status === 'COMPLETED'
+                              const isPartial = prog?.status === 'PARTIAL'
+
+                              return (
+                                <Link
+                                  key={`${target.sectionId}-${target.subjectId}`}
+                                  to={`/exams/${id}/marks?sectionId=${target.sectionId}&subjectId=${target.subjectId}`}
+                                  className="flex flex-col justify-between rounded-xl border border-gray-200 bg-white p-3 hover:border-indigo-300 hover:shadow-sm transition"
+                                >
+                                  <div className="flex items-start justify-between gap-2">
+                                    <div>
+                                      <p className="font-semibold text-sm text-gray-900">{target.subjectName}</p>
+                                      <p className="text-xs text-gray-500 font-mono">
+                                        ফুল: {plain(target.fullMarks)} | পাস: {plain(target.passMarks)}
+                                        {target.optional ? ' (ঐচ্ছিক)' : ''}
+                                      </p>
+                                    </div>
+                                    <Badge tone={isCompleted ? 'green' : isPartial ? 'yellow' : 'gray'}>
+                                      {isCompleted ? '১০০% সম্পন্ন' : isPartial ? `${prog?.completionPercentage}%` : 'বাকি'}
+                                    </Badge>
+                                  </div>
+                                  {prog?.assignedTeacherName && (
+                                    <div className="mt-2 pt-2 border-t border-gray-50 flex items-center justify-between text-xs text-gray-500">
+                                      <span>শিক্ষক: <strong className="text-gray-700">{prog.assignedTeacherName}</strong></span>
+                                      <span className="text-indigo-600 font-medium">নম্বর দিন →</span>
+                                    </div>
+                                  )}
+                                </Link>
+                              )
+                            })}
                           </div>
                         </div>
                       ))}

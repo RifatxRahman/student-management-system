@@ -24,7 +24,12 @@ public class TimeSlotService {
 
     @Transactional(readOnly = true)
     public List<TimeSlotResponse> list() {
-        return slotRepository.findAllByOrderByStartTime().stream().map(TimeSlotResponse::from).toList();
+        List<TimeSlot> slots = slotRepository.findAllByOrderByStartTime();
+        java.util.ArrayList<TimeSlotResponse> responses = new java.util.ArrayList<>();
+        for (int i = 0; i < slots.size(); i++) {
+            responses.add(TimeSlotResponse.from(slots.get(i)));
+        }
+        return responses;
     }
 
     @Transactional
@@ -80,7 +85,9 @@ public class TimeSlotService {
 
     /** অন্য কোনো স্লটের সাথে (নিষ্ক্রিয় হলেও) সময় মিশে গেলে 409। */
     private void requireNoOverlap(Long ownId, TimeSlotRequest request) {
-        for (TimeSlot other : slotRepository.findAllByOrderByStartTime()) {
+        List<TimeSlot> allSlots = slotRepository.findAllByOrderByStartTime();
+        for (int i = 0; i < allSlots.size(); i++) {
+            TimeSlot other = allSlots.get(i);
             if (ownId != null && other.getId().equals(ownId)) {
                 continue;
             }

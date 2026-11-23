@@ -52,6 +52,12 @@ public class TimetableController {
         return service.options(sectionId, sessionId);
     }
 
+    @GetMapping("/workload")
+    public com.sms.studentmanagement.dto.RoutineDtos.TeacherWorkloadResponse workload(
+            @RequestParam(required = false) Long sessionId) {
+        return service.teacherWorkload(sessionId);
+    }
+
     // বদলানো: শুধু Admin
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

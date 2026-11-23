@@ -47,7 +47,8 @@ public class GradeScaleService {
 
         repository.deleteAllInBatch();
         List<GradeScale> rows = new ArrayList<>();
-        for (GradeBand band : bands) {
+        for (int i = 0; i < bands.size(); i++) {
+            GradeBand band = bands.get(i);
             GradeScale row = new GradeScale();
             row.setMinPercent(band.minPercent());
             row.setGrade(band.grade());
@@ -69,7 +70,8 @@ public class GradeScaleService {
         List<GradeBandResponse> result = new ArrayList<>();
         BigDecimal upper = HUNDRED;
         boolean inclusive = true;
-        for (GradeScale scale : highestFirst) {
+        for (int i = 0; i < highestFirst.size(); i++) {
+            GradeScale scale = highestFirst.get(i);
             result.add(new GradeBandResponse(
                     scale.getGrade(), scale.getGradePoint(), scale.getMinPercent(), upper, inclusive));
             upper = scale.getMinPercent();

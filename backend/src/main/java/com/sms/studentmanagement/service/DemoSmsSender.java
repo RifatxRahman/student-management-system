@@ -2,10 +2,12 @@ package com.sms.studentmanagement.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
-/** ডেমো: শুধু লগে লেখে, আসল SMS পাঠায় না। Phase 5-এ আসল Gateway-র ক্লাস এর জায়গা নেবে। */
+/** ডেমো: শুধু লগে লেখে, আসল SMS পাঠায় না। */
 @Component
+@ConditionalOnProperty(prefix = "app.sms", name = "enabled", havingValue = "false", matchIfMissing = true)
 public class DemoSmsSender implements SmsSender {
 
     private static final Logger log = LoggerFactory.getLogger(DemoSmsSender.class);

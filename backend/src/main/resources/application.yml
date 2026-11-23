@@ -4,12 +4,12 @@ spring:
   profiles:
     default: dev
   datasource:
-    url: jdbc:mysql://localhost:3306/${DB_NAME:sms_db}?useUnicode=true&characterEncoding=utf8
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:sms_db}?useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false
     username: ${DB_USER}
     password: ${DB_PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: none
     open-in-view: false
   flyway:
     enabled: true
@@ -40,6 +40,15 @@ app:
   attendance:
     edit-window-days: 3
     weekly-off-days: FRIDAY
+
+  sms:
+    enabled: false
+    provider: greenweb
+    api-url: "http://api.greenweb.com.bd/api.php"
+    token: ${SMS_API_TOKEN:}
+    default-language: "BN"
+    cost-per-sms: 0.25
+    scheduler-enabled: true
 
   institution:
     name: "আদর্শ উচ্চ বিদ্যালয়"

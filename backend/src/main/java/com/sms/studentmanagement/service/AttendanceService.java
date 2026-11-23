@@ -69,8 +69,10 @@ public class AttendanceService {
         }
 
         Teacher teacher = access.activeTeacher(actor);
+        List<TeacherAssignment> assignments = assignmentRepository.findForTeacherOnDate(teacher.getId(), day);
         Map<Long, SectionOption> unique = new LinkedHashMap<>();
-        for (TeacherAssignment ta : assignmentRepository.findForTeacherOnDate(teacher.getId(), day)) {
+        for (int i = 0; i < assignments.size(); i++) {
+            TeacherAssignment ta = assignments.get(i);
             unique.putIfAbsent(ta.getSection().getId(), SectionOption.from(ta.getSection()));
         }
         return List.copyOf(unique.values());
@@ -83,16 +85,27 @@ public class AttendanceService {
         access.requireSection(actor, section.getId(), date, date);
 
         Map<Long, Attendance> saved = savedByEnrollment(section.getId(), date);
+        boolean isFinalized = false;
+        List<Attendance> savedList = attendanceRepository.findForSectionOnDate(section.getId(), date);
+        for (int i = 0; i < savedList.size(); i++) {
+            if (savedList.get(i).isFinalized()) {
+                isFinalized = true;
+                break;
+            }
+        }
+
+        List<Enrollment> enrolled = enrollmentRepository.findInSection(section.getId(), date, date);
         List<SheetRow> rows = new ArrayList<>();
-        for (Enrollment e : enrollmentRepository.findInSection(section.getId(), date, date)) {
+        for (int i = 0; i < enrolled.size(); i++) {
+            Enrollment e = enrolled.get(i);
             Attendance a = saved.get(e.getId());
             rows.add(SheetRow.from(e, a == null ? null : a.getStatus(), a == null ? null : a.getRemark()));
         }
 
-        String lock = lockReason(actor, date);
+        String lock = lockReason(actor, date, isFinalized);
         return new Sheet(
                 section.getId(), section.getName(), section.getSchoolClass().getName(), date,
-                lock == null, lock, !saved.isEmpty(), rows);
+                lock == null, isFinalized, lock, !saved.isEmpty(), rows);
     }
 
     // ---------- হাজিরা নেওয়া ও সংশোধন ----------
@@ -104,22 +117,36 @@ public class AttendanceService {
         // (১) অনুমতি
         access.requireSection(actor, section.getId(), date, date);
 
-        // (২) দিনটা কি খোলা, সময়সীমার মধ্যে?
-        String lock = lockReason(actor, date);
+        Map<Long, Attendance> saved = savedByEnrollment(section.getId(), date);
+        boolean isFinalized = false;
+        List<Attendance> savedList = attendanceRepository.findForSectionOnDate(section.getId(), date);
+        for (int i = 0; i < savedList.size(); i++) {
+            if (savedList.get(i).isFinalized()) {
+                isFinalized = true;
+                break;
+            }
+        }
+
+        // (২) দিনটা কি খোলা, লক কি না?
+        String lock = lockReason(actor, date, isFinalized);
         if (lock != null) {
             throw bad(lock);
         }
 
         // (৩) যাদের পাঠানো হলো তারা কি সত্যিই এই সেকশনের ওই দিনের তালিকায়?
+        List<Enrollment> enrolled = enrollmentRepository.findInSection(section.getId(), date, date);
         Map<Long, Enrollment> roster = new HashMap<>();
-        for (Enrollment e : enrollmentRepository.findInSection(section.getId(), date, date)) {
+        for (int i = 0; i < enrolled.size(); i++) {
+            Enrollment e = enrolled.get(i);
             roster.put(e.getId(), e);
         }
         if (roster.isEmpty()) {
             throw bad("এই তারিখে এই সেকশনে কোনো শিক্ষার্থী নেই");
         }
         Set<Long> seen = new HashSet<>();
-        for (MarkEntry entry : request.entries()) {
+        List<MarkEntry> entries = request.entries();
+        for (int i = 0; i < entries.size(); i++) {
+            MarkEntry entry = entries.get(i);
             if (!roster.containsKey(entry.enrollmentId())) {
                 throw bad("তালিকার বাইরের একজন শিক্ষার্থীর হাজিরা পাঠানো হয়েছে");
             }
@@ -129,11 +156,15 @@ public class AttendanceService {
         }
 
         // (৪) আগের হাজিরা বদলাচ্ছে? তাহলে কারণ লাগবে
-        Map<Long, Attendance> saved = savedByEnrollment(section.getId(), date);
-        boolean anyCorrection = request.entries().stream().anyMatch(entry -> {
+        boolean anyCorrection = false;
+        for (int i = 0; i < entries.size(); i++) {
+            MarkEntry entry = entries.get(i);
             Attendance existing = saved.get(entry.enrollmentId());
-            return existing != null && differs(existing, entry);
-        });
+            if (existing != null && differs(existing, entry)) {
+                anyCorrection = true;
+                break;
+            }
+        }
         String reason = request.reason() == null ? "" : request.reason().trim();
         if (anyCorrection && reason.length() < MIN_REASON_LENGTH) {
             throw bad("আগে নেওয়া হাজিরা বদলাতে কারণ লিখতে হবে (কমপক্ষে " + MIN_REASON_LENGTH + " অক্ষর)");
@@ -145,7 +176,8 @@ public class AttendanceService {
         List<Enrollment> noLongerAbsent = new ArrayList<>();
         int changed = 0;
         int unchanged = 0;
-        for (MarkEntry entry : request.entries()) {
+        for (int i = 0; i < entries.size(); i++) {
+            MarkEntry entry = entries.get(i);
             Enrollment enrollment = roster.get(entry.enrollmentId());
             Attendance existing = saved.get(entry.enrollmentId());
             String remark = normalizeRemark(entry.remark());
@@ -196,19 +228,34 @@ public class AttendanceService {
         }
 
         // (৬) অভিভাবকের বার্তা: নতুন Absent-দের জন্য জমা, Absent থেকে সরে যাওয়াদের না-যাওয়া বার্তা বাতিল
-        for (Enrollment e : becameAbsent) {
-            notificationService.queueAbsence(e.getStudent(), date);
+        for (int i = 0; i < becameAbsent.size(); i++) {
+            notificationService.queueAbsence(becameAbsent.get(i).getStudent(), date);
         }
-        for (Enrollment e : noLongerAbsent) {
-            notificationService.cancelUnsentAbsence(e.getStudent().getId(), date);
+        for (int i = 0; i < noLongerAbsent.size(); i++) {
+            notificationService.cancelUnsentAbsence(noLongerAbsent.get(i).getStudent().getId(), date);
         }
 
         return new MarkResult(createdRows.size(), changed, unchanged);
     }
 
+    // ---------- হাজিরা ফাইনাল ও লক করা ----------
+    @Transactional
+    public void finalizeAttendance(Actor actor, Long sectionId, LocalDate date) {
+        Section section = findSection(sectionId);
+        access.requireSection(actor, section.getId(), date, date);
+
+        int count = attendanceRepository.finalizeBySectionAndDate(section.getId(), date);
+        if (count == 0) {
+            throw bad("এই দিনের হাজিরা নেওয়া হয়নি, তাই ফাইনাল করা যাবে না");
+        }
+
+        auditService.log("ATTENDANCE_FINALIZED", "SECTION", section.getId(),
+                date + " তারিখের হাজিরা ফাইনাল ও লক করা হয়েছে।");
+    }
+
     // ---------- ভেতরের সাহায্যকারী ----------
-    /** দিনটা বন্ধ হলে কারণ ফেরায়, খোলা হলে null। */
-    private String lockReason(Actor actor, LocalDate date) {
+    /** দিনটা বন্ধ বা লক হলে কারণ ফেরায়, খোলা হলে null। */
+    private String lockReason(Actor actor, LocalDate date, boolean isFinalized) {
         LocalDate today = DhakaTime.today();
         if (date.isAfter(today)) {
             return "ভবিষ্যতের তারিখে হাজিরা নেওয়া যায় না";
@@ -216,6 +263,9 @@ public class AttendanceService {
         String closed = calendar.closedReason(date);
         if (closed != null) {
             return closed + " (এই দিনে হাজিরা নেই)";
+        }
+        if (isFinalized && !actor.admin()) {
+            return "এই দিনের হাজিরা ফাইনাল ও লক করা হয়েছে। পরিবর্তনের জন্য Admin-এর অনুমতি প্রয়োজন।";
         }
         int window = properties.getEditWindowDays();
         if (!actor.admin() && date.isBefore(today.minusDays(window))) {
@@ -226,7 +276,9 @@ public class AttendanceService {
 
     private Map<Long, Attendance> savedByEnrollment(Long sectionId, LocalDate date) {
         Map<Long, Attendance> map = new HashMap<>();
-        for (Attendance a : attendanceRepository.findForSectionOnDate(sectionId, date)) {
+        List<Attendance> list = attendanceRepository.findForSectionOnDate(sectionId, date);
+        for (int i = 0; i < list.size(); i++) {
+            Attendance a = list.get(i);
             map.put(a.getEnrollment().getId(), a);
         }
         return map;
@@ -247,10 +299,17 @@ public class AttendanceService {
     }
 
     private String summarize(List<Attendance> rows) {
-        long present = rows.stream().filter(r -> r.getStatus() == AttendanceStatus.PRESENT).count();
-        long late = rows.stream().filter(r -> r.getStatus() == AttendanceStatus.LATE).count();
-        long absent = rows.stream().filter(r -> r.getStatus() == AttendanceStatus.ABSENT).count();
-        long leave = rows.stream().filter(r -> r.getStatus() == AttendanceStatus.LEAVE).count();
+        long present = 0;
+        long late = 0;
+        long absent = 0;
+        long leave = 0;
+        for (int i = 0; i < rows.size(); i++) {
+            AttendanceStatus s = rows.get(i).getStatus();
+            if (s == AttendanceStatus.PRESENT) present++;
+            else if (s == AttendanceStatus.LATE) late++;
+            else if (s == AttendanceStatus.ABSENT) absent++;
+            else if (s == AttendanceStatus.LEAVE) leave++;
+        }
         return "উপস্থিত " + present + ", দেরি " + late + ", অনুপস্থিত " + absent + ", ছুটি " + leave;
     }
 

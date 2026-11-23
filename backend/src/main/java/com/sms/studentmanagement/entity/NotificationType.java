@@ -1,5 +1,16 @@
 package com.sms.studentmanagement.entity;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
 public enum NotificationType {
-    ABSENCE
+    ABSENCE("অনুপস্থিতি বার্তা"),
+    FEE_DUE("ফি বকেয়া নোটিশ"),
+    EXAM_NOTICE("পরীক্ষার নোটিশ"),
+    RESULT_PUBLISH("ফলাফল প্রকাশের নোটিশ"),
+    ANNOUNCEMENT("সাধারণ ঘোষণা");
+
+    private final String banglaLabel;
 }
