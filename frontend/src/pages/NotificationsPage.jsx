@@ -1,148 +1,637 @@
 import { useState } from 'react'
-import { Link } from 'react-router'
 import { api } from '../api/client.js'
-import { Pagination } from '../components/extra.jsx'
-import { Alert, Badge, Button, Card, EmptyState, LoadState, PageHeader, SelectField, Table, Td } from '../components/ui.jsx'
+import { useAuth } from '../auth/useAuth.js'
+import { FormActions, Pagination } from '../components/extra.jsx'
+import {
+  Alert,
+  Badge,
+  Button,
+  Card,
+  EmptyState,
+  LoadState,
+  Modal,
+  PageHeader,
+  SelectField,
+  Table,
+  Td,
+  TextField,
+} from '../components/ui.jsx'
 import { useQuery } from '../hooks/useQuery.js'
 import { formatDate } from '../utils/format.js'
 
-const STATUS_FILTER = [
-  { value: '', label: 'সব' },
-  { value: 'PENDING', label: 'অপেক্ষমাণ' },
-  { value: 'SENT', label: 'পাঠানো হয়েছে' },
-  { value: 'FAILED', label: 'ব্যর্থ' },
+const AUDIENCE_OPTIONS = [
+  { value: 'ALL', label: 'সকল শিক্ষার্থী ও অভিভাবক (School Wide)' },
+  { value: 'CLASS', label: 'নির্দিষ্ট শ্রেণি (Class Wise)' },
+  { value: 'SECTION', label: 'নির্দিষ্ট সেকশন (Section Wise)' },
+  { value: 'FEE_DEFAULTERS', label: 'বকেয়া ফি প্রাপক শিক্ষার্থী (Fee Defaulters)' },
 ]
 
-const STATUS_INFO = {
-  PENDING: { label: 'অপেক্ষমাণ', tone: 'amber' },
-  SENT: { label: 'পাঠানো হয়েছে', tone: 'green' },
-  FAILED: { label: 'ব্যর্থ', tone: 'red' },
+const TEMPLATE_CATEGORIES = [
+  { value: 'FEE_DUE', label: 'ফি বকেয়া নোটিশ', tone: 'amber' },
+  { value: 'ABSENCE', label: 'অনুপস্থিতি অ্যালার্ট', tone: 'rose' },
+  { value: 'EXAM_NOTICE', label: 'পরীক্ষার নোটিশ', tone: 'indigo' },
+  { value: 'RESULT_PUBLISH', label: 'ফলাফল প্রকাশ', tone: 'green' },
+  { value: 'ANNOUNCEMENT', label: 'সাধারণ ঘোষণা', tone: 'purple' },
+]
+
+function getCategoryBadge(cat) {
+  const found = TEMPLATE_CATEGORIES.find((c) => c.value === cat)
+  if (!found) return <Badge tone="gray">{cat}</Badge>
+  return <Badge tone={found.tone}>{found.label}</Badge>
 }
 
-export default function NotificationsPage() {
-  const [status, setStatus] = useState('')
-  const [page, setPage] = useState(0)
+// ----------------- Modal: Notification Template -----------------
+function TemplateModal({ initial, onDone, onClose }) {
+  const [values, setValues] = useState({
+    name: initial?.name || '',
+    code: initial?.code || '',
+    channel: initial?.channel || 'SMS',
+    category: initial?.category || 'ANNOUNCEMENT',
+    subject: initial?.subject || '',
+    templateBody: initial?.templateBody || '',
+    active: initial?.active ?? true,
+  })
+  const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
-  const [notice, setNotice] = useState(null) // { type, text }
 
-  const params = new URLSearchParams({ page: String(page), size: '20' })
-  if (status) params.set('status', status)
-  const { data, error, loading, reload } = useQuery(`/api/admin/notifications?${params}`)
-
-  function changeStatus(value) {
-    setStatus(value)
-    setPage(0)
+  function insertVar(v) {
+    setValues((prev) => ({ ...prev, templateBody: prev.templateBody + v }))
   }
 
-  async function dispatch() {
+  async function submit(e) {
+    e.preventDefault()
+    setError('')
     setBusy(true)
-    setNotice(null)
     try {
-      const result = await api('/api/admin/notifications/dispatch', { method: 'POST' })
-      setNotice({
-        type: result.failed > 0 ? 'error' : 'success',
-        text: `পাঠানো ${result.sent}, ব্যর্থ ${result.failed}। ${result.note}`,
-      })
-      reload()
+      const body = {
+        name: values.name,
+        code: values.code,
+        channel: values.channel,
+        category: values.category,
+        subject: values.subject || null,
+        templateBody: values.templateBody,
+        variables: 'student_name,class_name,roll_no,due_amount,school_name,date',
+        active: values.active,
+      }
+      if (initial?.id) {
+        await api(`/api/notification-templates/${initial.id}`, { method: 'PUT', body })
+      } else {
+        await api('/api/notification-templates', { method: 'POST', body })
+      }
+      onDone()
     } catch (err) {
-      setNotice({ type: 'error', text: err.message })
-    } finally {
+      setError(err.message)
       setBusy(false)
     }
   }
 
-  async function retry(notification) {
-    setNotice(null)
+  return (
+    <Modal title={initial ? 'টেমপ্লেট সম্পাদনা' : 'নতুন মেসেজ টেমপ্লেট'} onClose={onClose}>
+      <form onSubmit={submit} className="space-y-4">
+        {error && <Alert>{error}</Alert>}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <TextField
+            label="টেমপ্লেটের নাম"
+            value={values.name}
+            onChange={(e) => setValues({ ...values, name: e.target.value })}
+            placeholder="যেমন: বকেয়া ফি তাগাদা"
+            required
+          />
+
+          <TextField
+            label="ইউনিক কোড"
+            value={values.code}
+            onChange={(e) => setValues({ ...values, code: e.target.value.toUpperCase() })}
+            placeholder="যেমন: FEE_REMINDER_BN"
+            required
+          />
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <SelectField
+            label="ক্যাটাগরি"
+            value={values.category}
+            onChange={(e) => setValues({ ...values, category: e.target.value })}
+            required
+          >
+            {TEMPLATE_CATEGORIES.map((c) => (
+              <option key={c.value} value={c.value}>
+                {c.label}
+              </option>
+            ))}
+          </SelectField>
+
+          <SelectField
+            label="মাধ্যম (Channel)"
+            value={values.channel}
+            onChange={(e) => setValues({ ...values, channel: e.target.value })}
+            required
+          >
+            <option value="SMS">এসএমএস (SMS)</option>
+            <option value="EMAIL">ইমেইল (Email)</option>
+            <option value="BOTH">উভয় (SMS & Email)</option>
+          </SelectField>
+        </div>
+
+        <div>
+          <label className="block text-xs font-semibold text-gray-700 mb-1">
+            বার্তা বা মেসেজের বডি (ডাইনামিক ভ্যারিয়েবল সহ)
+          </label>
+          <div className="mb-2 flex flex-wrap gap-1.5 text-xs">
+            <span className="text-gray-500 py-1">ভ্যারিয়েবল যোগ করুন:</span>
+            <button type="button" onClick={() => insertVar('{student_name}')} className="rounded bg-gray-100 px-2 py-0.5 hover:bg-gray-200">
+              + শিক্ষার্থী নাম
+            </button>
+            <button type="button" onClick={() => insertVar('{class_name}')} className="rounded bg-gray-100 px-2 py-0.5 hover:bg-gray-200">
+              + শ্রেণি
+            </button>
+            <button type="button" onClick={() => insertVar('{roll_no}')} className="rounded bg-gray-100 px-2 py-0.5 hover:bg-gray-200">
+              + রোল
+            </button>
+            <button type="button" onClick={() => insertVar('{due_amount}')} className="rounded bg-gray-100 px-2 py-0.5 hover:bg-gray-200">
+              + বকেয়া
+            </button>
+            <button type="button" onClick={() => insertVar('{school_name}')} className="rounded bg-gray-100 px-2 py-0.5 hover:bg-gray-200">
+              + বিদ্যালয়
+            </button>
+            <button type="button" onClick={() => insertVar('{date}')} className="rounded bg-gray-100 px-2 py-0.5 hover:bg-gray-200">
+              + তারিখ
+            </button>
+          </div>
+          <textarea
+            rows={4}
+            value={values.templateBody}
+            onChange={(e) => setValues({ ...values, templateBody: e.target.value })}
+            className="w-full rounded-lg border border-gray-300 p-3 text-sm focus:border-indigo-500 focus:outline-none"
+            required
+          />
+        </div>
+
+        <div className="flex items-center gap-2 pt-1">
+          <input
+            id="templateActive"
+            type="checkbox"
+            checked={values.active}
+            onChange={(e) => setValues({ ...values, active: e.target.checked })}
+            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+          />
+          <label htmlFor="templateActive" className="text-sm font-medium text-gray-700">
+            এই টেমপ্লেট সক্রিয় রাখুন
+          </label>
+        </div>
+
+        <FormActions busy={busy} onCancel={onClose} submitLabel={initial ? 'সংরক্ষণ করুন' : 'টেমপ্লেট তৈরি করুন'} />
+      </form>
+    </Modal>
+  )
+}
+
+// ----------------- Main Page Component -----------------
+export default function NotificationsPage() {
+  const { user } = useAuth()
+  const isAdmin = user.role === 'ADMIN'
+
+  const [activeTab, setActiveTab] = useState('campaign') // 'campaign' | 'templates' | 'logs'
+
+  // Master Data
+  const { data: classes } = useQuery('/api/classes')
+  const { data: templates, reload: reloadTemplates } = useQuery('/api/notification-templates')
+  const { data: campaigns, reload: reloadCampaigns } = useQuery('/api/notification-campaigns')
+
+  // Log View State
+  const [logStatus, setLogStatus] = useState('')
+  const [logPage, setLogPage] = useState(0)
+  const [logBusy, setLogBusy] = useState(false)
+  const [logNotice, setLogNotice] = useState(null)
+
+  const logParams = new URLSearchParams({ page: String(logPage), size: '20' })
+  if (logStatus) logParams.set('status', logStatus)
+  const { data: logData, error: logError, loading: logLoading, reload: reloadLogs } = useQuery(
+    `/api/admin/notifications?${logParams}`
+  )
+
+  // Campaign Form State
+  const [campTitle, setCampTitle] = useState('')
+  const [campAudience, setCampAudience] = useState('ALL')
+  const [campClassId, setCampClassId] = useState('')
+  const [campSectionId, setCampSectionId] = useState('')
+  const [campMessage, setCampMessage] = useState('')
+  const [campBusy, setCampBusy] = useState(false)
+  const [campNotice, setCampNotice] = useState(null)
+
+  // Template Modal State
+  const [tempModal, setTempModal] = useState({ open: false, item: null })
+
+  // SMS parts calculation helper
+  const isUnicode = /[\u0980-\u09FF]/.test(campMessage)
+  const charCount = campMessage.length
+  let smsParts = 0
+  if (charCount > 0) {
+    if (isUnicode) {
+      smsParts = charCount <= 70 ? 1 : Math.ceil(charCount / 67)
+    } else {
+      smsParts = charCount <= 160 ? 1 : Math.ceil(charCount / 153)
+    }
+  }
+
+  function handleSelectTemplate(code) {
+    if (!code) return
+    const t = templates?.find((x) => x.code === code)
+    if (t) {
+      setCampMessage(t.templateBody)
+      if (!campTitle) setCampTitle(t.name)
+    }
+  }
+
+  function insertVarToCampaign(v) {
+    setCampMessage((prev) => prev + v)
+  }
+
+  async function handleSendCampaign(e) {
+    e.preventDefault()
+    setCampBusy(true)
+    setCampNotice(null)
     try {
-      await api(`/api/admin/notifications/${notification.id}/retry`, { method: 'POST' })
-      reload()
+      const body = {
+        title: campTitle,
+        channel: 'SMS',
+        targetAudience: campAudience,
+        targetClassId: campClassId ? Number(campClassId) : null,
+        targetSectionId: campSectionId ? Number(campSectionId) : null,
+        message: campMessage,
+      }
+      const res = await api('/api/notification-campaigns', { method: 'POST', body })
+      setCampNotice({
+        type: res.failedCount > 0 ? 'error' : 'success',
+        text: `ক্যাম্পেইন সম্পন্ন! মোট প্রাপক: ${res.totalRecipients} জন, সফল: ${res.sentCount} টি, ব্যর্থ: ${res.failedCount} টি।`,
+      })
+      reloadCampaigns()
+      reloadLogs()
+      setCampTitle('')
+      setCampMessage('')
     } catch (err) {
-      setNotice({ type: 'error', text: err.message })
+      setCampNotice({ type: 'error', text: err.message })
+    } finally {
+      setCampBusy(false)
+    }
+  }
+
+  async function dispatchQueue() {
+    setLogBusy(true)
+    setLogNotice(null)
+    try {
+      const result = await api('/api/admin/notifications/dispatch', { method: 'POST' })
+      setLogNotice({
+        type: result.failed > 0 ? 'error' : 'success',
+        text: `পাঠানো ${result.sent}, ব্যর্থ ${result.failed}। ${result.note}`,
+      })
+      reloadLogs()
+    } catch (err) {
+      setLogNotice({ type: 'error', text: err.message })
+    } finally {
+      setLogBusy(false)
+    }
+  }
+
+  async function retryLog(id) {
+    setLogNotice(null)
+    try {
+      await api(`/api/admin/notifications/${id}/retry`, { method: 'POST' })
+      reloadLogs()
+    } catch (err) {
+      setLogNotice({ type: 'error', text: err.message })
+    }
+  }
+
+  async function deleteTemplate(id) {
+    if (!window.confirm('আপনি কি নিশ্চিত যে এই টেমপ্লেটটি মুছে ফেলতে চান?')) return
+    try {
+      await api(`/api/notification-templates/${id}`, { method: 'DELETE' })
+      reloadTemplates()
+    } catch (err) {
+      alert(err.message)
     }
   }
 
   return (
     <>
       <PageHeader
-        title="অভিভাবকের বার্তা"
-        subtitle="অনুপস্থিতির বার্তা এখানে জমা হয়"
+        title="মেসেজ ও নোটিফিকেশন সেন্টার"
+        subtitle="অভিভাবক অ্যালার্ট টেমপ্লেট, বাল্ক এসএমএস সম্প্রচার, বকেয়া তাগাদা ও ডেলিভারি হিস্ট্রি"
         action={
-          <Button onClick={dispatch} disabled={busy}>
-            {busy ? 'অপেক্ষা করুন...' : 'এখন পাঠাও'}
-          </Button>
+          isAdmin && (
+            <div className="flex gap-2">
+              <Button variant="secondary" onClick={() => setTempModal({ open: true, item: null })}>
+                + নতুন টেমপ্লেট
+              </Button>
+              <Button onClick={() => setActiveTab('campaign')}>
+                + এসএমএস প্রেরণ
+              </Button>
+            </div>
+          )
         }
       />
 
-      <div className="mb-4 space-y-3">
-        <Alert type="info">
-          আসল SMS Gateway এখনো যুক্ত হয়নি। এখন "পাঠানো হয়েছে" মানে ডেমোতে ধরা হয়েছে, অভিভাবকের ফোনে কিছু যায়নি।
-        </Alert>
-        {notice && <Alert type={notice.type}>{notice.text}</Alert>}
+      {/* Tabs */}
+      <div className="mb-6 flex border-b border-gray-200">
+        <button
+          type="button"
+          onClick={() => setActiveTab('campaign')}
+          className={`border-b-2 px-5 py-2.5 text-sm font-medium transition ${
+            activeTab === 'campaign'
+              ? 'border-indigo-600 text-indigo-600'
+              : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+          }`}
+        >
+          বাল্ক এসএমএস প্রেরণ ও ক্যাম্পেইন
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('templates')}
+          className={`border-b-2 px-5 py-2.5 text-sm font-medium transition ${
+            activeTab === 'templates'
+              ? 'border-indigo-600 text-indigo-600'
+              : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+          }`}
+        >
+          মেসেজ টেমপ্লেটসমূহ ({templates?.length || 0})
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('logs')}
+          className={`border-b-2 px-5 py-2.5 text-sm font-medium transition ${
+            activeTab === 'logs'
+              ? 'border-indigo-600 text-indigo-600'
+              : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+          }`}
+        >
+          ডেলিভারি লগ ও কিউ
+        </button>
       </div>
 
-      <div className="mb-4 max-w-xs">
-        <SelectField
-          label="অবস্থা"
-          options={STATUS_FILTER}
-          value={status}
-          onChange={(event) => changeStatus(event.target.value)}
-        />
-      </div>
+      {/* TAB 1: Bulk Campaign & Send SMS */}
+      {activeTab === 'campaign' && (
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          {/* Send SMS Form */}
+          <div className="lg:col-span-2">
+            <Card className="p-6">
+              <h3 className="text-base font-semibold text-gray-900 mb-2">নোটিফিকেশন ও এসএমএস ব্রডকাস্ট</h3>
+              <p className="text-xs text-gray-500 mb-6">
+                নির্দিষ্ট গ্রুপ বা সম্পূর্ণ স্কুলের অভিভাবকদের জন্য স্বয়ংক্রিয় ভ্যারিয়েবল প্রতিস্থাপন সহ এসএমএস প্রেরণ করুন।
+              </p>
 
-      <Card>
-        <LoadState loading={loading} error={error}>
-          {data?.items.length === 0 ? (
-            <EmptyState>কোনো বার্তা নেই।</EmptyState>
+              {campNotice && (
+                <div className="mb-4">
+                  <Alert type={campNotice.type}>{campNotice.text}</Alert>
+                </div>
+              )}
+
+              <form onSubmit={handleSendCampaign} className="space-y-4">
+                <TextField
+                  label="ক্যাম্পেইন বা বার্তার শিরোনাম"
+                  placeholder="যেমন: নভেম্বর মাসের বকেয়া ফি তাগাদা"
+                  value={campTitle}
+                  onChange={(e) => setCampTitle(e.target.value)}
+                  required
+                />
+
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <SelectField
+                    label="টার্গেট প্রাপক গ্রুপ"
+                    value={campAudience}
+                    onChange={(e) => setCampAudience(e.target.value)}
+                    required
+                  >
+                    {AUDIENCE_OPTIONS.map((a) => (
+                      <option key={a.value} value={a.value}>
+                        {a.label}
+                      </option>
+                    ))}
+                  </SelectField>
+
+                  <SelectField
+                    label="টেমপ্লেট থেকে লোড করুন (ঐচ্ছিক)"
+                    onChange={(e) => handleSelectTemplate(e.target.value)}
+                  >
+                    <option value="">কাস্টম মেসেজ লিখুন</option>
+                    {templates?.map((t) => (
+                      <option key={t.code} value={t.code}>
+                        {t.name}
+                      </option>
+                    ))}
+                  </SelectField>
+                </div>
+
+                {campAudience === 'CLASS' && (
+                  <SelectField
+                    label="শ্রেণি নির্বাচন"
+                    value={campClassId}
+                    onChange={(e) => setCampClassId(e.target.value)}
+                    required
+                  >
+                    <option value="">শ্রেণি পছন্দ করুন</option>
+                    {classes?.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </SelectField>
+                )}
+
+                <div>
+                  <div className="flex justify-between items-center mb-1">
+                    <label className="block text-xs font-semibold text-gray-700">এসএমএস মেসেজ বডি</label>
+                    <span className="text-xs font-mono text-gray-500">
+                      {charCount} অক্ষর | {smsParts} টি SMS ({isUnicode ? 'বাংলা' : 'ইংরেজি'})
+                    </span>
+                  </div>
+
+                  <div className="mb-2 flex flex-wrap gap-1.5 text-xs">
+                    <button type="button" onClick={() => insertVarToCampaign('{student_name}')} className="rounded bg-indigo-50 text-indigo-700 px-2 py-0.5 hover:bg-indigo-100">
+                      + নাম
+                    </button>
+                    <button type="button" onClick={() => insertVarToCampaign('{class_name}')} className="rounded bg-indigo-50 text-indigo-700 px-2 py-0.5 hover:bg-indigo-100">
+                      + শ্রেণি
+                    </button>
+                    <button type="button" onClick={() => insertVarToCampaign('{due_amount}')} className="rounded bg-indigo-50 text-indigo-700 px-2 py-0.5 hover:bg-indigo-100">
+                      + বকেয়া
+                    </button>
+                    <button type="button" onClick={() => insertVarToCampaign('{school_name}')} className="rounded bg-indigo-50 text-indigo-700 px-2 py-0.5 hover:bg-indigo-100">
+                      + প্রতিষ্ঠান
+                    </button>
+                  </div>
+
+                  <textarea
+                    rows={5}
+                    value={campMessage}
+                    onChange={(e) => setCampMessage(e.target.value)}
+                    placeholder="এসএমএস টেক্সট লিখুন..."
+                    className="w-full rounded-lg border border-gray-300 p-3 text-sm focus:border-indigo-500 focus:outline-none"
+                    required
+                  />
+                </div>
+
+                {/* SMS Parts & Cost Live Card */}
+                <div className="rounded-lg bg-gray-50 p-3 text-xs flex justify-between items-center text-gray-600">
+                  <div>
+                    <span className="font-semibold text-gray-800">কাউন্টার: </span>
+                    {charCount} ক্যারেক্টার | প্রতিটি এসএমএস: {smsParts} পার্ট
+                  </div>
+                  <Badge tone={isUnicode ? 'indigo' : 'green'}>
+                    {isUnicode ? 'বাংলা ইউনিকোড (৭০ অক্ষর/পার্ট)' : 'ইংরেজি GSM (১৬০ অক্ষর/পার্ট)'}
+                  </Badge>
+                </div>
+
+                <div className="pt-2">
+                  <Button type="submit" disabled={campBusy || !campMessage || !campTitle}>
+                    {campBusy ? 'মেসেজ প্রেরণ হচ্ছে...' : 'এসএমএস প্রেরণ করুন'}
+                  </Button>
+                </div>
+              </form>
+            </Card>
+          </div>
+
+          {/* Recent Campaigns Sidebar */}
+          <div>
+            <Card className="p-5">
+              <h4 className="text-sm font-semibold text-gray-900 mb-3">সাম্প্রতিক ক্যাম্পেইন হিস্ট্রি</h4>
+              {campaigns?.length === 0 ? (
+                <EmptyState>কোনো ক্যাম্পেইন তৈরি করা হয়নি।</EmptyState>
+              ) : (
+                <div className="space-y-3">
+                  {campaigns?.slice(0, 6).map((c) => (
+                    <div key={c.id} className="rounded-lg border p-3 text-xs space-y-1 bg-white">
+                      <p className="font-semibold text-gray-900">{c.title}</p>
+                      <p className="text-gray-500 font-mono line-clamp-2">{c.message}</p>
+                      <div className="flex justify-between items-center pt-1 text-gray-400">
+                        <span>প্রাপক: {c.totalRecipients} জন</span>
+                        <span className="text-emerald-600 font-medium">সফল: {c.sentCount}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </Card>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 2: Notification Templates */}
+      {activeTab === 'templates' && (
+        <Card>
+          {templates?.length === 0 ? (
+            <EmptyState>কোনো নোটিফিকেশন টেমপ্লেট নেই। উপরের &quot;+ নতুন টেমপ্লেট&quot; বাটনে ক্লিক করে তৈরি করুন।</EmptyState>
           ) : (
-            <>
-              <Table headers={['তারিখ', 'শিক্ষার্থী', 'অভিভাবক', 'বার্তা', 'অবস্থা', 'চেষ্টা', 'কাজ']}>
-                {data?.items.map((n) => {
-                  const info = STATUS_INFO[n.status] ?? { label: n.status, tone: 'gray' }
-                  return (
+            <Table headers={['টেমপ্লেট নাম', 'ইউনিক কোড', 'ক্যাটাগরি', 'বার্তা প্রিভিউ', 'অবস্থা', 'অ্যাকশন']}>
+              {templates?.map((t) => (
+                <tr key={t.id}>
+                  <Td className="font-semibold text-gray-900">{t.name}</Td>
+                  <Td className="font-mono text-xs text-indigo-700 font-semibold">{t.code}</Td>
+                  <Td>{getCategoryBadge(t.category)}</Td>
+                  <Td className="text-xs text-gray-600 max-w-xs truncate">{t.templateBody}</Td>
+                  <Td>
+                    <Badge tone={t.active ? 'green' : 'gray'}>
+                      {t.active ? 'সক্রিয়' : 'নিষ্ক্রিয়'}
+                    </Badge>
+                  </Td>
+                  <Td>
+                    {isAdmin && (
+                      <div className="flex gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setTempModal({ open: true, item: t })}
+                        >
+                          বদলান
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-red-600 hover:text-red-700"
+                          onClick={() => deleteTemplate(t.id)}
+                        >
+                          মুছুন
+                        </Button>
+                      </div>
+                    )}
+                  </Td>
+                </tr>
+              ))}
+            </Table>
+          )}
+        </Card>
+      )}
+
+      {/* TAB 3: Delivery Logs */}
+      {activeTab === 'logs' && (
+        <div className="space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="w-48">
+              <SelectField label="অবস্থা" value={logStatus} onChange={(e) => setLogStatus(e.target.value)}>
+                <option value="">সব</option>
+                <option value="PENDING">অপেক্ষমাণ (Pending)</option>
+                <option value="SENT">পাঠানো হয়েছে (Sent)</option>
+                <option value="FAILED">ব্যর্থ (Failed)</option>
+              </SelectField>
+            </div>
+            {isAdmin && (
+              <Button onClick={dispatchQueue} disabled={logBusy}>
+                {logBusy ? 'পাঠানো হচ্ছে…' : 'অপেক্ষমাণ বার্তা পাঠান'}
+              </Button>
+            )}
+          </div>
+
+          {logNotice && <Alert type={logNotice.type}>{logNotice.text}</Alert>}
+
+          <Card>
+            <LoadState loading={logLoading} error={logError}>
+              {logData?.items?.length === 0 ? (
+                <EmptyState>কোনো বার্তা নেই।</EmptyState>
+              ) : (
+                <Table headers={['শিক্ষার্থী', 'অভিভাবক', 'ফোন', 'ধরন', 'তারিখ', 'বার্তা', 'অবস্থা', 'অ্যাকশন']}>
+                  {logData?.items?.map((n) => (
                     <tr key={n.id}>
-                      <Td className="whitespace-nowrap">{formatDate(n.eventDate)}</Td>
-                      <Td>
-                        <Link to={`/students/${n.studentId}`} className="font-medium text-gray-900 hover:text-indigo-700">
-                          {n.studentName}
-                        </Link>
-                        <p className="font-mono text-xs text-gray-500">{n.studentCode}</p>
+                      <Td className="font-medium text-gray-900">{n.studentName}</Td>
+                      <Td className="text-gray-700">{n.guardianName}</Td>
+                      <Td className="font-mono text-xs">{n.phone}</Td>
+                      <Td>{getCategoryBadge(n.notificationType)}</Td>
+                      <Td className="text-xs">{formatDate(n.eventDate)}</Td>
+                      <Td className="text-xs text-gray-600 max-w-xs truncate" title={n.message}>
+                        {n.message}
                       </Td>
                       <Td>
-                        {n.guardianName}
-                        <p className="font-mono text-xs text-gray-500">{n.phone}</p>
+                        <Badge tone={n.status === 'SENT' ? 'green' : n.status === 'FAILED' ? 'red' : 'amber'}>
+                          {n.status === 'SENT' ? 'পাঠানো হয়েছে' : n.status === 'FAILED' ? 'ব্যর্থ' : 'অপেক্ষমাণ'}
+                        </Badge>
                       </Td>
-                      <Td className="max-w-xs text-xs">{n.message}</Td>
                       <Td>
-                        <Badge tone={info.tone}>{info.label}</Badge>
-                        {n.status === 'FAILED' && n.lastError && (
-                          <p className="mt-1 max-w-[12rem] text-xs text-red-600">{n.lastError}</p>
-                        )}
-                      </Td>
-                      <Td>{n.attempts}</Td>
-                      <Td>
-                        {n.status === 'FAILED' && (
-                          <Button variant="secondary" size="sm" onClick={() => retry(n)}>
-                            আবার চেষ্টা
+                        {n.status === 'FAILED' && isAdmin && (
+                          <Button size="sm" variant="secondary" onClick={() => retryLog(n.id)}>
+                            পুনরায়
                           </Button>
                         )}
                       </Td>
                     </tr>
-                  )
-                })}
-              </Table>
-              {data && (
-                <Pagination
-                  page={data.page}
-                  totalPages={data.totalPages}
-                  totalElements={data.totalElements}
-                  unit="টি"
-                  onChange={setPage}
-                />
+                  ))}
+                </Table>
               )}
-            </>
-          )}
-        </LoadState>
-      </Card>
+            </LoadState>
+            {logData && <Pagination page={logPage} totalPages={logData.totalPages} onPageChange={setLogPage} />}
+          </Card>
+        </div>
+      )}
+
+      {/* Template Modal */}
+      {tempModal.open && (
+        <TemplateModal
+          initial={tempModal.item}
+          onDone={() => {
+            setTempModal({ open: false, item: null })
+            reloadTemplates()
+          }}
+          onClose={() => setTempModal({ open: false, item: null })}
+        />
+      )}
     </>
   )
 }

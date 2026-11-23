@@ -24,13 +24,19 @@ import ResultSheetPage from './pages/ResultSheetPage.jsx'
 import ResultsPage from './pages/ResultsPage.jsx'
 import RoutinePage from './pages/RoutinePage.jsx'
 import RoutineSetupPage from './pages/RoutineSetupPage.jsx'
+import AcademicCalendarPage from './pages/AcademicCalendarPage.jsx'
 import SessionsPage from './pages/SessionsPage.jsx'
 import StudentDetailPage from './pages/StudentDetailPage.jsx'
 import StudentNewPage from './pages/StudentNewPage.jsx'
 import StudentsPage from './pages/StudentsPage.jsx'
 import SubjectsPage from './pages/SubjectsPage.jsx'
+import TeacherAttendancePage from './pages/TeacherAttendancePage.jsx'
 import TeacherDetailPage from './pages/TeacherDetailPage.jsx'
 import TeachersPage from './pages/TeachersPage.jsx'
+import LeaveApplicationsPage from './pages/LeaveApplicationsPage.jsx'
+import FeeStructurePage from './pages/FeeStructurePage.jsx'
+import FeeCollectionPage from './pages/FeeCollectionPage.jsx'
+import AccountsPage from './pages/AccountsPage.jsx'
 import UsersPage from './pages/UsersPage.jsx'
 
 const ADMIN = ['ADMIN']
@@ -88,6 +94,7 @@ export default function App() {
 
         <Route path="grade-scale" element={<GradeScalePage />} />
         <Route path="routine" element={<RoutinePage />} />
+        <Route path="calendar" element={<AcademicCalendarPage />} />
         <Route
           path="routine/setup"
           element={
@@ -193,6 +200,46 @@ export default function App() {
           element={
             <Only roles={ADMIN}>
               <TeacherDetailPage />
+            </Only>
+          }
+        />
+        <Route
+          path="teacher-attendance"
+          element={
+            <Only roles={ATTENDANCE_ROLES}>
+              <TeacherAttendancePage />
+            </Only>
+          }
+        />
+        <Route
+          path="leaves"
+          element={
+            <Only roles={ATTENDANCE_ROLES}>
+              <LeaveApplicationsPage />
+            </Only>
+          }
+        />
+        <Route
+          path="fee-structure"
+          element={
+            <Only roles={ADMIN}>
+              <FeeStructurePage />
+            </Only>
+          }
+        />
+        <Route
+          path="fee-collection"
+          element={
+            <Only roles={ADMIN}>
+              <FeeCollectionPage />
+            </Only>
+          }
+        />
+        <Route
+          path="accounts"
+          element={
+            <Only roles={ADMIN}>
+              <AccountsPage />
             </Only>
           }
         />
