@@ -112,13 +112,15 @@ export function TextField({ label, error, hint, ...props }) {
   )
 }
 
-export function SelectField({ label, error, options, ...props }) {
+export function SelectField({ label, error, options, children, ...props }) {
   const id = useId()
   return (
     <div>
-      <label htmlFor={id} className="block text-sm font-medium text-gray-700">
-        {label}
-      </label>
+      {label && (
+        <label htmlFor={id} className="block text-sm font-medium text-gray-700">
+          {label}
+        </label>
+      )}
       <select
         id={id}
         className={`mt-1 block w-full rounded-lg border bg-white px-3 py-2 text-sm shadow-sm outline-none focus:ring-2 focus:ring-indigo-500 ${
@@ -126,11 +128,13 @@ export function SelectField({ label, error, options, ...props }) {
         }`}
         {...props}
       >
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
+        {options
+          ? options.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))
+          : children}
       </select>
       {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
     </div>

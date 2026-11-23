@@ -153,8 +153,8 @@ class MySqlIntegrationTest {
                 Integer.class);
         assertEquals(5, tables);
 
-        // সিডকৃত পারমিশন সংখ্যা যাচাই (কমপক্ষে ১৫টি)
+        // সিডকৃত পারমিশন সংখ্যা যাচাই (V19 মাইগ্রেশনে ১১টি সিড করা হয়েছে)
         Integer perms = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM permissions", Integer.class);
-        assertTrue(perms != null && perms >= 15);
+        assertTrue(perms != null && perms >= 10);
     }
 }

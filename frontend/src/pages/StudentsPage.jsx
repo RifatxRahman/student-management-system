@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import ClassSectionFields from '../components/ClassSectionFields.jsx'
+import StudentBulkImportModal from '../components/StudentBulkImportModal.jsx'
 import { Pagination } from '../components/extra.jsx'
 import { Badge, Button, Card, EmptyState, LoadState, PageHeader, SelectField, Table, TextField, Td } from '../components/ui.jsx'
 import { useDebounce } from '../hooks/useDebounce.js'
@@ -14,7 +15,12 @@ export default function StudentsPage() {
   const navigate = useNavigate()
   const [filters, setFilters] = useState(EMPTY_FILTERS)
   const [page, setPage] = useState(0)
+  const [showImportModal, setShowImportModal] = useState(false)
+  const [exporting, setExporting] = useState(false)
   const q = useDebounce(filters.q.trim())
+
+  const sessions = useQuery('/api/sessions')
+  const activeSession = (sessions.data ?? []).find((s) => s.active)
 
   // ছাঁকনি বদলালে সবসময় প্রথম পাতায় ফিরি
   function update(patch) {
@@ -28,7 +34,49 @@ export default function StudentsPage() {
   if (filters.classId) params.set('classId', filters.classId)
   if (filters.sectionId) params.set('sectionId', filters.sectionId)
 
-  const { data, error, loading } = useQuery(`/api/students?${params}`)
+  const { data, error, loading, refetch } = useQuery(`/api/students?${params}`)
+
+  async function handleExport() {
+    if (!filters.classId) {
+      alert('এক্সেল ফাইল এক্সপোর্ট করতে অনুগ্রহ করে নিচের ফিল্টার থেকে একটি ক্লাস নির্বাচন করুন।')
+      return
+    }
+    if (!activeSession) {
+      alert('কোনো সক্রিয় শিক্ষাবর্ষ/সেশন পাওয়া যায়নি।')
+      return
+    }
+
+    try {
+      setExporting(true)
+      const exportParams = new URLSearchParams({
+        sessionId: String(activeSession.id),
+        classId: filters.classId,
+      })
+      if (filters.sectionId) {
+        exportParams.set('sectionId', filters.sectionId)
+      }
+
+      const token = window.__accessToken || localStorage.getItem('token')
+      const res = await fetch(`/api/students/export?${exportParams}`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      })
+      if (!res.ok) throw new Error('এক্সেল ফাইল তৈরিতে ব্যর্থ হয়েছে')
+
+      const blob = await res.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `students_class_${filters.classId}.xlsx`
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      window.URL.revokeObjectURL(url)
+    } catch (err) {
+      alert(err.message || 'এক্সপোর্ট করতে সমস্যা হয়েছে')
+    } finally {
+      setExporting(false)
+    }
+  }
 
   return (
     <>
@@ -36,7 +84,22 @@ export default function StudentsPage() {
         title="শিক্ষার্থী"
         subtitle="নাম বা আইডি দিয়ে খুঁজুন, ক্লাস ও অবস্থা দিয়ে ছেঁকে নিন"
         action={
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant="secondary"
+              onClick={handleExport}
+              disabled={exporting}
+              title="নির্বাচিত ক্লাসের শিক্ষার্থীদের এক্সেল ফাইলে সেভ করুন"
+            >
+              {exporting ? 'প্রস্তুত হচ্ছে...' : '📊 এক্সেল এক্সপোর্ট'}
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => setShowImportModal(true)}
+              title="এক্সেল ফাইল আপলোড করে একসঙ্গে অনেক শিক্ষার্থী ভর্তি করুন"
+            >
+              📥 বাল্ক ইমপোর্ট
+            </Button>
             <Button variant="secondary" onClick={() => navigate('/students/deleted')}>
               মোছা শিক্ষার্থী
             </Button>
@@ -107,6 +170,15 @@ export default function StudentsPage() {
           )}
         </LoadState>
       </Card>
+
+      {showImportModal && (
+        <StudentBulkImportModal
+          onClose={() => setShowImportModal(false)}
+          onSuccess={() => {
+            if (refetch) refetch()
+          }}
+        />
+      )}
     </>
   )
 }

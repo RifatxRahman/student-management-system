@@ -197,6 +197,9 @@ export default function NotificationsPage() {
   const { data: classes } = useQuery('/api/classes')
   const { data: templates, reload: reloadTemplates } = useQuery('/api/notification-templates')
   const { data: campaigns, reload: reloadCampaigns } = useQuery('/api/notification-campaigns')
+  const { data: campSections } = useQuery(
+    campAudience === 'SECTION' && campClassId ? `/api/classes/${campClassId}/sections` : null
+  )
 
   // Log View State
   const [logStatus, setLogStatus] = useState('')
@@ -399,7 +402,11 @@ export default function NotificationsPage() {
                   <SelectField
                     label="টার্গেট প্রাপক গ্রুপ"
                     value={campAudience}
-                    onChange={(e) => setCampAudience(e.target.value)}
+                    onChange={(e) => {
+                      setCampAudience(e.target.value)
+                      if (e.target.value !== 'SECTION') setCampSectionId('')
+                      if (e.target.value === 'ALL' || e.target.value === 'FEE_DEFAULTERS') setCampClassId('')
+                    }}
                     required
                   >
                     {AUDIENCE_OPTIONS.map((a) => (
@@ -436,6 +443,42 @@ export default function NotificationsPage() {
                       </option>
                     ))}
                   </SelectField>
+                )}
+
+                {campAudience === 'SECTION' && (
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <SelectField
+                      label="শ্রেণি নির্বাচন"
+                      value={campClassId}
+                      onChange={(e) => {
+                        setCampClassId(e.target.value)
+                        setCampSectionId('')
+                      }}
+                      required
+                    >
+                      <option value="">শ্রেণি পছন্দ করুন</option>
+                      {classes?.map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.name}
+                        </option>
+                      ))}
+                    </SelectField>
+
+                    <SelectField
+                      label="সেকশন নির্বাচন"
+                      value={campSectionId}
+                      onChange={(e) => setCampSectionId(e.target.value)}
+                      required
+                      disabled={!campClassId}
+                    >
+                      <option value="">{campClassId ? 'সেকশন পছন্দ করুন' : 'আগে শ্রেণি পছন্দ করুন'}</option>
+                      {campSections?.map((s) => (
+                        <option key={s.id} value={s.id}>
+                          {s.name}
+                        </option>
+                      ))}
+                    </SelectField>
+                  </div>
                 )}
 
                 <div>
