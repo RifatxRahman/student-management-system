@@ -523,6 +523,37 @@ export default function FeeCollectionPage() {
   const [fineModal, setFineModal] = useState({ open: false, invoice: null })
   const [detailModal, setDetailModal] = useState({ open: false, invoiceId: null })
   const [waiverModal, setWaiverModal] = useState(false)
+  const [exporting, setExporting] = useState(false)
+
+  const handleExportInvoices = async () => {
+    try {
+      setExporting(true)
+      const params = new URLSearchParams()
+      if (effectiveSessionId) params.set('sessionId', effectiveSessionId)
+      if (filterClassId) params.set('classId', filterClassId)
+      if (filterStatus) params.set('status', filterStatus)
+      if (filterMonth) params.set('billingMonth', filterMonth)
+
+      const token = window.__accessToken || localStorage.getItem('token')
+      const res = await fetch(`/api/invoices/export?${params.toString()}`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      })
+      if (!res.ok) throw new Error('ইনভয়েস এক্সেল ফাইল তৈরিতে ব্যর্থ হয়েছে')
+      const blob = await res.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `invoices_report_${new Date().toISOString().slice(0, 10)}.xlsx`
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      window.URL.revokeObjectURL(url)
+    } catch (err) {
+      alert(err.message || 'এক্সপোর্ট করতে সমস্যা হয়েছে')
+    } finally {
+      setExporting(false)
+    }
+  }
 
   // Bulk Invoice Form State
   const todayStr = new Date().toISOString().split('T')[0]
@@ -699,10 +730,10 @@ export default function FeeCollectionPage() {
                 />
               </div>
 
-              <div>
+              <div className="flex gap-2">
                 <Button
                   variant="secondary"
-                  className="w-full"
+                  className="flex-1"
                   onClick={() => {
                     setFilterClassId('')
                     setFilterStatus('')
@@ -710,7 +741,15 @@ export default function FeeCollectionPage() {
                     reloadInvoices()
                   }}
                 >
-                  রিসেট ফিল্টার
+                  রিসেট
+                </Button>
+                <Button
+                  variant="secondary"
+                  className="flex-1 border-emerald-600 text-emerald-700 hover:bg-emerald-50"
+                  onClick={handleExportInvoices}
+                  disabled={exporting}
+                >
+                  {exporting ? 'তৈরি...' : '📥 এক্সেল'}
                 </Button>
               </div>
             </div>

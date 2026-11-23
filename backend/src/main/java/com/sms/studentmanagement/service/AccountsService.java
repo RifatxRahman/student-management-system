@@ -16,6 +16,7 @@ import com.sms.studentmanagement.repository.ExpenseCategoryRepository;
 import com.sms.studentmanagement.repository.ExpenseRepository;
 import com.sms.studentmanagement.repository.FeePaymentRepository;
 import com.sms.studentmanagement.repository.InvoiceRepository;
+import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
@@ -26,6 +27,18 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -305,5 +318,95 @@ public class AccountsService {
     private ExpenseCategory findCategory(Long id) {
         return categoryRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("ব্যয়ের খাত পাওয়া যায়নি: " + id));
+    }
+
+    @Transactional(readOnly = true)
+    public byte[] exportExpensesToExcel(Long categoryId, LocalDate startDate, LocalDate endDate) {
+        List<Expense> list = expenseRepository.searchExpenses(categoryId, startDate, endDate);
+
+        try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            Sheet sheet = workbook.createSheet("Expenses");
+
+            CellStyle headerStyle = workbook.createCellStyle();
+            Font headerFont = workbook.createFont();
+            headerFont.setBold(true);
+            headerFont.setColor(IndexedColors.WHITE.getIndex());
+            headerFont.setFontHeightInPoints((short) 11);
+            headerStyle.setFont(headerFont);
+            headerStyle.setFillForegroundColor(IndexedColors.ROYAL_BLUE.getIndex());
+            headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            headerStyle.setAlignment(HorizontalAlignment.CENTER);
+            headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            setThinBorders(headerStyle);
+
+            CellStyle dataStyle = workbook.createCellStyle();
+            dataStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            setThinBorders(dataStyle);
+
+            CellStyle numStyle = workbook.createCellStyle();
+            numStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            numStyle.setAlignment(HorizontalAlignment.RIGHT);
+            setThinBorders(numStyle);
+
+            String[] headers = {
+                    "ক্রমিক", "ভাউচার নং", "ব্যয়ের খাত", "বিবরণ/শিরোনাম",
+                    "তারিখ", "পরিমাণ (৳)", "পেমেন্ট মাধ্যম", "প্রাপক",
+                    "রেফারেন্স নং", "নোট"
+            };
+
+            Row headerRow = sheet.createRow(0);
+            headerRow.setHeightInPoints(26);
+            for (int i = 0; i < headers.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(headers[i]);
+                cell.setCellStyle(headerStyle);
+            }
+
+            for (int i = 0; i < list.size(); i++) {
+                Expense exp = list.get(i);
+                Row row = sheet.createRow(i + 1);
+                row.setHeightInPoints(20);
+
+                row.createCell(0).setCellValue(i + 1);
+                row.createCell(1).setCellValue(exp.getVoucherNumber() != null ? exp.getVoucherNumber() : "");
+                row.createCell(2).setCellValue(exp.getCategory() != null ? exp.getCategory().getName() : "");
+                row.createCell(3).setCellValue(exp.getTitle() != null ? exp.getTitle() : "");
+                row.createCell(4).setCellValue(exp.getExpenseDate() != null ? exp.getExpenseDate().toString() : "");
+
+                Cell amountCell = row.createCell(5);
+                amountCell.setCellValue(exp.getAmount() != null ? exp.getAmount().doubleValue() : 0.0);
+                amountCell.setCellStyle(numStyle);
+
+                row.createCell(6).setCellValue(exp.getPaymentMethod() != null ? exp.getPaymentMethod().getBanglaLabel() : "");
+                row.createCell(7).setCellValue(exp.getPayeeName() != null ? exp.getPayeeName() : "");
+                row.createCell(8).setCellValue(exp.getReferenceNo() != null ? exp.getReferenceNo() : "");
+                row.createCell(9).setCellValue(exp.getNotes() != null ? exp.getNotes() : "");
+
+                for (int col = 0; col < headers.length; col++) {
+                    if (col != 5) {
+                        Cell c = row.getCell(col);
+                        if (c != null) c.setCellStyle(dataStyle);
+                    }
+                }
+            }
+
+            for (int i = 0; i < headers.length; i++) {
+                sheet.autoSizeColumn(i);
+                int currentWidth = sheet.getColumnWidth(i);
+                sheet.setColumnWidth(i, Math.max(currentWidth + 1000, 3200));
+            }
+
+            workbook.write(out);
+            return out.toByteArray();
+        } catch (Exception ex) {
+            throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "খরচের এক্সেল ফাইল তৈরিতে ব্যর্থ হয়েছে: " + ex.getMessage());
+        }
+    }
+
+    private void setThinBorders(CellStyle style) {
+        style.setBorderTop(BorderStyle.THIN);
+        style.setBorderBottom(BorderStyle.THIN);
+        style.setBorderLeft(BorderStyle.THIN);
+        style.setBorderRight(BorderStyle.THIN);
     }
 }

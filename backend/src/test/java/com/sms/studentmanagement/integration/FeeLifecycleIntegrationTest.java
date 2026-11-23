@@ -42,6 +42,7 @@ import com.sms.studentmanagement.repository.StudentRepository;
 import com.sms.studentmanagement.repository.StudentWaiverRepository;
 import com.sms.studentmanagement.service.AuditService;
 import com.sms.studentmanagement.service.FeeCollectionService;
+import com.sms.studentmanagement.service.NotificationService;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -94,6 +95,9 @@ class FeeLifecycleIntegrationTest {
     @Mock
     AuditService auditService;
 
+    @Mock
+    NotificationService notificationService;
+
     FeeCollectionService feeService;
 
     Student student;
@@ -118,7 +122,8 @@ class FeeLifecycleIntegrationTest {
                 classRepository,
                 sectionRepository,
                 enrollmentRepository,
-                auditService
+                auditService,
+                notificationService
         );
 
         student = new Student();

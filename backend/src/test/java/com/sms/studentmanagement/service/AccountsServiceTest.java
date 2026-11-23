@@ -171,4 +171,30 @@ class AccountsServiceTest {
         assertEquals(PaymentMethod.BKASH, summary.incomeBreakdown().get(0).method());
         assertEquals(new BigDecimal("60.00"), summary.incomeBreakdown().get(0).percentage());
     }
+
+    @Test
+    void exportExpensesToExcel_returnsValidExcelBytes() {
+        ExpenseCategory cat = new ExpenseCategory();
+        cat.setId(1L);
+        cat.setName("অফিস সামগ্রী");
+
+        Expense exp = new Expense();
+        exp.setId(10L);
+        exp.setVoucherNumber("EXP-2026-0001");
+        exp.setCategory(cat);
+        exp.setTitle("কাগজ ও কলম ক্রয়");
+        exp.setExpenseDate(LocalDate.now());
+        exp.setAmount(new BigDecimal("2500.00"));
+        exp.setPaymentMethod(PaymentMethod.CASH);
+        exp.setPayeeName("মেসার্স পেপার হাউস");
+        exp.setReferenceNo("REF-1234");
+        exp.setNotes("বার্ষিক পরীক্ষার খাতা");
+
+        when(expenseRepository.searchExpenses(any(), any(), any())).thenReturn(List.of(exp));
+
+        byte[] bytes = service.exportExpensesToExcel(null, null, null);
+
+        assertNotNull(bytes);
+        assertTrue(bytes.length > 0);
+    }
 }

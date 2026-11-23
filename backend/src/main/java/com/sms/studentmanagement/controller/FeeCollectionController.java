@@ -14,7 +14,9 @@ import com.sms.studentmanagement.service.FeeCollectionService;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -65,6 +67,21 @@ public class FeeCollectionController {
             @RequestParam(required = false) InvoiceStatus status,
             @RequestParam(required = false) String billingMonth) {
         return service.searchInvoices(sessionId, classId, sectionId, studentId, status, billingMonth);
+    }
+
+    @GetMapping("/invoices/export")
+    public ResponseEntity<byte[]> exportInvoices(
+            @RequestParam(required = false) Long sessionId,
+            @RequestParam(required = false) Long classId,
+            @RequestParam(required = false) Long sectionId,
+            @RequestParam(required = false) Long studentId,
+            @RequestParam(required = false) InvoiceStatus status,
+            @RequestParam(required = false) String billingMonth) {
+        byte[] excelBytes = service.exportInvoicesToExcel(sessionId, classId, sectionId, studentId, status, billingMonth);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"invoices_report.xlsx\"")
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .body(excelBytes);
     }
 
     @GetMapping("/invoices/{id}")

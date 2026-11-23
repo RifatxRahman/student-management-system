@@ -269,6 +269,36 @@ export default function AccountsPage() {
   // Modals state
   const [catModal, setCatModal] = useState({ open: false, item: null })
   const [voucherModal, setVoucherModal] = useState({ open: false, item: null })
+  const [exporting, setExporting] = useState(false)
+
+  async function handleExportExpenses() {
+    try {
+      setExporting(true)
+      const params = new URLSearchParams()
+      if (filterCatId) params.set('categoryId', filterCatId)
+      if (filterStartDate) params.set('startDate', filterStartDate)
+      if (filterEndDate) params.set('endDate', filterEndDate)
+
+      const token = window.__accessToken || localStorage.getItem('token')
+      const res = await fetch(`/api/expenses/export?${params.toString()}`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      })
+      if (!res.ok) throw new Error('খরচের এক্সেল ফাইল তৈরিতে ব্যর্থ হয়েছে')
+      const blob = await res.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `expenses_report_${new Date().toISOString().slice(0, 10)}.xlsx`
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      window.URL.revokeObjectURL(url)
+    } catch (err) {
+      alert(err.message || 'এক্সপোর্ট করতে সমস্যা হয়েছে')
+    } finally {
+      setExporting(false)
+    }
+  }
 
   async function deleteExpense(id) {
     if (!window.confirm('আপনি কি এই খরচ ভাউচারটি মুছে ফেলতে চান?')) return
@@ -561,10 +591,10 @@ export default function AccountsPage() {
                 />
               </div>
 
-              <div>
+              <div className="flex gap-2">
                 <Button
                   variant="secondary"
-                  className="w-full"
+                  className="flex-1"
                   onClick={() => {
                     setFilterCatId('')
                     setFilterStartDate('')
@@ -572,7 +602,15 @@ export default function AccountsPage() {
                     reloadExpenses()
                   }}
                 >
-                  রিসেট ফিল্টার
+                  রিসেট
+                </Button>
+                <Button
+                  variant="secondary"
+                  className="flex-1 border-emerald-600 text-emerald-700 hover:bg-emerald-50"
+                  onClick={handleExportExpenses}
+                  disabled={exporting}
+                >
+                  {exporting ? 'তৈরি...' : '📥 এক্সেল'}
                 </Button>
               </div>
             </div>

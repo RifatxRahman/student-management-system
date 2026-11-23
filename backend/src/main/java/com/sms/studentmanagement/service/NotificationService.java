@@ -5,6 +5,7 @@ import com.sms.studentmanagement.config.SmsProperties;
 import com.sms.studentmanagement.dto.NotificationDtos.DispatchResult;
 import com.sms.studentmanagement.dto.NotificationDtos.NotificationResponse;
 import com.sms.studentmanagement.dto.PageResponse;
+import com.sms.studentmanagement.entity.FeePayment;
 import com.sms.studentmanagement.entity.Guardian;
 import com.sms.studentmanagement.entity.NotificationLog;
 import com.sms.studentmanagement.entity.NotificationStatus;
@@ -16,6 +17,7 @@ import com.sms.studentmanagement.exception.NotFoundException;
 import com.sms.studentmanagement.repository.NotificationLogRepository;
 import com.sms.studentmanagement.repository.StudentGuardianRepository;
 import com.sms.studentmanagement.util.SmsCalculator;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
@@ -94,6 +96,68 @@ public class NotificationService {
         repository.deleteByStudentIdAndNotificationTypeAndEventDateAndStatusIn(
                 studentId, NotificationType.ABSENCE, date,
                 List.of(NotificationStatus.PENDING, NotificationStatus.FAILED));
+    }
+
+    /** ফি পেমেন্ট সফল হলে অভিভাবকের ফোনে তাৎক্ষণিক স্বয়ংক্রিয় রসিদ এসএমএস প্রেরণ। */
+    @Transactional
+    public void sendPaymentReceiptSms(Student student, FeePayment payment, BigDecimal remainingDue) {
+        if (student == null || payment == null) {
+            return;
+        }
+        List<StudentGuardian> links = studentGuardianRepository.findAllWithGuardian(student.getId());
+        Guardian guardian = links.isEmpty() ? null : links.get(0).getGuardian();
+        String phone = (guardian != null && guardian.getPhone() != null && !guardian.getPhone().isBlank())
+                ? guardian.getPhone() : student.getPhone();
+
+        if (phone == null || phone.isBlank()) {
+            log.info("No phone number found for student {}, skipping payment SMS", student.getId());
+            return;
+        }
+
+        String schoolName = institutionProperties.getName();
+        String className = payment.getInvoice() != null && payment.getInvoice().getSchoolClass() != null
+                ? payment.getInvoice().getSchoolClass().getName() : "";
+        String cleanAmount = payment.getAmount() != null
+                ? payment.getAmount().stripTrailingZeros().toPlainString() : "0";
+        String cleanDue = remainingDue != null
+                ? remainingDue.stripTrailingZeros().toPlainString() : "0";
+
+        String message = String.format(
+                "[%s] প্রিয় অভিভাবক, আপনার সন্তান %s (%s)-এর ৳%s ফি সফলভাবে গ্রহণ করা হয়েছে। রসিদ নং: %s। অবশিষ্ট বকেয়া: ৳%s। ধন্যবাদ।",
+                schoolName,
+                student.getFullName(),
+                className,
+                cleanAmount,
+                payment.getReceiptNumber(),
+                cleanDue
+        );
+
+        int parts = SmsCalculator.calculateParts(message);
+        String lang = SmsCalculator.isUnicode(message) ? "BN" : "EN";
+
+        NotificationLog logEntry = new NotificationLog();
+        logEntry.setStudent(student);
+        logEntry.setGuardian(guardian);
+        logEntry.setNotificationType(NotificationType.PAYMENT_RECEIPT);
+        logEntry.setEventDate(LocalDate.now());
+        logEntry.setPhone(phone);
+        logEntry.setMessage(message);
+        logEntry.setLanguage(lang);
+        logEntry.setSmsParts(parts);
+        logEntry.setAttempts(1);
+
+        try {
+            smsSender.send(phone, message);
+            logEntry.setStatus(NotificationStatus.SENT);
+            logEntry.setSentAt(Instant.now());
+        } catch (Exception ex) {
+            log.warn("Payment receipt SMS send failed to {}: {}", phone, ex.getMessage());
+            logEntry.setStatus(NotificationStatus.FAILED);
+            logEntry.setLastError(ex.getMessage() != null && ex.getMessage().length() > 250
+                    ? ex.getMessage().substring(0, 250) : ex.getMessage());
+        }
+
+        repository.save(logEntry);
     }
 
     // ---------- পাঠানো ----------

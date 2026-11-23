@@ -91,6 +91,9 @@ class FeeCollectionServiceTest {
     @Mock
     AuditService auditService;
 
+    @Mock
+    NotificationService notificationService;
+
     FeeCollectionService service;
 
     @BeforeEach
@@ -107,7 +110,8 @@ class FeeCollectionServiceTest {
                 classRepository,
                 sectionRepository,
                 enrollmentRepository,
-                auditService
+                auditService,
+                notificationService
         );
     }
 
@@ -320,5 +324,82 @@ class FeeCollectionServiceTest {
         assertEquals(new BigDecimal("1250.00"), res.netAmount());
         assertEquals(new BigDecimal("1250.00"), res.dueAmount());
         verify(auditService).log(any(), any(), any(), any());
+    }
+
+    @Test
+    void collectPayment_triggersPaymentReceiptSms() {
+        Student s = new Student();
+        s.setId(10L);
+        s.setFullName("Tanvir Ahmed");
+        s.setStudentCode("STD-2026-001");
+
+        SchoolClass sc = new SchoolClass();
+        sc.setId(1L);
+        sc.setName("Class 8");
+
+        Invoice inv = new Invoice();
+        inv.setId(500L);
+        inv.setStudent(s);
+        inv.setSchoolClass(sc);
+        inv.setNetAmount(new BigDecimal("1000.00"));
+        inv.setPaidAmount(BigDecimal.ZERO);
+        inv.setDueAmount(new BigDecimal("1000.00"));
+        inv.setStatus(InvoiceStatus.UNPAID);
+
+        when(invoiceRepository.findByIdWithDetails(500L)).thenReturn(Optional.of(inv));
+        when(paymentRepository.countByReceiptPrefix(org.mockito.ArgumentMatchers.anyString())).thenReturn(0L);
+        when(paymentRepository.save(any(FeePayment.class))).thenAnswer(invocation -> {
+            FeePayment fp = invocation.getArgument(0);
+            fp.setId(1L);
+            return fp;
+        });
+
+        PaymentCollectionRequest req = new PaymentCollectionRequest(
+                500L,
+                new BigDecimal("1000.00"),
+                com.sms.studentmanagement.entity.PaymentMethod.CASH,
+                null,
+                "সম্পূর্ণ ফি জমা"
+        );
+
+        PaymentReceiptResponse receipt = service.collectPayment(req, "ADMIN");
+
+        assertNotNull(receipt);
+        assertEquals(new BigDecimal("1000.00"), receipt.amount());
+        assertEquals(InvoiceStatus.PAID, inv.getStatus());
+        org.mockito.Mockito.verify(notificationService).sendPaymentReceiptSms(org.mockito.ArgumentMatchers.eq(s), any(FeePayment.class), org.mockito.ArgumentMatchers.eq(new BigDecimal("0.00")));
+    }
+
+    @Test
+    void exportInvoicesToExcel_returnsValidExcelBytes() {
+        Student s = new Student();
+        s.setId(10L);
+        s.setFullName("Tanvir Ahmed");
+        s.setStudentCode("STD-2026-001");
+
+        SchoolClass sc = new SchoolClass();
+        sc.setId(1L);
+        sc.setName("Class 8");
+
+        Invoice inv = new Invoice();
+        inv.setId(500L);
+        inv.setInvoiceNumber("INV-2026-0001");
+        inv.setStudent(s);
+        inv.setSchoolClass(sc);
+        inv.setNetAmount(new BigDecimal("1000.00"));
+        inv.setPaidAmount(new BigDecimal("500.00"));
+        inv.setDueAmount(new BigDecimal("500.00"));
+        inv.setStatus(InvoiceStatus.PARTIAL);
+        inv.setBillingMonth("2026-11");
+        inv.setIssueDate(LocalDate.now());
+        inv.setDueDate(LocalDate.now().plusDays(15));
+
+        when(invoiceRepository.searchInvoices(any(), any(), any(), any(), any(), any()))
+                .thenReturn(List.of(inv));
+
+        byte[] bytes = service.exportInvoicesToExcel(null, null, null, null, null, null);
+
+        assertNotNull(bytes);
+        org.junit.jupiter.api.Assertions.assertTrue(bytes.length > 0);
     }
 }

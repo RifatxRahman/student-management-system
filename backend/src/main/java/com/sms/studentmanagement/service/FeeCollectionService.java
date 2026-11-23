@@ -38,6 +38,7 @@ import com.sms.studentmanagement.repository.SchoolClassRepository;
 import com.sms.studentmanagement.repository.SectionRepository;
 import com.sms.studentmanagement.repository.StudentRepository;
 import com.sms.studentmanagement.repository.StudentWaiverRepository;
+import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
@@ -47,6 +48,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,6 +80,7 @@ public class FeeCollectionService {
     private final SectionRepository sectionRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final AuditService auditService;
+    private final NotificationService notificationService;
 
     // ==================== 1. Student Waiver Operations ====================
 
@@ -417,6 +431,12 @@ public class FeeCollectionService {
                 invoice.getStudent().getFullName() + " (" + invoice.getStudent().getStudentCode() + ")"
                         + " | রসিদ নং: " + receiptNumber + " | ৳" + payAmt + " (" + payment.getPaymentMethod().getBanglaLabel() + ")");
 
+        try {
+            notificationService.sendPaymentReceiptSms(invoice.getStudent(), savedPayment, updatedDue);
+        } catch (Exception ignored) {
+            // পেমেন্ট সফলভাবে সংরক্ষিত হয়েছে, এসএমএস ফেইল করলেও ট্রানজেকশন ব্যাহত হবে না
+        }
+
         return PaymentReceiptResponse.from(savedPayment);
     }
 
@@ -481,5 +501,106 @@ public class FeeCollectionService {
             responses.add(InvoiceResponse.from(list.get(i)));
         }
         return responses;
+    }
+
+    @Transactional(readOnly = true)
+    public byte[] exportInvoicesToExcel(
+            Long sessionId, Long classId, Long sectionId, Long studentId, InvoiceStatus status, String billingMonth) {
+        List<Invoice> list = invoiceRepository.searchInvoices(sessionId, classId, sectionId, studentId, status, billingMonth);
+
+        try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            Sheet sheet = workbook.createSheet("Invoices");
+
+            CellStyle headerStyle = workbook.createCellStyle();
+            Font headerFont = workbook.createFont();
+            headerFont.setBold(true);
+            headerFont.setColor(IndexedColors.WHITE.getIndex());
+            headerFont.setFontHeightInPoints((short) 11);
+            headerStyle.setFont(headerFont);
+            headerStyle.setFillForegroundColor(IndexedColors.ROYAL_BLUE.getIndex());
+            headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            headerStyle.setAlignment(HorizontalAlignment.CENTER);
+            headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            setThinBorders(headerStyle);
+
+            CellStyle dataStyle = workbook.createCellStyle();
+            dataStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            setThinBorders(dataStyle);
+
+            CellStyle numStyle = workbook.createCellStyle();
+            numStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            numStyle.setAlignment(HorizontalAlignment.RIGHT);
+            setThinBorders(numStyle);
+
+            String[] headers = {
+                    "ক্রমিক", "ইনভয়েস নং", "শিক্ষার্থীর আইডি", "শিক্ষার্থীর নাম",
+                    "শ্রেণি", "শাখা", "বিলিং মাস", "মোট টাকা (৳)", "পরিশোধিত (৳)",
+                    "বকেয়া (৳)", "অবস্থা", "ইস্যুর তারিখ", "শেষ তারিখ"
+            };
+
+            Row headerRow = sheet.createRow(0);
+            headerRow.setHeightInPoints(26);
+            for (int i = 0; i < headers.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(headers[i]);
+                cell.setCellStyle(headerStyle);
+            }
+
+            for (int i = 0; i < list.size(); i++) {
+                Invoice inv = list.get(i);
+                Row row = sheet.createRow(i + 1);
+                row.setHeightInPoints(20);
+
+                row.createCell(0).setCellValue(i + 1);
+                row.createCell(1).setCellValue(inv.getInvoiceNumber() != null ? inv.getInvoiceNumber() : "");
+                row.createCell(2).setCellValue(inv.getStudent() != null && inv.getStudent().getStudentCode() != null ? inv.getStudent().getStudentCode() : "");
+                row.createCell(3).setCellValue(inv.getStudent() != null && inv.getStudent().getFullName() != null ? inv.getStudent().getFullName() : "");
+                row.createCell(4).setCellValue(inv.getSchoolClass() != null && inv.getSchoolClass().getName() != null ? inv.getSchoolClass().getName() : "");
+                row.createCell(5).setCellValue(inv.getSection() != null && inv.getSection().getName() != null ? inv.getSection().getName() : "");
+                row.createCell(6).setCellValue(inv.getBillingMonth() != null ? inv.getBillingMonth() : "");
+
+                Cell netCell = row.createCell(7);
+                netCell.setCellValue(inv.getNetAmount() != null ? inv.getNetAmount().doubleValue() : 0.0);
+                netCell.setCellStyle(numStyle);
+
+                Cell paidCell = row.createCell(8);
+                paidCell.setCellValue(inv.getPaidAmount() != null ? inv.getPaidAmount().doubleValue() : 0.0);
+                paidCell.setCellStyle(numStyle);
+
+                Cell dueCell = row.createCell(9);
+                dueCell.setCellValue(inv.getDueAmount() != null ? inv.getDueAmount().doubleValue() : 0.0);
+                dueCell.setCellStyle(numStyle);
+
+                String statusLabel = inv.getStatus() != null ? inv.getStatus().getBanglaLabel() : "";
+                row.createCell(10).setCellValue(statusLabel);
+                row.createCell(11).setCellValue(inv.getIssueDate() != null ? inv.getIssueDate().toString() : "");
+                row.createCell(12).setCellValue(inv.getDueDate() != null ? inv.getDueDate().toString() : "");
+
+                for (int col = 0; col < headers.length; col++) {
+                    if (col != 7 && col != 8 && col != 9) {
+                        Cell c = row.getCell(col);
+                        if (c != null) c.setCellStyle(dataStyle);
+                    }
+                }
+            }
+
+            for (int i = 0; i < headers.length; i++) {
+                sheet.autoSizeColumn(i);
+                int currentWidth = sheet.getColumnWidth(i);
+                sheet.setColumnWidth(i, Math.max(currentWidth + 1000, 3200));
+            }
+
+            workbook.write(out);
+            return out.toByteArray();
+        } catch (Exception ex) {
+            throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "ইনভয়েস এক্সেল ফাইল তৈরিতে ব্যর্থ হয়েছে: " + ex.getMessage());
+        }
+    }
+
+    private void setThinBorders(CellStyle style) {
+        style.setBorderTop(BorderStyle.THIN);
+        style.setBorderBottom(BorderStyle.THIN);
+        style.setBorderLeft(BorderStyle.THIN);
+        style.setBorderRight(BorderStyle.THIN);
     }
 }
