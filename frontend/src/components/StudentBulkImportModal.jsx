@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Alert, Badge, Button, Modal, SelectField, Spinner, Table, Td } from './ui.jsx'
+import { Alert, Button, Modal, SelectField, Spinner, Table, Td } from './ui.jsx'
 import { useQuery } from '../hooks/useQuery.js'
 
 export default function StudentBulkImportModal({ onClose, onSuccess }) {
