@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import com.sms.studentmanagement.dto.FeeCollectionDtos.ApplyFineRequest;
 import com.sms.studentmanagement.dto.FeeCollectionDtos.BulkInvoiceRequest;
 import com.sms.studentmanagement.dto.FeeCollectionDtos.BulkInvoiceResponse;
+import com.sms.studentmanagement.dto.FeeCollectionDtos.InvoiceResponse;
 import com.sms.studentmanagement.dto.FeeCollectionDtos.PaymentCollectionRequest;
 import com.sms.studentmanagement.dto.FeeCollectionDtos.PaymentReceiptResponse;
 import com.sms.studentmanagement.entity.AcademicSession;
@@ -288,8 +289,25 @@ class FeeCollectionServiceTest {
         inv.setStatus(InvoiceStatus.UNPAID);
 
         Student student = new Student();
+        student.setId(10L);
+        student.setStudentCode("2026-00010");
         student.setFullName("Amina");
         inv.setStudent(student);
+
+        AcademicSession session = new AcademicSession();
+        session.setId(1L);
+        session.setName("2026");
+        inv.setSession(session);
+
+        SchoolClass sc = new SchoolClass();
+        sc.setId(10L);
+        sc.setName("Class 10");
+        inv.setSchoolClass(sc);
+
+        Section sec = new Section();
+        sec.setId(101L);
+        sec.setName("Section A");
+        inv.setSection(sec);
 
         when(invoiceRepository.findByIdWithDetails(300L)).thenReturn(Optional.of(inv));
         when(invoiceRepository.save(any(Invoice.class))).thenAnswer(i -> i.getArgument(0));

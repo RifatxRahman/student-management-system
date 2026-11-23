@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { api } from '../api/client.js'
 import TeacherPhoto from '../components/TeacherPhoto.jsx'
 import { Alert, Badge, Button, Card, EmptyState, LoadState, PageHeader, Table, Td } from '../components/ui.jsx'
@@ -15,42 +15,47 @@ const STATUSES = [
 export default function TeacherAttendancePage() {
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10))
   const sheet = useQuery(`/api/teacher-attendance/sheet?date=${date}`)
-  const [rows, setRows] = useState([])
+  const [rowPatches, setRowPatches] = useState({ date: '', byId: {} })
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
 
-  useEffect(() => {
-    if (sheet.data?.rows) {
-      setRows(
-        sheet.data.rows.map((r) => ({
-          teacherId: r.teacherId,
-          employeeId: r.employeeId,
-          teacherName: r.teacherName,
-          designation: r.designation,
-          status: r.status || (r.hasApprovedLeave ? 'LEAVE' : 'PRESENT'),
-          inTime: r.inTime || '',
-          outTime: r.outTime || '',
-          remark: r.remark || '',
-          hasApprovedLeave: r.hasApprovedLeave,
-          leaveType: r.leaveType,
-        }))
-      )
-    }
-  }, [sheet.data])
+  const patches = rowPatches.date === date ? rowPatches.byId : {}
+  const rows = (sheet.data?.rows ?? []).map((r) => ({
+    teacherId: r.teacherId,
+    employeeId: r.employeeId,
+    teacherName: r.teacherName,
+    designation: r.designation,
+    status: r.status || (r.hasApprovedLeave ? 'LEAVE' : 'PRESENT'),
+    inTime: r.inTime || '',
+    outTime: r.outTime || '',
+    remark: r.remark || '',
+    hasApprovedLeave: r.hasApprovedLeave,
+    leaveType: r.leaveType,
+    ...patches[r.teacherId],
+  }))
 
   function updateRow(teacherId, patch) {
-    setRows((prev) =>
-      prev.map((r) => (r.teacherId === teacherId ? { ...r, ...patch } : r))
-    )
+    setRowPatches((prev) => {
+      const byId = prev.date === date ? prev.byId : {}
+      return {
+        date,
+        byId: {
+          ...byId,
+          [teacherId]: { ...byId[teacherId], ...patch },
+        },
+      }
+    })
   }
 
   function markAllPresent() {
-    setRows((prev) =>
-      prev.map((r) =>
-        r.hasApprovedLeave ? r : { ...r, status: 'PRESENT' }
-      )
-    )
+    setRowPatches((prev) => {
+      const byId = prev.date === date ? { ...prev.byId } : {}
+      for (const r of rows) {
+        if (!r.hasApprovedLeave) byId[r.teacherId] = { ...byId[r.teacherId], status: 'PRESENT' }
+      }
+      return { date, byId }
+    })
   }
 
   async function save() {
@@ -70,6 +75,7 @@ export default function TeacherAttendancePage() {
       }
       await api('/api/teacher-attendance/sheet', { method: 'POST', body })
       setMessage('শিক্ষক হাজিরা সফলভাবে সংরক্ষিত হয়েছে।')
+      setRowPatches({ date, byId: {} })
       sheet.reload()
     } catch (err) {
       setError(err.message)

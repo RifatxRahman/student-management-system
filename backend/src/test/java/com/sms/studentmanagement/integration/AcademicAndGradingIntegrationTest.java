@@ -102,7 +102,11 @@ class AcademicAndGradingIntegrationTest {
                 auditService
         );
 
-        adminActor = new Actor(1L, "admin", Role.ADMIN, true);
+        adminActor = new Actor(1L, true);
+
+        AcademicSession session = new AcademicSession();
+        session.setId(1L);
+        session.setName("2026");
 
         SchoolClass sc = new SchoolClass();
         sc.setId(10L);
@@ -116,8 +120,9 @@ class AcademicAndGradingIntegrationTest {
         exam = new Exam();
         exam.setId(201L);
         exam.setName("বার্ষিক পরীক্ষা ২০২৬");
+        exam.setSession(session);
         exam.setSchoolClass(sc);
-        exam.setPublished(false);
+        exam.setStatus(com.sms.studentmanagement.entity.ExamStatus.DRAFT);
 
         Subject subject = new Subject();
         subject.setId(301L);
@@ -145,53 +150,53 @@ class AcademicAndGradingIntegrationTest {
 
         // জাতীয় গ্রেডিং স্কেল তৈরি
         standardGradeBands = new ArrayList<>();
-        standardGradeBands.add(new GradeBand("A+", new BigDecimal("5.00"), new BigDecimal("80.00"), new BigDecimal("100.00")));
-        standardGradeBands.add(new GradeBand("A", new BigDecimal("4.00"), new BigDecimal("70.00"), new BigDecimal("79.99")));
-        standardGradeBands.add(new GradeBand("A-", new BigDecimal("3.50"), new BigDecimal("60.00"), new BigDecimal("69.99")));
-        standardGradeBands.add(new GradeBand("B", new BigDecimal("3.00"), new BigDecimal("50.00"), new BigDecimal("59.99")));
-        standardGradeBands.add(new GradeBand("C", new BigDecimal("2.00"), new BigDecimal("40.00"), new BigDecimal("49.99")));
-        standardGradeBands.add(new GradeBand("D", new BigDecimal("1.00"), new BigDecimal("33.00"), new BigDecimal("39.99")));
-        standardGradeBands.add(new GradeBand("F", new BigDecimal("0.00"), new BigDecimal("0.00"), new BigDecimal("32.99")));
+        standardGradeBands.add(new GradeBand(new BigDecimal("80.00"), "A+", new BigDecimal("5.00")));
+        standardGradeBands.add(new GradeBand(new BigDecimal("70.00"), "A", new BigDecimal("4.00")));
+        standardGradeBands.add(new GradeBand(new BigDecimal("60.00"), "A-", new BigDecimal("3.50")));
+        standardGradeBands.add(new GradeBand(new BigDecimal("50.00"), "B", new BigDecimal("3.00")));
+        standardGradeBands.add(new GradeBand(new BigDecimal("40.00"), "C", new BigDecimal("2.00")));
+        standardGradeBands.add(new GradeBand(new BigDecimal("33.00"), "D", new BigDecimal("1.00")));
+        standardGradeBands.add(new GradeBand(new BigDecimal("0.00"), "F", new BigDecimal("0.00")));
     }
 
     @Test
     void marksEntry_exceedingFullMarks_isRejectedWithBadRequest() {
-        when(examRepository.findById(201L)).thenReturn(Optional.of(exam));
+        when(examRepository.findWithRefs(201L)).thenReturn(Optional.of(exam));
         when(examSubjectRepository.findByExamIdAndSubjectId(201L, 301L)).thenReturn(Optional.of(examSubject));
         when(sectionRepository.findById(101L)).thenReturn(Optional.of(section));
 
         List<Enrollment> roster = new ArrayList<>();
         roster.add(enrollment);
-        when(enrollmentRepository.findBySectionIdAndStatusOrderByRollNumberAscIdAsc(101L, EnrollmentStatus.ACTIVE))
+        when(enrollmentRepository.findInClassAndSession(1L, 10L, EnrollmentStatus.ACTIVE))
                 .thenReturn(roster);
 
         // ফুল মার্কস ১০০ কিন্তু ১০৫ নম্বর দেওয়ার চেষ্টা
         List<MarkEntryRequest> entries = new ArrayList<>();
         entries.add(new MarkEntryRequest(601L, new BigDecimal("105.00"), false));
-        SaveMarksRequest request = new SaveMarksRequest(entries, null);
+        SaveMarksRequest request = new SaveMarksRequest(201L, 101L, 301L, entries, null);
 
-        ApiException ex = assertThrows(ApiException.class, () -> marksService.save(adminActor, 201L, 101L, 301L, request));
+        ApiException ex = assertThrows(ApiException.class, () -> marksService.save(adminActor, request));
         assertEquals(HttpStatus.BAD_REQUEST, ex.getStatus());
         assertTrue(ex.getMessage().contains("ফুল মার্কস"));
     }
 
     @Test
     void marksEntry_negativeMarks_isRejectedWithBadRequest() {
-        when(examRepository.findById(201L)).thenReturn(Optional.of(exam));
+        when(examRepository.findWithRefs(201L)).thenReturn(Optional.of(exam));
         when(examSubjectRepository.findByExamIdAndSubjectId(201L, 301L)).thenReturn(Optional.of(examSubject));
         when(sectionRepository.findById(101L)).thenReturn(Optional.of(section));
 
         List<Enrollment> roster = new ArrayList<>();
         roster.add(enrollment);
-        when(enrollmentRepository.findBySectionIdAndStatusOrderByRollNumberAscIdAsc(101L, EnrollmentStatus.ACTIVE))
+        when(enrollmentRepository.findInClassAndSession(1L, 10L, EnrollmentStatus.ACTIVE))
                 .thenReturn(roster);
 
         // ঋণাত্মক নম্বর দেওয়ার চেষ্টা
         List<MarkEntryRequest> entries = new ArrayList<>();
         entries.add(new MarkEntryRequest(601L, new BigDecimal("-10.00"), false));
-        SaveMarksRequest request = new SaveMarksRequest(entries, null);
+        SaveMarksRequest request = new SaveMarksRequest(201L, 101L, 301L, entries, null);
 
-        ApiException ex = assertThrows(ApiException.class, () -> marksService.save(adminActor, 201L, 101L, 301L, request));
+        ApiException ex = assertThrows(ApiException.class, () -> marksService.save(adminActor, request));
         assertEquals(HttpStatus.BAD_REQUEST, ex.getStatus());
         assertTrue(ex.getMessage().contains("ঋণাত্মক"));
     }

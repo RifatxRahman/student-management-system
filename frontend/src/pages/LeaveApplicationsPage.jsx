@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { api } from '../api/client.js'
 import { useAuth } from '../auth/useAuth.js'
-import { ConfirmModal, FormActions } from '../components/extra.jsx'
+import { FormActions } from '../components/extra.jsx'
 import { Alert, Badge, Button, Card, EmptyState, LoadState, Modal, PageHeader, SelectField, Table, Td, TextField } from '../components/ui.jsx'
 import { useQuery } from '../hooks/useQuery.js'
 import { formatDate } from '../utils/format.js'

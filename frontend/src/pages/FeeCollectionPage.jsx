@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { api } from '../api/client.js'
 import { useAuth } from '../auth/useAuth.js'
+import { BkashPaymentModal } from '../components/BkashPaymentModal.jsx'
 import { FormActions } from '../components/extra.jsx'
 import {
   Alert,
@@ -369,10 +370,11 @@ function InvoiceDetailModal({ invoiceId, onClose }) {
 
 // ----------------- Modal: Student Waiver -----------------
 function StudentWaiverModal({ sessions, students, feeHeads, onDone, onClose }) {
+  const studentList = Array.isArray(students) ? students : (students?.items || [])
   const [values, setValues] = useState({
-    studentId: students[0]?.id ? String(students[0].id) : '',
-    sessionId: sessions.find((s) => s.active)?.id ? String(sessions.find((s) => s.active).id) : '',
-    feeHeadId: feeHeads[0]?.id ? String(feeHeads[0].id) : '',
+    studentId: studentList[0]?.id ? String(studentList[0].id) : '',
+    sessionId: sessions?.find((s) => s.active)?.id ? String(sessions.find((s) => s.active).id) : (sessions?.[0]?.id ? String(sessions[0].id) : ''),
+    feeHeadId: feeHeads?.[0]?.id ? String(feeHeads[0].id) : '',
     discountType: 'PERCENTAGE',
     discountValue: '50.00',
     reason: 'দরিদ্র ও মেধাবী শিক্ষার্থী বৃত্তি',
@@ -412,7 +414,7 @@ function StudentWaiverModal({ sessions, students, feeHeads, onDone, onClose }) {
           onChange={(e) => setValues({ ...values, studentId: e.target.value })}
           required
         >
-          {students.map((s) => (
+          {studentList.map((s) => (
             <option key={s.id} value={s.id}>
               {s.fullName} ({s.studentCode})
             </option>
@@ -517,6 +519,7 @@ export default function FeeCollectionPage() {
 
   // Modals state
   const [payModal, setPayModal] = useState({ open: false, invoice: null })
+  const [bkashModal, setBkashModal] = useState({ open: false, invoice: null })
   const [fineModal, setFineModal] = useState({ open: false, invoice: null })
   const [detailModal, setDetailModal] = useState({ open: false, invoiceId: null })
   const [waiverModal, setWaiverModal] = useState(false)
@@ -776,6 +779,14 @@ export default function FeeCollectionPage() {
                               >
                                 পেমেন্ট
                               </Button>
+                              <button
+                                type="button"
+                                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold bg-[#e2136e] hover:bg-[#c20f5e] text-white shadow-sm transition-colors"
+                                onClick={() => setBkashModal({ open: true, invoice: inv })}
+                                title="বিকাশ অনলাইন পেমেন্ট গেটওয়ে"
+                              >
+                                বিকাশ পে
+                              </button>
                               <Button
                                 variant="secondary"
                                 size="sm"
@@ -946,6 +957,17 @@ export default function FeeCollectionPage() {
             reloadInvoices()
           }}
           onClose={() => setPayModal({ open: false, invoice: null })}
+        />
+      )}
+
+      {bkashModal.open && (
+        <BkashPaymentModal
+          invoice={bkashModal.invoice}
+          onDone={() => {
+            setBkashModal({ open: false, invoice: null })
+            reloadInvoices()
+          }}
+          onClose={() => setBkashModal({ open: false, invoice: null })}
         />
       )}
 

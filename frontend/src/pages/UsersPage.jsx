@@ -257,7 +257,6 @@ function RoleMatrixTab() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
-  const [matrix, setMatrix] = useState([])
   const [permissions, setPermissions] = useState([])
   const [selectedRole, setSelectedRole] = useState('TEACHER')
   const [saving, setSaving] = useState(false)
@@ -273,8 +272,6 @@ function RoleMatrixTab() {
           api('/api/admin/rbac/roles'),
         ])
         setPermissions(permsRes)
-        setMatrix(rolesRes)
-
         const map = {}
         for (let i = 0; i < rolesRes.length; i++) {
           const r = rolesRes[i]
@@ -309,11 +306,10 @@ function RoleMatrixTab() {
       setError('')
       setSuccess('')
       const ids = Array.from(rolePermMap[role] || [])
-      const updatedMatrix = await api('/api/admin/rbac/roles', {
+      await api('/api/admin/rbac/roles', {
         method: 'PUT',
         body: { role, permissionIds: ids },
       })
-      setMatrix(updatedMatrix)
       setSuccess(`${roleLabel(role)} রোলের পারমিশন সফলভাবে সংরক্ষিত হয়েছে!`)
     } catch (err) {
       setError(err.message)

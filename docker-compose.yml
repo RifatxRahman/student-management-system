@@ -78,6 +78,20 @@ services:
     networks:
       - sms-network
 
+  # ==============================================================================
+  # 4. Prometheus Metrics & Observability (Port 9090)
+  # ==============================================================================
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    container_name: sms-prometheus
+    restart: unless-stopped
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "${PROMETHEUS_PORT:-9090}:9090"
+    networks:
+      - sms-network
+
 # ==============================================================================
 # Volumes & Networks
 # ==============================================================================

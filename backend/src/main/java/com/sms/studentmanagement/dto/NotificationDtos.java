@@ -20,8 +20,12 @@ public final class NotificationDtos {
 
         public static NotificationResponse from(NotificationLog n) {
             return new NotificationResponse(
-                    n.getId(), n.getStudent().getId(), n.getStudent().getStudentCode(),
-                    n.getStudent().getFullName(), n.getGuardian().getId(), n.getGuardian().getFullName(),
+                    n.getId(),
+                    n.getStudent() != null ? n.getStudent().getId() : null,
+                    n.getStudent() != null ? n.getStudent().getStudentCode() : null,
+                    n.getStudent() != null ? n.getStudent().getFullName() : null,
+                    n.getGuardian() != null ? n.getGuardian().getId() : null,
+                    n.getGuardian() != null ? n.getGuardian().getFullName() : null,
                     n.getPhone(), n.getMessage(), n.getLanguage(), n.getSmsParts(),
                     n.getNotificationType(), n.getEventDate(),
                     n.getStatus(), n.getAttempts(), n.getLastError(), n.getSentAt());

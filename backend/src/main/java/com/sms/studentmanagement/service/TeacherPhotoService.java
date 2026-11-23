@@ -78,11 +78,15 @@ public class TeacherPhotoService {
         if (filename == null) {
             return;
         }
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-            @Override
-            public void afterCommit() {
-                storage.delete(filename);
-            }
-        });
+        if (TransactionSynchronizationManager.isSynchronizationActive()) {
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override
+                public void afterCommit() {
+                    storage.delete(filename);
+                }
+            });
+        } else {
+            storage.delete(filename);
+        }
     }
 }
