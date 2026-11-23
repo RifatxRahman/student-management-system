@@ -4,11 +4,14 @@ import com.sms.studentmanagement.dto.PeopleDtos.AssignmentRequest;
 import com.sms.studentmanagement.dto.PeopleDtos.AssignmentResponse;
 import com.sms.studentmanagement.dto.PeopleDtos.TeacherRequest;
 import com.sms.studentmanagement.dto.PeopleDtos.TeacherResponse;
+import com.sms.studentmanagement.service.TeacherPhotoService;
 import com.sms.studentmanagement.service.TeacherService;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/teachers")
@@ -28,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TeacherController {
 
     private final TeacherService service;
+    private final TeacherPhotoService photoService;
 
     // ---------- শিক্ষক নিজের জন্য (লগইন করা যে কেউ, নিজের তথ্য শুধু) ----------
     @GetMapping("/me")
@@ -66,6 +71,24 @@ public class TeacherController {
     @PostMapping("/{id}/deactivate")
     public TeacherResponse deactivate(@PathVariable Long id) {
         return service.setActive(id, false);
+    }
+
+    // ---------- ফটো আপলোড ও ডাউনলোড ----------
+    @PostMapping("/{id}/photo")
+    public ResponseEntity<Void> uploadPhoto(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
+        photoService.upload(id, file);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping(value = "/{id}/photo", produces = MediaType.IMAGE_JPEG_VALUE)
+    public byte[] getPhoto(@PathVariable Long id) {
+        return photoService.read(id);
+    }
+
+    @DeleteMapping("/{id}/photo")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletePhoto(@PathVariable Long id) {
+        photoService.remove(id);
     }
 
     @GetMapping("/{id}/assignments")

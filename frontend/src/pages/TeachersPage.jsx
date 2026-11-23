@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { api } from '../api/client.js'
 import EntityForm from '../components/EntityForm.jsx'
+import TeacherPhoto from '../components/TeacherPhoto.jsx'
 import { Alert, Badge, Button, Card, EmptyState, LoadState, Modal, PageHeader, Table, Td } from '../components/ui.jsx'
 import { useQuery } from '../hooks/useQuery.js'
 
@@ -29,9 +30,14 @@ export default function TeachersPage() {
       (u) => u.role === 'TEACHER' && u.status === 'ACTIVE' && (!linked.has(u.id) || u.id === current?.userId),
     )
     return [
+      { name: 'employeeId', label: 'কর্মচারী আইডি (ঐচ্ছিক)', hint: 'যেমন: T-2026-001' },
       { name: 'fullName', label: 'পুরো নাম', required: true },
       { name: 'phone', label: 'ফোন নম্বর (ঐচ্ছিক)', hint: 'যেমন: 01712345678' },
+      { name: 'email', label: 'ইমেইল (ঐচ্ছিক)', type: 'email' },
       { name: 'designation', label: 'পদবি (ঐচ্ছিক)', hint: 'যেমন: সহকারী শিক্ষক' },
+      { name: 'qualification', label: 'শিক্ষাগত যোগ্যতা (ঐচ্ছিক)', hint: 'যেমন: M.Sc in Mathematics' },
+      { name: 'joiningDate', label: 'যোগদানের তারিখ (ঐচ্ছিক)', type: 'date' },
+      { name: 'address', label: 'ঠিকানা (ঐচ্ছিক)' },
       {
         name: 'userId',
         label: 'লগইন ইউজার (ঐচ্ছিক)',
@@ -45,9 +51,14 @@ export default function TeachersPage() {
 
   async function save(values) {
     const body = {
+      employeeId: values.employeeId || null,
       fullName: values.fullName,
       phone: values.phone || null,
+      email: values.email || null,
       designation: values.designation || null,
+      qualification: values.qualification || null,
+      joiningDate: values.joiningDate || null,
+      address: values.address || null,
       userId: values.userId ? Number(values.userId) : null,
     }
     if (modal.teacher) {
@@ -78,13 +89,25 @@ export default function TeachersPage() {
           {teachers.data?.length === 0 ? (
             <EmptyState>এখনো কোনো শিক্ষক নেই।</EmptyState>
           ) : (
-            <Table headers={['নাম', 'ফোন', 'পদবি', 'লগইন', 'অবস্থা', 'কাজ']}>
+            <Table headers={['ছবি', 'আইডি ও নাম', 'যোগাযোগ', 'পদবি ও যোগ্যতা', 'লগইন', 'অবস্থা', 'কাজ']}>
               {teachers.data?.map((t) => (
                 <tr key={t.id}>
-                  <Td className="font-medium text-gray-900">{t.fullName}</Td>
-                  <Td className="font-mono">{t.phone ?? '—'}</Td>
-                  <Td>{t.designation ?? '—'}</Td>
-                  <Td className="font-mono">{t.username ?? '—'}</Td>
+                  <Td>
+                    <TeacherPhoto teacherId={t.id} name={t.fullName} className="h-10 w-10 text-sm" />
+                  </Td>
+                  <Td>
+                    <p className="font-medium text-gray-900">{t.fullName}</p>
+                    <p className="font-mono text-xs text-indigo-600">{t.employeeId ?? '—'}</p>
+                  </Td>
+                  <Td>
+                    <p className="font-mono text-xs">{t.phone ?? '—'}</p>
+                    <p className="text-xs text-gray-500">{t.email ?? '—'}</p>
+                  </Td>
+                  <Td>
+                    <p className="text-sm font-medium text-gray-800">{t.designation ?? '—'}</p>
+                    <p className="text-xs text-gray-500">{t.qualification ?? '—'}</p>
+                  </Td>
+                  <Td className="font-mono text-xs">{t.username ?? '—'}</Td>
                   <Td>
                     <Badge tone={t.active ? 'green' : 'gray'}>{t.active ? 'সক্রিয়' : 'নিষ্ক্রিয়'}</Badge>
                   </Td>

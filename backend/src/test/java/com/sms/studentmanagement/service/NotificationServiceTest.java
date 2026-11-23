@@ -12,6 +12,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.sms.studentmanagement.config.InstitutionProperties;
+import com.sms.studentmanagement.config.SmsProperties;
 import com.sms.studentmanagement.dto.NotificationDtos.DispatchResult;
 import com.sms.studentmanagement.entity.Guardian;
 import com.sms.studentmanagement.entity.NotificationLog;
@@ -51,13 +53,19 @@ class NotificationServiceTest {
     @Mock
     AuditService auditService;
 
+    SmsProperties smsProperties = new SmsProperties();
+    InstitutionProperties institutionProperties = new InstitutionProperties();
+
     NotificationService service;
 
     final LocalDate date = LocalDate.of(2026, 11, 2);
 
     @BeforeEach
     void setUp() {
-        service = new NotificationService(repository, studentGuardianRepository, smsSender, auditService);
+        institutionProperties.setName("আদর্শ উচ্চ বিদ্যালয়");
+        service = new NotificationService(
+                repository, studentGuardianRepository, smsSender, auditService,
+                smsProperties, institutionProperties);
     }
 
     private Student student() {

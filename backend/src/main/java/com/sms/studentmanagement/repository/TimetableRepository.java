@@ -62,6 +62,19 @@ public interface TimetableRepository extends JpaRepository<TimetableEntry, Long>
     Optional<TimetableEntry> findBySessionIdAndRoomIdAndDayOfWeekAndTimeSlotId(
             Long sessionId, Long roomId, DayOfWeek dayOfWeek, Long timeSlotId);
 
+    @Query("""
+            select t from TimetableEntry t
+            join fetch t.timeSlot slot
+            join fetch t.subject
+            join fetch t.teacher
+            left join fetch t.room
+            join fetch t.section sec
+            join fetch sec.schoolClass
+            join fetch t.session
+            where t.session.id = :sessionId
+            """)
+    List<TimetableEntry> findAllForSession(@Param("sessionId") Long sessionId);
+
     boolean existsByTimeSlotId(Long timeSlotId);
 
     boolean existsByRoomId(Long roomId);

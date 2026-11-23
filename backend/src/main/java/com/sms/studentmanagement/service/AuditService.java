@@ -6,11 +6,15 @@ import com.sms.studentmanagement.entity.AuditLog;
 import com.sms.studentmanagement.entity.User;
 import com.sms.studentmanagement.repository.AuditLogRepository;
 import com.sms.studentmanagement.repository.UserRepository;
+import com.sms.studentmanagement.security.HttpRequestContext;
+import com.sms.studentmanagement.util.AuditMasker;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,35 +31,73 @@ public class AuditService {
     private final AuditLogRepository auditLogRepository;
     private final UserRepository userRepository;
 
-    /** আপনি কখনো এখানে পাসওয়ার্ড বা গোপন তথ্য পাঠাবেন না। */
     public void log(String action, String entityType, Long entityId, String details) {
+        log(action, entityType, entityId, details, "SUCCESS", 0L);
+    }
+
+    public void log(String action, String entityType, Long entityId, String details, String status, long executionTimeMs) {
         AuditLog entry = new AuditLog();
         entry.setActorUserId(currentUserId());
         entry.setAction(action);
         entry.setEntityType(entityType);
         entry.setEntityId(entityId);
-        entry.setDetails(details == null ? null : truncate(details, 1000));
+        entry.setDetails(details == null ? null : truncate(AuditMasker.mask(details), 1000));
+        entry.setIpAddress(HttpRequestContext.getClientIpAddress());
+        entry.setUserAgent(HttpRequestContext.getUserAgent());
+        entry.setStatus(status != null ? status : "SUCCESS");
+        entry.setExecutionTimeMs(executionTimeMs);
         auditLogRepository.save(entry);
     }
 
     @Transactional(readOnly = true)
     public PageResponse<AuditLogResponse> search(String entityType, Long entityId, int page, int size) {
-        int safeSize = Math.min(Math.max(size, 1), 100);
-        Page<AuditLog> result = auditLogRepository.search(
-                blankToNull(entityType), entityId, PageRequest.of(Math.max(page, 0), safeSize));
+        return search(entityType, entityId, null, null, null, null, null, page, size);
+    }
 
-        Set<Long> actorIds = result.stream()
-                .map(AuditLog::getActorUserId)
-                .filter(id -> id != null)
-                .collect(Collectors.toSet());
+    @Transactional(readOnly = true)
+    public PageResponse<AuditLogResponse> search(
+            String entityType,
+            Long entityId,
+            String action,
+            String status,
+            Long actorUserId,
+            Instant startDate,
+            Instant endDate,
+            int page,
+            int size) {
+        int safeSize = Math.min(Math.max(size, 1), 100);
+        Page<AuditLog> result = auditLogRepository.searchAdvanced(
+                blankToNull(entityType),
+                entityId,
+                blankToNull(action),
+                blankToNull(status),
+                actorUserId,
+                startDate,
+                endDate,
+                PageRequest.of(Math.max(page, 0), safeSize));
+
+        List<AuditLog> content = result.getContent();
+        Set<Long> actorIds = new HashSet<>();
+        for (int i = 0; i < content.size(); i++) {
+            Long actorId = content.get(i).getActorUserId();
+            if (actorId != null) {
+                actorIds.add(actorId);
+            }
+        }
+
         Map<Long, String> names = new HashMap<>();
-        for (User user : userRepository.findAllById(actorIds)) {
+        List<User> users = userRepository.findAllById(actorIds);
+        for (int i = 0; i < users.size(); i++) {
+            User user = users.get(i);
             names.put(user.getId(), user.getUsername());
         }
 
-        List<AuditLogResponse> items = result.stream()
-                .map(a -> AuditLogResponse.from(a, names.get(a.getActorUserId())))
-                .toList();
+        List<AuditLogResponse> items = new ArrayList<>();
+        for (int i = 0; i < content.size(); i++) {
+            AuditLog a = content.get(i);
+            items.add(AuditLogResponse.from(a, names.get(a.getActorUserId())));
+        }
+
         return PageResponse.of(result, items);
     }
 

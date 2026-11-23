@@ -172,17 +172,21 @@ public class ResultService {
             throw bad("পরীক্ষায় কমপক্ষে একটা আবশ্যিক বিষয় লাগবে");
         }
         Map<String, Mark> markByKey = new HashMap<>();
-        for (Mark mark : markRepository.findAllForExam(exam.getId())) {
+        List<Mark> allMarks = markRepository.findAllForExam(exam.getId());
+        for (int i = 0; i < allMarks.size(); i++) {
+            Mark mark = allMarks.get(i);
             markByKey.put(mark.getEnrollment().getId() + ":" + mark.getExamSubject().getId(), mark);
         }
         List<GradeBand> bands = gradeScaleService.currentBands();
 
         List<Computed> computed = new ArrayList<>();
         List<MissingMark> missing = new ArrayList<>();
-        for (Enrollment enrollment : roster) {
+        for (int i = 0; i < roster.size(); i++) {
+            Enrollment enrollment = roster.get(i);
             List<SubjectInput> inputs = new ArrayList<>();
             boolean complete = true;
-            for (ExamSubject es : subjects) {
+            for (int j = 0; j < subjects.size(); j++) {
+                ExamSubject es = subjects.get(j);
                 Mark mark = markByKey.get(enrollment.getId() + ":" + es.getId());
                 if (mark == null && !es.isOptional()) {
                     complete = false;
@@ -206,8 +210,9 @@ public class ResultService {
         Map<Long, Integer> inSection = new HashMap<>();
         Map<Long, List<Computed>> bySection = computed.stream()
                 .collect(Collectors.groupingBy(c -> c.enrollment().getSection().getId()));
-        for (List<Computed> group : bySection.values()) {
-            inSection.putAll(MeritRanker.rank(entries(group)));
+        List<List<Computed>> groups = new ArrayList<>(bySection.values());
+        for (int i = 0; i < groups.size(); i++) {
+            inSection.putAll(MeritRanker.rank(entries(groups.get(i))));
         }
         return new Positions(inClass, inSection);
     }
@@ -231,7 +236,8 @@ public class ResultService {
         resultRepository.flush();
 
         List<ResultSubject> subjectRows = new ArrayList<>();
-        for (Computed c : plan.computed()) {
+        for (int i = 0; i < plan.computed().size(); i++) {
+            Computed c = plan.computed().get(i);
             ResultCalculator.Result calc = c.result();
             ExamResult row = new ExamResult();
             row.setExam(exam);
@@ -246,7 +252,9 @@ public class ResultService {
             row.setPositionInSection(positions.inSection().get(c.enrollment().getId()));
             resultRepository.save(row);
 
-            for (SubjectResult sr : calc.subjects()) {
+            List<SubjectResult> subResults = calc.subjects();
+            for (int j = 0; j < subResults.size(); j++) {
+                SubjectResult sr = subResults.get(j);
                 if (!sr.counted()) {
                     continue;
                 }

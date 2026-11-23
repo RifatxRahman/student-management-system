@@ -1,6 +1,8 @@
 const ROLE_LABELS = {
   ADMIN: 'অ্যাডমিন',
   TEACHER: 'শিক্ষক',
+  ACCOUNTANT: 'হিসাবরক্ষক',
+  STAFF: 'অফিস সহকারী',
 }
 
 export function roleLabel(role) {

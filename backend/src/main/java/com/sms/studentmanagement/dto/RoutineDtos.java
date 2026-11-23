@@ -81,4 +81,23 @@ public final class RoutineDtos {
     public record RoutineOption(
             Long subjectId, String subjectName, String subjectCode, Long teacherId, String teacherName) {
     }
+
+    // ---------- শিক্ষক কাজের চাপ (Teacher Workload) ----------
+    public record TeacherWorkloadRow(
+            Long teacherId,
+            String employeeId,
+            String teacherName,
+            String designation,
+            int totalWeeklyPeriods,
+            java.util.Map<String, Integer> periodsPerDay,
+            boolean overloaded) {
+    }
+
+    public record TeacherWorkloadResponse(
+            Long sessionId,
+            String sessionName,
+            java.util.List<TeacherWorkloadRow> rows,
+            int totalTeachers,
+            int totalAssignedPeriods) {
+    }
 }
