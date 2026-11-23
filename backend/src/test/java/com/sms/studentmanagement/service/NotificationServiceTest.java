@@ -196,4 +196,29 @@ class NotificationServiceTest {
         assertThrows(ApiException.class, () -> service.retry(1L));
         assertEquals(NotificationStatus.SENT, n.getStatus());
     }
+
+    @Test
+    void notificationResponseFrom_withNullGuardian_doesNotThrowNpe() {
+        NotificationLog n = new NotificationLog();
+        n.setId(10L);
+        n.setStudent(null);
+        n.setGuardian(null);
+        n.setPhone("01700000000");
+        n.setMessage("Test message");
+        n.setLanguage("BN");
+        n.setSmsParts(1);
+        n.setNotificationType(NotificationType.ANNOUNCEMENT);
+        n.setEventDate(LocalDate.now());
+        n.setStatus(NotificationStatus.PENDING);
+        n.setAttempts(0);
+
+        var response = com.sms.studentmanagement.dto.NotificationDtos.NotificationResponse.from(n);
+
+        assertNotNull(response);
+        assertEquals(10L, response.id());
+        org.junit.jupiter.api.Assertions.assertNull(response.guardianId());
+        org.junit.jupiter.api.Assertions.assertNull(response.studentId());
+        assertEquals("01700000000", response.phone());
+        assertEquals(NotificationType.ANNOUNCEMENT, response.type());
+    }
 }

@@ -635,9 +635,9 @@ export default function NotificationsPage() {
                   {logData?.items?.map((n) => (
                     <tr key={n.id}>
                       <Td className="font-medium text-gray-900">{n.studentName}</Td>
-                      <Td className="text-gray-700">{n.guardianName}</Td>
+                      <Td className="text-gray-700">{n.guardianName || '—'}</Td>
                       <Td className="font-mono text-xs">{n.phone}</Td>
-                      <Td>{getCategoryBadge(n.notificationType)}</Td>
+                      <Td>{getCategoryBadge(n.type || n.notificationType)}</Td>
                       <Td className="text-xs">{formatDate(n.eventDate)}</Td>
                       <Td className="text-xs text-gray-600 max-w-xs truncate" title={n.message}>
                         {n.message}
