@@ -6,16 +6,16 @@ export default function AdmitCard({ institution, exam, student, subjects }) {
   const schoolPhone = institution?.phone || ''
 
   return (
-    <div className="mb-6 rounded-lg border-2 border-indigo-900 bg-white p-5 print:mb-4 print:rounded-none print:border-2 print:border-black print:p-4 print:break-inside-avoid">
+    <div className="mb-6 rounded-lg border-2 border-[#0E3B2E] bg-white p-5 print:mb-4 print:rounded-none print:border-2 print:border-black print:p-4 print:break-inside-avoid">
       {/* ১. প্রাতিষ্ঠানিক হেডার */}
-      <div className="border-b-2 border-indigo-900 pb-3 text-center print:border-black">
-        <h2 className="text-xl font-bold tracking-tight text-indigo-950 print:text-black">
+      <div className="border-b-2 border-[#0E3B2E] pb-3 text-center print:border-black">
+        <h2 className="text-xl font-bold tracking-tight text-[#0E3B2E] print:text-black">
           {schoolName}
         </h2>
         <p className="text-xs text-gray-600 print:text-black">{schoolAddress} {schoolPhone && `· ফোন: ${schoolPhone}`}</p>
         
         <div className="mt-2 flex items-center justify-center">
-          <span className="rounded-md bg-indigo-900 px-4 py-1 text-xs font-bold uppercase tracking-wider text-white print:bg-black print:text-white">
+          <span className="rounded-md bg-[#0E3B2E] px-4 py-1 text-xs font-bold uppercase tracking-wider text-white print:bg-black print:text-white">
             প্রবেশপত্র / ADMIT CARD
           </span>
         </div>
@@ -33,19 +33,19 @@ export default function AdmitCard({ institution, exam, student, subjects }) {
           </div>
           <div>
             <span className="text-gray-500">শিক্ষার্থী আইডি (Code): </span>
-            <strong className="font-mono text-sm font-bold text-indigo-900 print:text-black">{student.studentCode}</strong>
+            <strong className="font-mono text-sm font-bold text-[#0E3B2E] print:text-black">{student.studentCode}</strong>
           </div>
           <div>
             <span className="text-gray-500">শ্রেণি: </span>
             <strong className="font-semibold">{student.className || exam.className}</strong>
           </div>
           <div>
-            <span className="text-gray-500">শাখা / সেকশন: </span>
+            <span className="text-gray-500"> শাখা / সেকশন: </span>
             <strong className="font-semibold">{student.sectionName || '—'}</strong>
           </div>
           <div>
             <span className="text-gray-500">রোল নম্বর: </span>
-            <strong className="text-sm font-bold text-indigo-900 print:text-black">{student.rollNumber ?? '—'}</strong>
+            <strong className="text-sm font-bold text-[#0E3B2E] print:text-black">{student.rollNumber ?? '—'}</strong>
           </div>
           <div>
             <span className="text-gray-500">লিঙ্গ: </span>

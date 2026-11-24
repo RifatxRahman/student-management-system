@@ -1,45 +1,49 @@
+import { Suspense, lazy } from 'react'
 import { Route, Routes } from 'react-router'
 import ProtectedRoute from './auth/ProtectedRoute.jsx'
 import Layout from './components/Layout.jsx'
-import AttendancePage from './pages/AttendancePage.jsx'
-import AttendanceReportPage from './pages/AttendanceReportPage.jsx'
-import AuditLogsPage from './pages/AuditLogsPage.jsx'
-import ChangePasswordPage from './pages/ChangePasswordPage.jsx'
-import ClassDetailPage from './pages/ClassDetailPage.jsx'
-import ClassesPage from './pages/ClassesPage.jsx'
+import { FullPageSpinner } from './components/ui.jsx'
+
 import DashboardPage from './pages/DashboardPage.jsx'
-import DeletedStudentsPage from './pages/DeletedStudentsPage.jsx'
-import ExamDetailPage from './pages/ExamDetailPage.jsx'
-import ExamsPage from './pages/ExamsPage.jsx'
-import GradeScalePage from './pages/GradeScalePage.jsx'
-import GuardiansPage from './pages/GuardiansPage.jsx'
-import HolidaysPage from './pages/HolidaysPage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
-import MarksEntryPage from './pages/MarksEntryPage.jsx'
-import MarksheetPage from './pages/MarksheetPage.jsx'
-import NotFoundPage from './pages/NotFoundPage.jsx'
-import NotificationsPage from './pages/NotificationsPage.jsx'
-import PublishPage from './pages/PublishPage.jsx'
-import PromotionPage from './pages/PromotionPage.jsx'
-import ResultSheetPage from './pages/ResultSheetPage.jsx'
-import ResultsPage from './pages/ResultsPage.jsx'
-import RoutinePage from './pages/RoutinePage.jsx'
-import RoutineSetupPage from './pages/RoutineSetupPage.jsx'
-import AcademicCalendarPage from './pages/AcademicCalendarPage.jsx'
-import AdmitCardPage from './pages/AdmitCardPage.jsx'
-import SessionsPage from './pages/SessionsPage.jsx'
-import StudentDetailPage from './pages/StudentDetailPage.jsx'
-import StudentNewPage from './pages/StudentNewPage.jsx'
-import StudentsPage from './pages/StudentsPage.jsx'
-import SubjectsPage from './pages/SubjectsPage.jsx'
-import TeacherAttendancePage from './pages/TeacherAttendancePage.jsx'
-import TeacherDetailPage from './pages/TeacherDetailPage.jsx'
-import TeachersPage from './pages/TeachersPage.jsx'
-import LeaveApplicationsPage from './pages/LeaveApplicationsPage.jsx'
-import FeeStructurePage from './pages/FeeStructurePage.jsx'
-import FeeCollectionPage from './pages/FeeCollectionPage.jsx'
-import AccountsPage from './pages/AccountsPage.jsx'
-import UsersPage from './pages/UsersPage.jsx'
+
+const AttendancePage = lazy(() => import('./pages/AttendancePage.jsx'))
+const AttendanceReportPage = lazy(() => import('./pages/AttendanceReportPage.jsx'))
+const AuditLogsPage = lazy(() => import('./pages/AuditLogsPage.jsx'))
+const ChangePasswordPage = lazy(() => import('./pages/ChangePasswordPage.jsx'))
+const ClassDetailPage = lazy(() => import('./pages/ClassDetailPage.jsx'))
+const ClassesPage = lazy(() => import('./pages/ClassesPage.jsx'))
+const DeletedStudentsPage = lazy(() => import('./pages/DeletedStudentsPage.jsx'))
+const ExamDetailPage = lazy(() => import('./pages/ExamDetailPage.jsx'))
+const ExamsPage = lazy(() => import('./pages/ExamsPage.jsx'))
+const GradeScalePage = lazy(() => import('./pages/GradeScalePage.jsx'))
+const GuardiansPage = lazy(() => import('./pages/GuardiansPage.jsx'))
+const HolidaysPage = lazy(() => import('./pages/HolidaysPage.jsx'))
+const MarksEntryPage = lazy(() => import('./pages/MarksEntryPage.jsx'))
+const MarksheetPage = lazy(() => import('./pages/MarksheetPage.jsx'))
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage.jsx'))
+const NotificationsPage = lazy(() => import('./pages/NotificationsPage.jsx'))
+const PublishPage = lazy(() => import('./pages/PublishPage.jsx'))
+const PromotionPage = lazy(() => import('./pages/PromotionPage.jsx'))
+const ResultSheetPage = lazy(() => import('./pages/ResultSheetPage.jsx'))
+const ResultsPage = lazy(() => import('./pages/ResultsPage.jsx'))
+const RoutinePage = lazy(() => import('./pages/RoutinePage.jsx'))
+const RoutineSetupPage = lazy(() => import('./pages/RoutineSetupPage.jsx'))
+const AcademicCalendarPage = lazy(() => import('./pages/AcademicCalendarPage.jsx'))
+const AdmitCardPage = lazy(() => import('./pages/AdmitCardPage.jsx'))
+const SessionsPage = lazy(() => import('./pages/SessionsPage.jsx'))
+const StudentDetailPage = lazy(() => import('./pages/StudentDetailPage.jsx'))
+const StudentNewPage = lazy(() => import('./pages/StudentNewPage.jsx'))
+const StudentsPage = lazy(() => import('./pages/StudentsPage.jsx'))
+const SubjectsPage = lazy(() => import('./pages/SubjectsPage.jsx'))
+const TeacherAttendancePage = lazy(() => import('./pages/TeacherAttendancePage.jsx'))
+const TeacherDetailPage = lazy(() => import('./pages/TeacherDetailPage.jsx'))
+const TeachersPage = lazy(() => import('./pages/TeachersPage.jsx'))
+const LeaveApplicationsPage = lazy(() => import('./pages/LeaveApplicationsPage.jsx'))
+const FeeStructurePage = lazy(() => import('./pages/FeeStructurePage.jsx'))
+const FeeCollectionPage = lazy(() => import('./pages/FeeCollectionPage.jsx'))
+const AccountsPage = lazy(() => import('./pages/AccountsPage.jsx'))
+const UsersPage = lazy(() => import('./pages/UsersPage.jsx'))
 
 const ADMIN = ['ADMIN']
 const ATTENDANCE_ROLES = ['ADMIN', 'TEACHER']
@@ -50,7 +54,8 @@ function Only({ roles, children }) {
 
 export default function App() {
   return (
-    <Routes>
+    <Suspense fallback={<FullPageSpinner />}>
+      <Routes>
       <Route path="/login" element={<LoginPage />} />
 
       <Route
@@ -289,5 +294,6 @@ export default function App() {
 
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
+  </Suspense>
   )
 }

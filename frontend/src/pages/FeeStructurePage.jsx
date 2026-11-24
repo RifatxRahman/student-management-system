@@ -23,7 +23,7 @@ const FREQUENCY_OPTIONS = [
   { value: 'MONTHLY', label: 'মাসিক (প্রতি মাসে নিয়মিত প্রদেয়)', tone: 'indigo' },
   { value: 'TERMLY', label: 'টার্ম / সাময়িক (পরীক্ষা বা অর্ধবার্ষিকী)', tone: 'amber' },
   { value: 'YEARLY', label: 'বার্ষিক (সেশনের শুরুতে একবার)', tone: 'green' },
-  { value: 'ONE_TIME', label: 'এককালীন (ভর্তির সময়)', tone: 'purple' },
+  { value: 'ONE_TIME', label: 'এককালীন (ভর্তির সময়)', tone: 'gray' },
 ]
 
 function getFrequencyBadge(freq) {
@@ -367,14 +367,14 @@ export default function FeeStructurePage() {
       />
 
       {/* Navigation Tabs */}
-      <div className="mb-6 flex border-b border-gray-200">
+      <div className="mb-6 flex border-b border-[var(--border-hairline)]">
         <button
           type="button"
           onClick={() => setActiveTab('structure')}
-          className={`border-b-2 px-5 py-2.5 text-sm font-medium transition ${
+          className={`border-b-2 px-5 py-2.5 text-sm font-semibold transition ${
             activeTab === 'structure'
-              ? 'border-indigo-600 text-indigo-600'
-              : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+              ? 'border-[#0E3B2E] text-[#0E3B2E]'
+              : 'border-transparent text-[var(--ink-secondary)] hover:border-gray-300 hover:text-[var(--ink-primary)]'
           }`}
         >
           শ্রেণিভিত্তিক ফি কাঠামো
@@ -382,10 +382,10 @@ export default function FeeStructurePage() {
         <button
           type="button"
           onClick={() => setActiveTab('heads')}
-          className={`border-b-2 px-5 py-2.5 text-sm font-medium transition ${
+          className={`border-b-2 px-5 py-2.5 text-sm font-semibold transition ${
             activeTab === 'heads'
-              ? 'border-indigo-600 text-indigo-600'
-              : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+              ? 'border-[#0E3B2E] text-[#0E3B2E]'
+              : 'border-transparent text-[var(--ink-secondary)] hover:border-gray-300 hover:text-[var(--ink-primary)]'
           }`}
         >
           ফি খাতসমূহ ({feeHeads?.length || 0})
@@ -393,10 +393,10 @@ export default function FeeStructurePage() {
         <button
           type="button"
           onClick={() => setActiveTab('clone')}
-          className={`border-b-2 px-5 py-2.5 text-sm font-medium transition ${
+          className={`border-b-2 px-5 py-2.5 text-sm font-semibold transition ${
             activeTab === 'clone'
-              ? 'border-indigo-600 text-indigo-600'
-              : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+              ? 'border-[#0E3B2E] text-[#0E3B2E]'
+              : 'border-transparent text-[var(--ink-secondary)] hover:border-gray-300 hover:text-[var(--ink-primary)]'
           }`}
         >
           সেশন অনুলিপি / কপি
@@ -461,28 +461,28 @@ export default function FeeStructurePage() {
           {/* Live Summary Metrics */}
           {classSummary && (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <div className="rounded-xl border border-indigo-100 bg-indigo-50/50 p-4">
-                <p className="text-xs font-semibold uppercase tracking-wider text-indigo-700">মোট মাসিক টিউশন</p>
-                <p className="mt-1 text-2xl font-bold text-indigo-900">৳ {plain(classSummary.totalMonthlyAmount)}</p>
-                <p className="mt-1 text-xs text-indigo-600">প্রতি মাসে শিক্ষার্থীর প্রদেয়</p>
+              <div className="rounded-[16px] border border-[var(--border-hairline)] bg-[var(--surface-subtle)] p-4">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--ink-secondary)]">মোট মাসিক টিউশন</p>
+                <p className="mt-1 text-2xl font-bold text-[var(--ink-primary)] font-['Anek_Bangla',sans-serif] tabular-nums">৳ {plain(classSummary.totalMonthlyAmount)}</p>
+                <p className="mt-1 text-xs text-[var(--ink-tertiary)]">প্রতি মাসে শিক্ষার্থীর প্রদেয়</p>
               </div>
 
-              <div className="rounded-xl border border-amber-100 bg-amber-50/50 p-4">
-                <p className="text-xs font-semibold uppercase tracking-wider text-amber-700">টার্ম / পরীক্ষা ফি</p>
-                <p className="mt-1 text-2xl font-bold text-amber-900">৳ {plain(classSummary.totalTermlyAmount)}</p>
-                <p className="mt-1 text-xs text-amber-600">প্রতি টার্মে প্রদেয়</p>
+              <div className="rounded-[16px] border border-[#F6DFC0] bg-[#FDF4E7]/60 p-4">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-[#B36B18]">টার্ম / পরীক্ষা ফি</p>
+                <p className="mt-1 text-2xl font-bold text-[#B36B18] font-['Anek_Bangla',sans-serif] tabular-nums">৳ {plain(classSummary.totalTermlyAmount)}</p>
+                <p className="mt-1 text-xs text-[#B36B18]">প্রতি টার্মে প্রদেয়</p>
               </div>
 
-              <div className="rounded-xl border border-emerald-100 bg-emerald-50/50 p-4">
-                <p className="text-xs font-semibold uppercase tracking-wider text-emerald-700">বাৎসরিক সেশন চার্জ</p>
-                <p className="mt-1 text-2xl font-bold text-emerald-900">৳ {plain(classSummary.totalYearlyAmount)}</p>
-                <p className="mt-1 text-xs text-emerald-600">বছরের শুরুতে একবার</p>
+              <div className="rounded-[16px] border border-[#BDE3CC] bg-[#EAF5EE]/60 p-4">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-[#168754]">বাৎসরিক সেশন চার্জ</p>
+                <p className="mt-1 text-2xl font-bold text-[#168754] font-['Anek_Bangla',sans-serif] tabular-nums">৳ {plain(classSummary.totalYearlyAmount)}</p>
+                <p className="mt-1 text-xs text-[#168754]">বছরের শুরুতে একবার</p>
               </div>
 
-              <div className="rounded-xl border border-purple-100 bg-purple-50/50 p-4">
-                <p className="text-xs font-semibold uppercase tracking-wider text-purple-700">এককালীন / ভর্তি ফি</p>
-                <p className="mt-1 text-2xl font-bold text-purple-900">৳ {plain(classSummary.totalOneTimeAmount)}</p>
-                <p className="mt-1 text-xs text-purple-600">ভর্তির সময় প্রযোজ্য</p>
+              <div className="rounded-[16px] border border-[var(--border-hairline)] bg-[var(--surface-subtle)] p-4">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--ink-secondary)]">এককালীন / ভর্তি ফি</p>
+                <p className="mt-1 text-2xl font-bold text-[var(--ink-primary)] font-['Anek_Bangla',sans-serif] tabular-nums">৳ {plain(classSummary.totalOneTimeAmount)}</p>
+                <p className="mt-1 text-xs text-[var(--ink-tertiary)]">ভর্তির সময় প্রযোজ্য</p>
               </div>
             </div>
           )}
@@ -504,7 +504,7 @@ export default function FeeStructurePage() {
                         {fs.description && <p className="text-xs text-gray-500 font-normal">{fs.description}</p>}
                       </Td>
                       <Td className="font-mono text-xs">{fs.feeHeadCode}</Td>
-                      <Td className="font-bold text-indigo-700 text-base">৳ {plain(fs.amount)}</Td>
+                      <Td className="font-bold text-[var(--ink-primary)] text-base">৳ {plain(fs.amount)}</Td>
                       <Td>{getFrequencyBadge(fs.frequency)}</Td>
                       <Td>প্রতি মাসের {fs.dueDay} তারিখ</Td>
                       <Td>
@@ -553,7 +553,7 @@ export default function FeeStructurePage() {
                 {feeHeads?.map((h) => (
                   <tr key={h.id}>
                     <Td className="font-semibold text-gray-900">{h.name}</Td>
-                    <Td className="font-mono text-xs font-semibold text-indigo-600">{h.code}</Td>
+                    <Td className="font-mono text-xs font-semibold text-[var(--ink-secondary)]">{h.code}</Td>
                     <Td className="text-gray-600">{h.description || '—'}</Td>
                     <Td>
                       <Badge tone={h.active ? 'green' : 'gray'}>

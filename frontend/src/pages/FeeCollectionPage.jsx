@@ -83,7 +83,7 @@ function PaymentModal({ invoice, onDone, onClose }) {
           <div className="rounded-xl border border-gray-200 bg-gray-50/70 p-5 text-center">
             <h2 className="text-xl font-bold text-gray-900">School Management System</h2>
             <p className="text-xs text-gray-500">অফিসিয়াল ফি আদায় রসিদ</p>
-            <div className="mt-3 inline-block rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
+            <div className="mt-3 inline-block rounded-full bg-[#0E3B2E]/10 px-3 py-1 text-xs font-semibold text-[#0E3B2E]">
               রসিদ নং: {receipt.receiptNumber}
             </div>
           </div>
@@ -266,7 +266,7 @@ function InvoiceDetailModal({ invoiceId, onClose }) {
                 <div>
                   <h4 className="font-bold text-gray-900 text-base">{inv.title}</h4>
                   <p className="text-xs text-gray-500 font-mono">ইনভয়েস নং: {inv.invoiceNumber}</p>
-                  <p className="mt-1 text-sm text-indigo-700 font-medium">
+                  <p className="mt-1 text-sm text-[#0E3B2E] font-semibold">
                     {inv.studentName} ({inv.studentCode}) — {inv.className} ({inv.sectionName})
                   </p>
                 </div>
@@ -633,14 +633,14 @@ export default function FeeCollectionPage() {
       />
 
       {/* Tabs */}
-      <div className="mb-6 flex border-b border-gray-200">
+      <div className="mb-6 flex border-b border-[var(--border-hairline)]">
         <button
           type="button"
           onClick={() => setActiveTab('invoices')}
-          className={`border-b-2 px-5 py-2.5 text-sm font-medium transition ${
+          className={`border-b-2 px-5 py-2.5 text-sm font-semibold transition ${
             activeTab === 'invoices'
-              ? 'border-indigo-600 text-indigo-600'
-              : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+              ? 'border-[#0E3B2E] text-[#0E3B2E]'
+              : 'border-transparent text-[var(--ink-secondary)] hover:border-gray-300 hover:text-[var(--ink-primary)]'
           }`}
         >
           ইনভয়েস ও ফি আদায় ({invoices?.length || 0})
@@ -648,10 +648,10 @@ export default function FeeCollectionPage() {
         <button
           type="button"
           onClick={() => setActiveTab('bulk')}
-          className={`border-b-2 px-5 py-2.5 text-sm font-medium transition ${
+          className={`border-b-2 px-5 py-2.5 text-sm font-semibold transition ${
             activeTab === 'bulk'
-              ? 'border-indigo-600 text-indigo-600'
-              : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+              ? 'border-[#0E3B2E] text-[#0E3B2E]'
+              : 'border-transparent text-[var(--ink-secondary)] hover:border-gray-300 hover:text-[var(--ink-primary)]'
           }`}
         >
           বাল্ক ইনভয়েস জেনারেটর
@@ -659,10 +659,10 @@ export default function FeeCollectionPage() {
         <button
           type="button"
           onClick={() => setActiveTab('waivers')}
-          className={`border-b-2 px-5 py-2.5 text-sm font-medium transition ${
+          className={`border-b-2 px-5 py-2.5 text-sm font-semibold transition ${
             activeTab === 'waivers'
-              ? 'border-indigo-600 text-indigo-600'
-              : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+              ? 'border-[#0E3B2E] text-[#0E3B2E]'
+              : 'border-transparent text-[var(--ink-secondary)] hover:border-gray-300 hover:text-[var(--ink-primary)]'
           }`}
         >
           শিক্ষার্থী ওয়েভার / বৃত্তি ({waivers?.length || 0})
@@ -757,22 +757,22 @@ export default function FeeCollectionPage() {
 
           {/* Financial KPIs */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <div className="rounded-xl border border-indigo-100 bg-indigo-50/50 p-4">
-              <p className="text-xs font-semibold uppercase tracking-wider text-indigo-700">মোট দাবি / বিলিং</p>
-              <p className="mt-1 text-2xl font-bold text-indigo-900">৳ {plain(totalBilled)}</p>
-              <p className="mt-1 text-xs text-indigo-600">{invoices?.length || 0} টি ইনভয়েস</p>
+            <div className="rounded-[16px] border border-[var(--border-hairline)] bg-[var(--surface-subtle)] p-4">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--ink-secondary)]">মোট দাবি / বিলিং</p>
+              <p className="mt-1 text-2xl font-bold text-[var(--ink-primary)] font-['Anek_Bangla',sans-serif] tabular-nums">৳ {plain(totalBilled)}</p>
+              <p className="mt-1 text-xs text-[var(--ink-tertiary)]">{invoices?.length || 0} টি ইনভয়েস</p>
             </div>
 
-            <div className="rounded-xl border border-emerald-100 bg-emerald-50/50 p-4">
-              <p className="text-xs font-semibold uppercase tracking-wider text-emerald-700">মোট সংগৃহীত ফি</p>
-              <p className="mt-1 text-2xl font-bold text-emerald-900">৳ {plain(totalCollected)}</p>
-              <p className="mt-1 text-xs text-emerald-600">ক্যাশ ও ডিজিটাল পেমেন্ট</p>
+            <div className="rounded-[16px] border border-[#BDE3CC] bg-[#EAF5EE]/60 p-4">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-[#168754]">মোট সংগৃহীত ফি</p>
+              <p className="mt-1 text-2xl font-bold text-[#168754] font-['Anek_Bangla',sans-serif] tabular-nums">৳ {plain(totalCollected)}</p>
+              <p className="mt-1 text-xs text-[#168754]">ক্যাশ ও ডিজিটাল পেমেন্ট</p>
             </div>
 
-            <div className="rounded-xl border border-rose-100 bg-rose-50/50 p-4">
-              <p className="text-xs font-semibold uppercase tracking-wider text-rose-700">মোট বকেয়া ফি</p>
-              <p className="mt-1 text-2xl font-bold text-rose-900">৳ {plain(totalDue)}</p>
-              <p className="mt-1 text-xs text-rose-600">আদায়যোগ্য অবশিষ্ট</p>
+            <div className="rounded-[16px] border border-[#F6C2BE] bg-[#FCECEB]/60 p-4">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-[#C8372D]">মোট বকেয়া ফি</p>
+              <p className="mt-1 text-2xl font-bold text-[#C8372D] font-['Anek_Bangla',sans-serif] tabular-nums">৳ {plain(totalDue)}</p>
+              <p className="mt-1 text-xs text-[#C8372D]">আদায়যোগ্য অবশিষ্ট</p>
             </div>
           </div>
 

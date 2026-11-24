@@ -357,14 +357,14 @@ export default function AccountsPage() {
       />
 
       {/* Tabs */}
-      <div className="mb-6 flex border-b border-gray-200">
+      <div className="mb-6 flex border-b border-[var(--border-hairline)]">
         <button
           type="button"
           onClick={() => setActiveTab('summary')}
-          className={`border-b-2 px-5 py-2.5 text-sm font-medium transition ${
+          className={`border-b-2 px-5 py-2.5 text-sm font-semibold transition ${
             activeTab === 'summary'
-              ? 'border-indigo-600 text-indigo-600'
-              : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+              ? 'border-[#0E3B2E] text-[#0E3B2E]'
+              : 'border-transparent text-[var(--ink-secondary)] hover:border-gray-300 hover:text-[var(--ink-primary)]'
           }`}
         >
           আর্থিক হিসাব ও লাভ-ক্ষতি
@@ -372,10 +372,10 @@ export default function AccountsPage() {
         <button
           type="button"
           onClick={() => setActiveTab('expenses')}
-          className={`border-b-2 px-5 py-2.5 text-sm font-medium transition ${
+          className={`border-b-2 px-5 py-2.5 text-sm font-semibold transition ${
             activeTab === 'expenses'
-              ? 'border-indigo-600 text-indigo-600'
-              : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+              ? 'border-[#0E3B2E] text-[#0E3B2E]'
+              : 'border-transparent text-[var(--ink-secondary)] hover:border-gray-300 hover:text-[var(--ink-primary)]'
           }`}
         >
           খরচ ভাউচারসমূহ ({expenses?.length || 0})
@@ -383,10 +383,10 @@ export default function AccountsPage() {
         <button
           type="button"
           onClick={() => setActiveTab('categories')}
-          className={`border-b-2 px-5 py-2.5 text-sm font-medium transition ${
+          className={`border-b-2 px-5 py-2.5 text-sm font-semibold transition ${
             activeTab === 'categories'
-              ? 'border-indigo-600 text-indigo-600'
-              : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+              ? 'border-[#0E3B2E] text-[#0E3B2E]'
+              : 'border-transparent text-[var(--ink-secondary)] hover:border-gray-300 hover:text-[var(--ink-primary)]'
           }`}
         >
           ব্যয়ের খাতসমূহ ({categories?.length || 0})

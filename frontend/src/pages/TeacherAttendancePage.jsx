@@ -8,8 +8,8 @@ const STATUSES = [
   { value: 'PRESENT', label: 'উপস্থিত', color: 'bg-emerald-100 text-emerald-800 border-emerald-300' },
   { value: 'LATE', label: 'বিলম্বে', color: 'bg-amber-100 text-amber-800 border-amber-300' },
   { value: 'ABSENT', label: 'অনুপস্থিত', color: 'bg-rose-100 text-rose-800 border-rose-300' },
-  { value: 'LEAVE', label: 'ছুটি', color: 'bg-sky-100 text-sky-800 border-sky-300' },
-  { value: 'HALF_DAY', label: 'অর্ধ-দিবস', color: 'bg-purple-100 text-purple-800 border-purple-300' },
+  { value: 'LEAVE', label: 'ছুটি', color: 'bg-[#EAF2EF] text-[#0E3B2E] border-[#C7DDD4]' },
+  { value: 'HALF_DAY', label: 'অর্ধ-দিবস', color: 'bg-[#FDF4E7] text-[#B36B18] border-[#F6DFC0]' },
 ]
 
 export default function TeacherAttendancePage() {
@@ -142,9 +142,9 @@ export default function TeacherAttendancePage() {
           <p className="text-xs text-sky-700 font-medium">ছুটিতে</p>
           <p className="text-xl font-bold text-sky-800">{counts.LEAVE}</p>
         </div>
-        <div className="rounded-xl border border-purple-200 bg-purple-50/50 p-3 text-center shadow-sm">
-          <p className="text-xs text-purple-700 font-medium">অর্ধ-দিবস</p>
-          <p className="text-xl font-bold text-purple-800">{counts.HALF_DAY}</p>
+        <div className="rounded-[16px] border border-[var(--border-hairline)] bg-[var(--surface-subtle)] p-3 text-center shadow-sm">
+          <p className="text-xs text-[var(--ink-secondary)] font-medium">অর্ধ-দিবস</p>
+          <p className="text-xl font-bold text-[var(--ink-primary)] font-['Anek_Bangla',sans-serif] tabular-nums">{counts.HALF_DAY}</p>
         </div>
       </div>
 
@@ -155,13 +155,13 @@ export default function TeacherAttendancePage() {
           ) : (
             <Table headers={['শিক্ষক ও আইডি', 'পদবি', 'উপস্থিতি স্ট্যাটাস', 'প্রবেশ / প্রস্থান', 'মন্তব্য']}>
               {rows.map((r) => (
-                <tr key={r.teacherId} className={r.hasApprovedLeave ? 'bg-sky-50/30' : ''}>
+                <tr key={r.teacherId} className={r.hasApprovedLeave ? 'bg-[#0E3B2E]/5' : ''}>
                   <Td>
                     <div className="flex items-center gap-3">
                       <TeacherPhoto teacherId={r.teacherId} name={r.teacherName} className="h-9 w-9 text-xs" />
                       <div>
-                        <p className="font-medium text-gray-900">{r.teacherName}</p>
-                        <p className="font-mono text-xs text-indigo-600">{r.employeeId || 'আইডি নেই'}</p>
+                        <p className="font-semibold text-gray-900">{r.teacherName}</p>
+                        <p className="font-mono text-xs text-[var(--ink-secondary)]">{r.employeeId || 'আইডি নেই'}</p>
                       </div>
                     </div>
                   </Td>

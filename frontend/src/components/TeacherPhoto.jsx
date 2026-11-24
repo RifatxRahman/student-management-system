@@ -27,7 +27,8 @@ export default function TeacherPhoto({ teacherId, name, className = 'h-28 w-28' 
       <img
         src={photo.url}
         alt={`${name}-এর ছবি`}
-        className={`${className} rounded-full object-cover ring-2 ring-indigo-100 shadow-sm`}
+        loading="lazy"
+        className={`${className} rounded-full object-cover ring-1 ring-[var(--border-hairline)] shadow-sm`}
       />
     )
   }
@@ -36,7 +37,7 @@ export default function TeacherPhoto({ teacherId, name, className = 'h-28 w-28' 
   return (
     <div
       aria-label={photo.status === 'loading' ? 'ছবি লোড হচ্ছে' : 'ছবি নেই'}
-      className={`${className} flex items-center justify-center rounded-full bg-indigo-50 text-3xl font-semibold text-indigo-600 ring-2 ring-indigo-100 shadow-sm`}
+      className={`${className} flex items-center justify-center rounded-full bg-[#0E3B2E]/10 text-3xl font-semibold text-[#0E3B2E] ring-1 ring-[#0E3B2E]/20 shadow-sm`}
     >
       {initial}
     </div>

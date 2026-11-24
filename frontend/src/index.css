@@ -274,12 +274,14 @@
   background: rgba(243, 245, 242, 0.28);
 }
 
-/* Reduced Motion Override */
+/* Reduced Motion: Accessible gentle fade without disorienting motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
-    animation-duration: 0.01ms !important;
+    animation-duration: 1ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: 150ms !important;
+    transition-property: opacity, background-color, border-color, color !important;
+    transform: none !important;
     scroll-behavior: auto !important;
   }
 }

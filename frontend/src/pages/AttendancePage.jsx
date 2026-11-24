@@ -11,7 +11,7 @@ const ACTIVE_STYLES = {
   PRESENT: 'bg-green-600 text-white',
   ABSENT: 'bg-red-600 text-white',
   LATE: 'bg-amber-500 text-white',
-  LEAVE: 'bg-indigo-600 text-white',
+  LEAVE: 'bg-[#0E3B2E] text-white',
 }
 const IDLE_STYLE = 'bg-white text-gray-600 ring-1 ring-gray-300 hover:bg-gray-50'
 
@@ -196,7 +196,7 @@ function SheetEditor({ sheet, onSaved }) {
                         onChange={(event) => setRemark(row.enrollmentId, event.target.value)}
                         placeholder="মন্তব্য (ঐচ্ছিক)"
                         aria-label={`${row.studentName}-এর মন্তব্য`}
-                        className="block w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-gray-50"
+                        className="block w-full min-h-[38px] rounded-[10px] border border-[var(--border-hairline)] px-3 py-1.5 text-sm bg-white text-[var(--ink-primary)] outline-none focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 disabled:bg-gray-50"
                       />
                     )}
                   </li>

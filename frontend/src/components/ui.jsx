@@ -31,8 +31,8 @@ const BUTTON_VARIANTS = {
 }
 
 const BUTTON_SIZES = {
-  md: 'min-h-[44px] px-4 py-2.5 text-sm',
-  sm: 'min-h-[36px] px-3 py-1.5 text-xs',
+  md: 'min-h-[44px] min-w-[44px] px-4 py-2.5 text-sm',
+  sm: 'min-h-[36px] min-w-[36px] px-3 py-1.5 text-xs',
 }
 
 export function Button({ variant = 'primary', size = 'md', className = '', type = 'button', ...props }) {
@@ -132,6 +132,10 @@ export function Badge({ tone = 'gray', children }) {
 
 export function TextField({ label, error, hint, className = '', ...props }) {
   const id = useId()
+  const hintId = `${id}-hint`
+  const errorId = `${id}-error`
+  const describedBy = error ? errorId : hint ? hintId : undefined
+
   return (
     <div>
       {label && (
@@ -141,14 +145,20 @@ export function TextField({ label, error, hint, className = '', ...props }) {
       )}
       <input
         id={id}
+        aria-describedby={describedBy}
+        aria-invalid={Boolean(error)}
         className={`block w-full min-h-[44px] rounded-[10px] border px-3.5 py-2.5 text-sm bg-white text-[var(--ink-primary)] shadow-sm outline-none transition duration-150 focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 ${
           error ? 'border-[#C8372D] focus:border-[#C8372D] focus:ring-[#C8372D]/20' : 'border-[var(--border-hairline)]'
         } ${className}`}
         {...props}
       />
-      {hint && !error && <p className="mt-1 text-xs text-[var(--ink-tertiary)]">{hint}</p>}
+      {hint && !error && (
+        <p id={hintId} className="mt-1 text-xs text-[var(--ink-tertiary)]">
+          {hint}
+        </p>
+      )}
       {error && (
-        <p className="mt-1.5 flex items-center gap-1 text-xs text-[#C8372D] font-medium">
+        <p id={errorId} role="alert" className="mt-1.5 flex items-center gap-1 text-xs text-[#C8372D] font-medium">
           <span aria-hidden="true">⚠</span> {error}
         </p>
       )}
@@ -158,6 +168,8 @@ export function TextField({ label, error, hint, className = '', ...props }) {
 
 export function SelectField({ label, error, options, children, className = '', ...props }) {
   const id = useId()
+  const errorId = `${id}-error`
+
   return (
     <div>
       {label && (
@@ -167,6 +179,8 @@ export function SelectField({ label, error, options, children, className = '', .
       )}
       <select
         id={id}
+        aria-describedby={error ? errorId : undefined}
+        aria-invalid={Boolean(error)}
         className={`block w-full min-h-[44px] rounded-[10px] border bg-white px-3.5 py-2.5 text-sm text-[var(--ink-primary)] shadow-sm outline-none transition duration-150 focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 ${
           error ? 'border-[#C8372D] focus:border-[#C8372D] focus:ring-[#C8372D]/20' : 'border-[var(--border-hairline)]'
         } ${className}`}
@@ -181,7 +195,7 @@ export function SelectField({ label, error, options, children, className = '', .
           : children}
       </select>
       {error && (
-        <p className="mt-1.5 flex items-center gap-1 text-xs text-[#C8372D] font-medium">
+        <p id={errorId} role="alert" className="mt-1.5 flex items-center gap-1 text-xs text-[#C8372D] font-medium">
           <span aria-hidden="true">⚠</span> {error}
         </p>
       )}
