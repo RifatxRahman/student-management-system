@@ -680,7 +680,7 @@ export default function FeeCollectionPage() {
                 <select
                   value={effectiveSessionId}
                   onChange={(e) => setFilterSessionId(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
+                  className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-white px-3 py-2 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
                 >
                   {sessions?.map((s) => (
                     <option key={s.id} value={s.id}>
@@ -695,7 +695,7 @@ export default function FeeCollectionPage() {
                 <select
                   value={filterClassId}
                   onChange={(e) => setFilterClassId(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
+                  className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-white px-3 py-2 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
                 >
                   <option value="">সব শ্রেণি</option>
                   {classes?.map((c) => (
@@ -711,7 +711,7 @@ export default function FeeCollectionPage() {
                 <select
                   value={filterStatus}
                   onChange={(e) => setFilterStatus(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
+                  className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-white px-3 py-2 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
                 >
                   <option value="">সকল অবস্থা</option>
                   <option value="UNPAID">বকেয়া (Unpaid)</option>
@@ -726,7 +726,7 @@ export default function FeeCollectionPage() {
                   type="month"
                   value={filterMonth}
                   onChange={(e) => setFilterMonth(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
+                  className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-white px-3 py-2 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
                 />
               </div>
 
@@ -789,7 +789,7 @@ export default function FeeCollectionPage() {
                         <button
                           type="button"
                           onClick={() => setDetailModal({ open: true, invoiceId: inv.id })}
-                          className="hover:text-indigo-600 underline"
+                          className="hover:text-[#0E3B2E] underline font-bold"
                         >
                           {inv.invoiceNumber}
                         </button>

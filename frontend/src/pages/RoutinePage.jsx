@@ -143,7 +143,7 @@ export default function RoutinePage() {
                   </div>
                   <div className="flex gap-4 text-xs">
                     <span className="font-medium text-gray-700">মোট শিক্ষক: <strong className="text-gray-900">{workload.data?.totalTeachers}</strong></span>
-                    <span className="font-medium text-gray-700">মোট বরাদ্দকৃত পিরিয়ড: <strong className="text-indigo-600">{workload.data?.totalAssignedPeriods}</strong></span>
+                    <span className="font-medium text-gray-700">মোট বরাদ্দকৃত পিরিয়ড: <strong className="text-[#0E3B2E] font-bold">{workload.data?.totalAssignedPeriods}</strong></span>
                   </div>
                 </div>
                 <Table headers={['শিক্ষক ও আইডি', 'পদবি', 'মোট ক্লাস (সপ্তাহে)', 'শনি', 'রবি', 'সোম', 'মঙ্গল', 'বুধ', 'বৃহঃ', 'অবস্থা']}>
@@ -151,7 +151,7 @@ export default function RoutinePage() {
                     <tr key={row.teacherId}>
                       <Td>
                         <p className="font-semibold text-gray-900">{row.teacherName}</p>
-                        <p className="font-mono text-xs text-indigo-600">{row.employeeId || '—'}</p>
+                        <p className="font-mono text-xs text-[#0E3B2E] font-medium">{row.employeeId || '—'}</p>
                       </Td>
                       <Td className="text-xs text-gray-600">{row.designation || '—'}</Td>
                       <Td className="font-bold text-sm text-gray-900">{row.totalWeeklyPeriods} টি</Td>
@@ -194,7 +194,7 @@ export default function RoutinePage() {
                     {isAdmin && (
                       <>
                         {' '}
-                        <Link to="/routine/setup" className="font-medium text-indigo-700 hover:underline">
+                        <Link to="/routine/setup" className="font-medium text-[#0E3B2E] hover:underline">
                           রুম ও পিরিয়ড পাতা থেকে বানান
                         </Link>
                       </>

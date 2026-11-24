@@ -158,8 +158,8 @@ function MarksEditor({ sheet, onSaved }) {
                           onChange={(event) => setMarks(row.enrollmentId, event.target.value)}
                           placeholder="নম্বর"
                           aria-label={`${row.studentName}-এর নম্বর`}
-                          className={`w-24 rounded-lg border px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-gray-50 ${
-                            problem ? 'border-red-400' : 'border-gray-300'
+                          className={`w-24 rounded-[10px] border px-3 py-1.5 text-sm outline-none transition focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 disabled:bg-gray-50 tabular-nums ${
+                            problem ? 'border-[#C8372D]' : 'border-[var(--border-hairline)]'
                           }`}
                         />
                         <label className="flex items-center gap-1.5 text-sm text-gray-700">

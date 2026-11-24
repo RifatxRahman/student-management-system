@@ -155,11 +155,11 @@ function UserPermissionsModal({ user, onClose, onUpdated }) {
     <Modal title={`${user.fullName} (${user.username}) - পারমিশন নিয়ন্ত্রণ`} onClose={onClose}>
       <div className="space-y-4 max-h-[75vh] overflow-y-auto pr-1">
         {error && <Alert>{error}</Alert>}
-        <div className="bg-indigo-50 border border-indigo-100 rounded-lg p-3 text-xs text-indigo-900 flex justify-between items-center">
+        <div className="bg-[#EAF2EF] border border-[#C7DDD4] rounded-[12px] p-3 text-xs text-[#0E3B2E] flex justify-between items-center">
           <div>
             মূল ভূমিকা: <span className="font-semibold">{roleLabel(user.role)}</span>
           </div>
-          <div className="text-gray-500">
+          <div className="text-gray-600">
             রোল ডিফল্ট পারমিশনের বাইরে নির্দিষ্ট ইউজারের জন্য বিশেষ অনুমতি দিতে বা বাতিল করতে পারবেন।
           </div>
         </div>
@@ -352,10 +352,10 @@ function RoleMatrixTab() {
               setSelectedRole(r.code)
               setSuccess('')
             }}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+            className={`px-4 py-2 rounded-[10px] text-sm font-semibold transition ${
               selectedRole === r.code
-                ? 'bg-indigo-600 text-white shadow-sm'
-                : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
+                ? 'bg-[#0E3B2E] text-white shadow-sm'
+                : 'bg-white text-[var(--ink-secondary)] border border-[var(--border-hairline)] hover:bg-[var(--surface-subtle)] hover:text-[var(--ink-primary)]'
             }`}
           >
             {r.label}
@@ -365,7 +365,7 @@ function RoleMatrixTab() {
 
       <LoadState loading={loading} error={null}>
         <div className="space-y-6">
-          <div className="flex items-center justify-between bg-gray-50 p-3 rounded-lg border border-gray-200">
+          <div className="flex items-center justify-between bg-[var(--surface-subtle)] p-3 rounded-[12px] border border-[var(--border-hairline)]">
             <div>
               <span className="font-semibold text-gray-900">{roleLabel(selectedRole)}</span> রোলের অনুমোদিত ক্ষমতা
               {selectedRole === 'ADMIN' && (
@@ -392,8 +392,8 @@ function RoleMatrixTab() {
                     return (
                       <label
                         key={p.id}
-                        className={`flex items-start gap-2.5 p-2 rounded cursor-pointer transition ${
-                          isChecked ? 'bg-indigo-50/50' : 'hover:bg-gray-50'
+                        className={`flex items-start gap-2.5 p-2 rounded-[8px] cursor-pointer transition ${
+                          isChecked ? 'bg-[#EAF2EF]' : 'hover:bg-[var(--surface-subtle)]'
                         } ${selectedRole === 'ADMIN' ? 'cursor-not-allowed opacity-80' : ''}`}
                       >
                         <input
@@ -401,7 +401,7 @@ function RoleMatrixTab() {
                           checked={isChecked}
                           disabled={selectedRole === 'ADMIN'}
                           onChange={() => togglePerm(selectedRole, p.id)}
-                          className="mt-0.5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                          className="mt-0.5 rounded border-gray-300 text-[#0E3B2E] focus:ring-[#E8A317]"
                         />
                         <div className="text-xs">
                           <div className="font-medium text-gray-900">{p.name}</div>
@@ -492,8 +492,8 @@ export default function UsersPage() {
           onClick={() => setActiveTab('users')}
           className={`pb-3 text-sm font-semibold transition border-b-2 -mb-px ${
             activeTab === 'users'
-              ? 'border-indigo-600 text-indigo-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
+              ? 'border-[#0E3B2E] text-[#0E3B2E]'
+              : 'border-transparent text-[var(--ink-secondary)] hover:text-[var(--ink-primary)]'
           }`}
         >
           ইউজার তালিকা ও অ্যাকাউন্ট
@@ -503,8 +503,8 @@ export default function UsersPage() {
           onClick={() => setActiveTab('matrix')}
           className={`pb-3 text-sm font-semibold transition border-b-2 -mb-px ${
             activeTab === 'matrix'
-              ? 'border-indigo-600 text-indigo-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
+              ? 'border-[#0E3B2E] text-[#0E3B2E]'
+              : 'border-transparent text-[var(--ink-secondary)] hover:text-[var(--ink-primary)]'
           }`}
         >
           রোল ও পারমিশন ম্যাট্রিক্স
@@ -523,7 +523,7 @@ export default function UsersPage() {
                     <Td className="font-medium text-gray-900">{u.fullName}</Td>
                     <Td className="font-mono">{u.username}</Td>
                     <Td>
-                      <Badge tone={u.role === 'ADMIN' ? 'red' : u.role === 'TEACHER' ? 'indigo' : 'amber'}>
+                      <Badge tone={u.role === 'ADMIN' ? 'red' : u.role === 'TEACHER' ? 'brand' : 'amber'}>
                         {roleLabel(u.role)}
                       </Badge>
                     </Td>

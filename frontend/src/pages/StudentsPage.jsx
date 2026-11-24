@@ -144,7 +144,7 @@ export default function StudentsPage() {
                     <tr key={s.id}>
                       <Td className="font-mono text-xs">{s.studentCode}</Td>
                       <Td className="font-medium text-gray-900">
-                        <Link to={`/students/${s.id}`} className="hover:text-indigo-700">
+                        <Link to={`/students/${s.id}`} className="hover:text-[#0E3B2E]">
                           {s.fullName}
                         </Link>
                       </Td>

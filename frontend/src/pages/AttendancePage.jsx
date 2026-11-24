@@ -155,7 +155,7 @@ function SheetEditor({ sheet, onSaved }) {
                 <Badge tone="green">উপস্থিত {counts.PRESENT}</Badge>
                 <Badge tone="red">অনুপস্থিত {counts.ABSENT}</Badge>
                 <Badge tone="amber">দেরি {counts.LATE}</Badge>
-                <Badge tone="indigo">ছুটি {counts.LEAVE}</Badge>
+                <Badge tone="brand">ছুটি {counts.LEAVE}</Badge>
                 {sheet.finalized && <Badge tone="red">লক করা (Finalized)</Badge>}
                 {unmarked > 0 && <Badge>বাকি {unmarked}</Badge>}
               </div>

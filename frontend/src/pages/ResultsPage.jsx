@@ -123,7 +123,7 @@ export default function ResultsPage() {
                     <Td>
                       <Link
                         to={`/exams/${examId}/marksheets?sectionId=${row.sectionId}&enrollmentId=${row.enrollmentId}`}
-                        className="text-xs font-medium text-indigo-700 hover:underline"
+                        className="text-xs font-semibold text-[#0E3B2E] hover:underline"
                       >
                         মার্কশিট
                       </Link>

@@ -18,7 +18,7 @@ export default function StudentResultsCard({ studentId }) {
               {data?.map((r) => (
                 <tr key={r.resultId}>
                   <Td className="font-medium text-gray-900">
-                    <Link to={`/exams/${r.examId}`} className="hover:text-indigo-700">
+                    <Link to={`/exams/${r.examId}`} className="hover:text-[#0E3B2E]">
                       {r.examName}
                     </Link>
                     <p className="text-xs font-normal text-gray-500">{examTypeLabel(r.examType)}</p>
@@ -27,8 +27,8 @@ export default function StudentResultsCard({ studentId }) {
                   <Td>
                     {r.className} / {r.sectionName}
                   </Td>
-                  <Td>{Number(r.gpa).toFixed(2)}</Td>
-                  <Td>{r.grade}</Td>
+                  <Td className="tabular-nums font-semibold">{Number(r.gpa).toFixed(2)}</Td>
+                  <Td className="font-semibold">{r.grade}</Td>
                   <Td>
                     <Badge tone={r.passed ? 'green' : 'red'}>{r.passed ? 'পাস' : 'ফেল'}</Badge>
                   </Td>
@@ -38,7 +38,7 @@ export default function StudentResultsCard({ studentId }) {
                   <Td>
                     <Link
                       to={`/exams/${r.examId}/marksheets?sectionId=${r.sectionId}&enrollmentId=${r.enrollmentId}`}
-                      className="text-xs font-medium text-indigo-700 hover:underline"
+                      className="text-xs font-semibold text-[#0E3B2E] hover:underline"
                     >
                       মার্কশিট
                     </Link>

@@ -228,7 +228,7 @@ export default function TeacherDetailPage() {
   return (
     <>
       <div className="mb-3">
-        <Link to="/teachers" className="text-sm text-indigo-600 hover:text-indigo-800 font-medium">
+        <Link to="/teachers" className="text-sm text-[#0E3B2E] hover:underline font-semibold">
           ← সব শিক্ষক
         </Link>
       </div>
@@ -269,7 +269,7 @@ export default function TeacherDetailPage() {
             <PhotoCard teacher={teacher} onPhotoChange={() => teachers.reload()} />
             <div className="mt-4 text-center">
               <h3 className="font-semibold text-gray-900 text-lg">{teacher.fullName}</h3>
-              <p className="text-sm text-indigo-600 font-mono">{teacher.employeeId ?? 'আইডি দেওয়া নেই'}</p>
+              <p className="text-sm text-[#0E3B2E] font-semibold font-mono">{teacher.employeeId ?? 'আইডি দেওয়া নেই'}</p>
               <div className="mt-2">
                 <Badge tone={teacher.active ? 'green' : 'gray'}>{teacher.active ? 'সক্রিয়' : 'নিষ্ক্রিয়'}</Badge>
               </div>

@@ -20,7 +20,7 @@ import { useQuery } from '../hooks/useQuery.js'
 import { plain } from '../utils/format.js'
 
 const FREQUENCY_OPTIONS = [
-  { value: 'MONTHLY', label: 'মাসিক (প্রতি মাসে নিয়মিত প্রদেয়)', tone: 'indigo' },
+  { value: 'MONTHLY', label: 'মাসিক (প্রতি মাসে নিয়মিত প্রদেয়)', tone: 'brand' },
   { value: 'TERMLY', label: 'টার্ম / সাময়িক (পরীক্ষা বা অর্ধবার্ষিকী)', tone: 'amber' },
   { value: 'YEARLY', label: 'বার্ষিক (সেশনের শুরুতে একবার)', tone: 'green' },
   { value: 'ONE_TIME', label: 'এককালীন (ভর্তির সময়)', tone: 'gray' },
@@ -93,7 +93,7 @@ function FeeHeadModal({ initial, onDone, onClose }) {
             type="checkbox"
             checked={values.active}
             onChange={(e) => setValues({ ...values, active: e.target.checked })}
-            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+            className="h-4 w-4 rounded border-gray-300 text-[#0E3B2E] focus:ring-[#E8A317]"
           />
           <label htmlFor="headActive" className="text-sm font-medium text-gray-700">
             এই ফি খাত সক্রিয় রাখুন
@@ -242,7 +242,7 @@ function FeeStructureModal({ initial, sessions, classes, feeHeads, defaultSessio
             type="checkbox"
             checked={values.active}
             onChange={(e) => setValues({ ...values, active: e.target.checked })}
-            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+            className="h-4 w-4 rounded border-gray-300 text-[#0E3B2E] focus:ring-[#E8A317]"
           />
           <label htmlFor="structureActive" className="text-sm font-medium text-gray-700">
             এই ফি নিয়ম সক্রিয় রাখুন
@@ -416,7 +416,7 @@ export default function FeeStructurePage() {
                 <select
                   value={currentSessionId}
                   onChange={(e) => setSelectedSessionId(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
+                  className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-white px-3 py-2 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
                 >
                   {sessions?.map((s) => (
                     <option key={s.id} value={s.id}>
@@ -433,7 +433,7 @@ export default function FeeStructurePage() {
                 <select
                   value={currentClassId}
                   onChange={(e) => setSelectedClassId(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
+                  className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-white px-3 py-2 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
                 >
                   {classes?.map((c) => (
                     <option key={c.id} value={c.id}>
@@ -639,7 +639,7 @@ export default function FeeStructurePage() {
                 type="checkbox"
                 checked={cloneOverwrite}
                 onChange={(e) => setCloneOverwrite(e.target.checked)}
-                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                className="h-4 w-4 rounded border-gray-300 text-[#0E3B2E] focus:ring-[#E8A317]"
               />
               <label htmlFor="overwrite" className="text-sm text-gray-700">
                 টার্গেট সেশনে ইতিমধ্যে বিদ্যমান ফি কাঠামো থাকলে তা প্রতিস্থাপন (Overwrite) করুন

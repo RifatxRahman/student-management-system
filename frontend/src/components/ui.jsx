@@ -107,6 +107,7 @@ export function Badge({ tone = 'gray', children }) {
   const tones = {
     gray: 'bg-[#EEF2F0] text-[#5F736A] border border-[#DCE4E0]',
     green: 'bg-[#EAF5EE] text-[#168754] border border-[#BDE3CC]',
+    brand: 'bg-[#EAF2EF] text-[#0E3B2E] border border-[#C7DDD4]',
     indigo: 'bg-[#EAF2EF] text-[#0E3B2E] border border-[#C7DDD4]',
     amber: 'bg-[#FDF4E7] text-[#B36B18] border border-[#F8E1B9]',
     red: 'bg-[#FCECEB] text-[#C8372D] border border-[#F6C2BE]',
@@ -115,6 +116,7 @@ export function Badge({ tone = 'gray', children }) {
   const dotColors = {
     gray: 'bg-[#5F736A]',
     green: 'bg-[#168754]',
+    brand: 'bg-[#0E3B2E]',
     indigo: 'bg-[#0E3B2E]',
     amber: 'bg-[#B36B18]',
     red: 'bg-[#C8372D]',

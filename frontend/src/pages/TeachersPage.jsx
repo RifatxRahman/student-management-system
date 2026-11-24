@@ -97,7 +97,7 @@ export default function TeachersPage() {
                   </Td>
                   <Td>
                     <p className="font-medium text-gray-900">{t.fullName}</p>
-                    <p className="font-mono text-xs text-indigo-600">{t.employeeId ?? '—'}</p>
+                    <p className="font-mono text-xs text-[#0E3B2E] font-medium">{t.employeeId ?? '—'}</p>
                   </Td>
                   <Td>
                     <p className="font-mono text-xs">{t.phone ?? '—'}</p>

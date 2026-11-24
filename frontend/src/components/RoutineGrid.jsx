@@ -42,11 +42,11 @@ export default function RoutineGrid({ entries, slots, mode, canEdit, onCellClick
                         type="button"
                         disabled={!canEdit}
                         onClick={() => onEntryClick(entry)}
-                        className={`block w-full rounded-lg bg-indigo-50 px-2 py-1.5 text-left ${
-                          canEdit ? 'hover:bg-indigo-100' : 'cursor-default'
+                        className={`block w-full rounded-[10px] bg-[#EAF2EF] border border-[#C7DDD4]/60 px-2 py-1.5 text-left ${
+                          canEdit ? 'hover:bg-[#DCEDE6] transition' : 'cursor-default'
                         }`}
                       >
-                        <span className="block text-sm font-medium text-indigo-900">{entry.subjectName}</span>
+                        <span className="block text-sm font-semibold text-[#0E3B2E]">{entry.subjectName}</span>
                         <span className="block text-xs text-gray-600">
                           {mode === 'section' ? entry.teacherName : `${entry.className} / ${entry.sectionName}`}
                         </span>
@@ -58,7 +58,7 @@ export default function RoutineGrid({ entries, slots, mode, canEdit, onCellClick
                           type="button"
                           onClick={() => onCellClick(day, slot)}
                           aria-label={`${dayLabel(day)} ${slot.name} ঘরে ক্লাস বসান`}
-                          className="flex h-full min-h-12 w-full items-center justify-center rounded-lg text-lg text-gray-300 hover:bg-gray-50 hover:text-indigo-600"
+                          className="flex h-full min-h-12 w-full items-center justify-center rounded-[10px] text-lg text-gray-300 hover:bg-gray-50 hover:text-[#0E3B2E] transition"
                         >
                           +
                         </button>

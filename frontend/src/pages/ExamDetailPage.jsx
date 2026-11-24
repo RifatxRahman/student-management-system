@@ -124,7 +124,7 @@ export default function ExamDetailPage() {
                         <Td>{plain(subject.fullMarks)}</Td>
                         <Td>{plain(subject.passMarks)}</Td>
                         <Td>
-                          <Badge tone={subject.optional ? 'indigo' : 'gray'}>{subject.optional ? 'ঐচ্ছিক' : 'আবশ্যিক'}</Badge>
+                          <Badge tone={subject.optional ? 'brand' : 'gray'}>{subject.optional ? 'ঐচ্ছিক' : 'আবশ্যিক'}</Badge>
                         </Td>
                         <Td>
                           {canEdit && (
@@ -152,11 +152,11 @@ export default function ExamDetailPage() {
                 {progress.data && (
                   <div className="flex items-center gap-3 text-xs">
                     <span className="text-gray-600">
-                      অগ্রগতি: <strong className="text-indigo-600 font-bold">{progress.data.overallCompletionPercentage}%</strong> ({progress.data.completedSheets}/{progress.data.totalSheets} বিষয় সম্পন্ন)
+                      অগ্রগতি: <strong className="text-[#0E3B2E] font-bold">{progress.data.overallCompletionPercentage}%</strong> ({progress.data.completedSheets}/{progress.data.totalSheets} বিষয় সম্পন্ন)
                     </span>
                     <div className="h-2 w-32 overflow-hidden rounded-full bg-gray-200">
                       <div
-                        className="h-full bg-indigo-600 transition-all"
+                        className="h-full bg-[#0E3B2E] transition-all"
                         style={{ width: `${progress.data.overallCompletionPercentage}%` }}
                       />
                     </div>
@@ -189,7 +189,7 @@ export default function ExamDetailPage() {
                                 <Link
                                   key={`${target.sectionId}-${target.subjectId}`}
                                   to={`/exams/${id}/marks?sectionId=${target.sectionId}&subjectId=${target.subjectId}`}
-                                  className="flex flex-col justify-between rounded-xl border border-gray-200 bg-white p-3 hover:border-indigo-300 hover:shadow-sm transition"
+                                  className="flex flex-col justify-between rounded-xl border border-gray-200 bg-white p-3 hover:border-[#0E3B2E]/40 hover:shadow-sm transition"
                                 >
                                   <div className="flex items-start justify-between gap-2">
                                     <div>
@@ -199,14 +199,14 @@ export default function ExamDetailPage() {
                                         {target.optional ? ' (ঐচ্ছিক)' : ''}
                                       </p>
                                     </div>
-                                    <Badge tone={isCompleted ? 'green' : isPartial ? 'yellow' : 'gray'}>
+                                    <Badge tone={isCompleted ? 'green' : isPartial ? 'amber' : 'gray'}>
                                       {isCompleted ? '১০০% সম্পন্ন' : isPartial ? `${prog?.completionPercentage}%` : 'বাকি'}
                                     </Badge>
                                   </div>
                                   {prog?.assignedTeacherName && (
                                     <div className="mt-2 pt-2 border-t border-gray-50 flex items-center justify-between text-xs text-gray-500">
                                       <span>শিক্ষক: <strong className="text-gray-700">{prog.assignedTeacherName}</strong></span>
-                                      <span className="text-indigo-600 font-medium">নম্বর দিন →</span>
+                                      <span className="text-[#0E3B2E] font-semibold">নম্বর দিন →</span>
                                     </div>
                                   )}
                                 </Link>

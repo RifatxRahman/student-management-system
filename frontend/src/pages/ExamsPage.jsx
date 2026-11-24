@@ -78,7 +78,7 @@ export default function ExamsPage() {
                 return (
                   <tr key={exam.id}>
                     <Td className="font-medium text-gray-900">
-                      <Link to={`/exams/${exam.id}`} className="hover:text-indigo-700">
+                      <Link to={`/exams/${exam.id}`} className="hover:text-[#0E3B2E]">
                         {exam.name}
                       </Link>
                     </Td>

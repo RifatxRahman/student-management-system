@@ -20,7 +20,7 @@ export default function PrintFrame({ title, hint, orientation = 'portrait', back
           {backTo && (
             <Link
               to={backTo}
-              className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-700 ring-1 ring-gray-300 hover:bg-gray-50"
+              className="rounded-[10px] bg-white px-4 py-2 text-sm font-medium text-[var(--ink-primary)] border border-[var(--border-hairline)] hover:bg-[var(--surface-subtle)] transition min-h-[40px]"
             >
               ← ফিরে যান
             </Link>
@@ -28,7 +28,7 @@ export default function PrintFrame({ title, hint, orientation = 'portrait', back
           <button
             type="button"
             onClick={() => window.print()}
-            className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+            className="rounded-[10px] bg-[#E8A317] px-4 py-2 text-sm font-semibold text-[#12231D] hover:bg-[#D49312] transition shadow-sm min-h-[40px]"
           >
             প্রিন্ট / PDF করুন
           </button>

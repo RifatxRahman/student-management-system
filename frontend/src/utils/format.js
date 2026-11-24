@@ -53,7 +53,7 @@ export const STUDENT_STATUS_OPTIONS = [
   { value: 'GRADUATED', label: 'গ্র্যাজুয়েট' },
 ]
 
-const STUDENT_STATUS_TONES = { ACTIVE: 'green', INACTIVE: 'gray', GRADUATED: 'indigo' }
+const STUDENT_STATUS_TONES = { ACTIVE: 'green', INACTIVE: 'gray', GRADUATED: 'brand' }
 
 export function studentStatusInfo(status) {
   const option = STUDENT_STATUS_OPTIONS.find((o) => o.value === status)
@@ -77,7 +77,7 @@ const ENROLLMENT_STATUS = {
   ACTIVE: { label: 'চলমান', tone: 'green' },
   TRANSFERRED: { label: 'বদলি হয়েছে', tone: 'amber' },
   WITHDRAWN: { label: 'ছাড়পত্র দেওয়া হয়েছে', tone: 'gray' },
-  COMPLETED: { label: 'সম্পন্ন', tone: 'indigo' },
+  COMPLETED: { label: 'সম্পন্ন', tone: 'brand' },
 }
 
 export function enrollmentStatusInfo(status) {

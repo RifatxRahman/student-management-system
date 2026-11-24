@@ -311,7 +311,7 @@ export default function Sidebar({ open, onClose }) {
           <div>
             <p className="truncate text-sm font-semibold text-white">{user.fullName}</p>
             <div className="mt-1 flex items-center gap-2">
-              <Badge tone="indigo">{roleLabel(user.role)}</Badge>
+              <Badge tone="brand">{roleLabel(user.role)}</Badge>
               <span className="truncate text-xs text-[#F3F5F2]/65 font-mono">{user.username}</span>
             </div>
           </div>

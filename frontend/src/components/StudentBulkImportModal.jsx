@@ -120,11 +120,11 @@ export default function StudentBulkImportModal({ onClose, onSuccess }) {
     <Modal title="এক্সেল শিট থেকে শিক্ষার্থী বাল্ক ভর্তি" onClose={onClose}>
       <div className="max-h-[85vh] overflow-y-auto p-1">
         {/* ধাপ ১: টেমপ্লেট নির্দেশনা ও ডাউনলোড */}
-        <div className="mb-4 rounded-lg bg-indigo-50/70 p-3.5 ring-1 ring-indigo-100">
+        <div className="mb-4 rounded-[14px] bg-[#EAF2EF] p-3.5 border border-[#C7DDD4]">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div>
-              <h4 className="text-sm font-semibold text-indigo-950">ধাপ ১: এক্সেল টেমপ্লেট ডাউনলোড করুন</h4>
-              <p className="mt-0.5 text-xs text-indigo-700">
+              <h4 className="text-sm font-semibold text-[#0E3B2E]">ধাপ ১: এক্সেল টেমপ্লেট ডাউনলোড করুন</h4>
+              <p className="mt-0.5 text-xs text-[#0E3B2E]/80">
                 নির্দিষ্ট কলাম ফরম্যাটে শিক্ষার্থীদের তথ্য পূরণ করে আপলোড করুন।
               </p>
             </div>
@@ -186,7 +186,7 @@ export default function StudentBulkImportModal({ onClose, onSuccess }) {
                 type="file"
                 accept=".xlsx, .xls"
                 onChange={(e) => setFile(e.target.files[0] || null)}
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-600 file:mr-3 file:rounded-md file:border-0 file:bg-indigo-50 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-indigo-700 hover:file:bg-indigo-100"
+                className="mt-1 block w-full rounded-[10px] border border-[var(--border-hairline)] px-3 py-2 text-sm text-[var(--ink-secondary)] file:mr-3 file:rounded-md file:border-0 file:bg-[#0E3B2E]/10 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-[#0E3B2E] hover:file:bg-[#0E3B2E]/20"
                 required
               />
             </div>
@@ -260,7 +260,7 @@ export default function StudentBulkImportModal({ onClose, onSuccess }) {
                   <Table headers={['আইডি', 'নাম', 'শাখা', 'বরাদ্দকৃত রোল']}>
                     {result.importedStudents.slice(0, 50).map((st, idx) => (
                       <tr key={idx} className="text-xs">
-                        <Td className="font-mono text-indigo-700">{st.studentCode}</Td>
+                        <Td className="font-mono text-[#0E3B2E] font-medium">{st.studentCode}</Td>
                         <Td className="font-medium text-gray-900">{st.fullName}</Td>
                         <Td>{st.sectionName}</Td>
                         <Td className="font-bold text-gray-900">{st.rollNumber}</Td>

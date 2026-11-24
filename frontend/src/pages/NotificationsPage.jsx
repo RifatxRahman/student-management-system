@@ -29,9 +29,9 @@ const AUDIENCE_OPTIONS = [
 const TEMPLATE_CATEGORIES = [
   { value: 'FEE_DUE', label: 'ফি বকেয়া নোটিশ', tone: 'amber' },
   { value: 'ABSENCE', label: 'অনুপস্থিতি অ্যালার্ট', tone: 'rose' },
-  { value: 'EXAM_NOTICE', label: 'পরীক্ষার নোটিশ', tone: 'indigo' },
+  { value: 'EXAM_NOTICE', label: 'পরীক্ষার নোটিশ', tone: 'brand' },
   { value: 'RESULT_PUBLISH', label: 'ফলাফল প্রকাশ', tone: 'green' },
-  { value: 'ANNOUNCEMENT', label: 'সাধারণ ঘোষণা', tone: 'purple' },
+  { value: 'ANNOUNCEMENT', label: 'সাধারণ ঘোষণা', tone: 'gray' },
 ]
 
 function getCategoryBadge(cat) {
@@ -162,7 +162,7 @@ function TemplateModal({ initial, onDone, onClose }) {
             rows={4}
             value={values.templateBody}
             onChange={(e) => setValues({ ...values, templateBody: e.target.value })}
-            className="w-full rounded-lg border border-gray-300 p-3 text-sm focus:border-indigo-500 focus:outline-none"
+            className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-white p-3 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
             required
           />
         </div>
@@ -173,7 +173,7 @@ function TemplateModal({ initial, onDone, onClose }) {
             type="checkbox"
             checked={values.active}
             onChange={(e) => setValues({ ...values, active: e.target.checked })}
-            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+            className="h-4 w-4 rounded border-gray-300 text-[#0E3B2E] focus:ring-[#E8A317]"
           />
           <label htmlFor="templateActive" className="text-sm font-medium text-gray-700">
             এই টেমপ্লেট সক্রিয় রাখুন
@@ -349,16 +349,16 @@ function SendCampaignModal({ classes, templates, onDone, onClose }) {
           </div>
 
           <div className="mb-2 flex flex-wrap gap-1.5 text-xs">
-            <button type="button" onClick={() => insertVar('{student_name}')} className="rounded bg-indigo-50 text-indigo-700 px-2 py-0.5 hover:bg-indigo-100">
+            <button type="button" onClick={() => insertVar('{student_name}')} className="rounded-[6px] bg-[#EAF2EF] text-[#0E3B2E] border border-[#C7DDD4] px-2 py-0.5 hover:bg-[#DCEDE6] font-medium transition">
               + নাম
             </button>
-            <button type="button" onClick={() => insertVar('{class_name}')} className="rounded bg-indigo-50 text-indigo-700 px-2 py-0.5 hover:bg-indigo-100">
+            <button type="button" onClick={() => insertVar('{class_name}')} className="rounded-[6px] bg-[#EAF2EF] text-[#0E3B2E] border border-[#C7DDD4] px-2 py-0.5 hover:bg-[#DCEDE6] font-medium transition">
               + শ্রেণি
             </button>
-            <button type="button" onClick={() => insertVar('{due_amount}')} className="rounded bg-indigo-50 text-indigo-700 px-2 py-0.5 hover:bg-indigo-100">
+            <button type="button" onClick={() => insertVar('{due_amount}')} className="rounded-[6px] bg-[#EAF2EF] text-[#0E3B2E] border border-[#C7DDD4] px-2 py-0.5 hover:bg-[#DCEDE6] font-medium transition">
               + বকেয়া
             </button>
-            <button type="button" onClick={() => insertVar('{school_name}')} className="rounded bg-indigo-50 text-indigo-700 px-2 py-0.5 hover:bg-indigo-100">
+            <button type="button" onClick={() => insertVar('{school_name}')} className="rounded-[6px] bg-[#EAF2EF] text-[#0E3B2E] border border-[#C7DDD4] px-2 py-0.5 hover:bg-[#DCEDE6] font-medium transition">
               + প্রতিষ্ঠান
             </button>
           </div>
@@ -368,17 +368,17 @@ function SendCampaignModal({ classes, templates, onDone, onClose }) {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="এসএমএস টেক্সট লিখুন..."
-            className="w-full rounded-lg border border-gray-300 p-3 text-sm focus:border-indigo-500 focus:outline-none"
+            className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-white p-3 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
             required
           />
         </div>
 
-        <div className="rounded-lg bg-gray-50 p-2.5 text-xs flex justify-between items-center text-gray-600">
+        <div className="rounded-[10px] bg-[var(--surface-subtle)] p-2.5 text-xs flex justify-between items-center text-gray-600">
           <div>
             <span className="font-semibold text-gray-800">কাউন্টার: </span>
             {charCount} ক্যারেক্টার | {smsParts} পার্ট
           </div>
-          <Badge tone={isUnicode ? 'indigo' : 'green'}>
+          <Badge tone={isUnicode ? 'brand' : 'green'}>
             {isUnicode ? 'বাংলা ইউনিকোড (৭০ অক্ষর/পার্ট)' : 'ইংরেজি GSM (১৬০ অক্ষর/পার্ট)'}
           </Badge>
         </div>
@@ -544,10 +544,10 @@ export default function NotificationsPage() {
         <button
           type="button"
           onClick={() => setActiveTab('campaign')}
-          className={`border-b-2 px-5 py-2.5 text-sm font-medium transition ${
+          className={`border-b-2 px-5 py-2.5 text-sm font-semibold transition ${
             activeTab === 'campaign'
-              ? 'border-indigo-600 text-indigo-600'
-              : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+              ? 'border-[#0E3B2E] text-[#0E3B2E]'
+              : 'border-transparent text-[var(--ink-secondary)] hover:border-gray-300 hover:text-[var(--ink-primary)]'
           }`}
         >
           বাল্ক এসএমএস প্রেরণ ও ক্যাম্পেইন
@@ -555,10 +555,10 @@ export default function NotificationsPage() {
         <button
           type="button"
           onClick={() => setActiveTab('templates')}
-          className={`border-b-2 px-5 py-2.5 text-sm font-medium transition ${
+          className={`border-b-2 px-5 py-2.5 text-sm font-semibold transition ${
             activeTab === 'templates'
-              ? 'border-indigo-600 text-indigo-600'
-              : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+              ? 'border-[#0E3B2E] text-[#0E3B2E]'
+              : 'border-transparent text-[var(--ink-secondary)] hover:border-gray-300 hover:text-[var(--ink-primary)]'
           }`}
         >
           মেসেজ টেমপ্লেটসমূহ ({templates?.length || 0})
@@ -566,10 +566,10 @@ export default function NotificationsPage() {
         <button
           type="button"
           onClick={() => setActiveTab('logs')}
-          className={`border-b-2 px-5 py-2.5 text-sm font-medium transition ${
+          className={`border-b-2 px-5 py-2.5 text-sm font-semibold transition ${
             activeTab === 'logs'
-              ? 'border-indigo-600 text-indigo-600'
-              : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+              ? 'border-[#0E3B2E] text-[#0E3B2E]'
+              : 'border-transparent text-[var(--ink-secondary)] hover:border-gray-300 hover:text-[var(--ink-primary)]'
           }`}
         >
           ডেলিভারি লগ ও কিউ
@@ -694,16 +694,16 @@ export default function NotificationsPage() {
                   </div>
 
                   <div className="mb-2 flex flex-wrap gap-1.5 text-xs">
-                    <button type="button" onClick={() => insertVarToCampaign('{student_name}')} className="rounded bg-indigo-50 text-indigo-700 px-2 py-0.5 hover:bg-indigo-100">
+                    <button type="button" onClick={() => insertVarToCampaign('{student_name}')} className="rounded-[6px] bg-[#EAF2EF] text-[#0E3B2E] border border-[#C7DDD4] px-2 py-0.5 hover:bg-[#DCEDE6] font-medium transition">
                       + নাম
                     </button>
-                    <button type="button" onClick={() => insertVarToCampaign('{class_name}')} className="rounded bg-indigo-50 text-indigo-700 px-2 py-0.5 hover:bg-indigo-100">
+                    <button type="button" onClick={() => insertVarToCampaign('{class_name}')} className="rounded-[6px] bg-[#EAF2EF] text-[#0E3B2E] border border-[#C7DDD4] px-2 py-0.5 hover:bg-[#DCEDE6] font-medium transition">
                       + শ্রেণি
                     </button>
-                    <button type="button" onClick={() => insertVarToCampaign('{due_amount}')} className="rounded bg-indigo-50 text-indigo-700 px-2 py-0.5 hover:bg-indigo-100">
+                    <button type="button" onClick={() => insertVarToCampaign('{due_amount}')} className="rounded-[6px] bg-[#EAF2EF] text-[#0E3B2E] border border-[#C7DDD4] px-2 py-0.5 hover:bg-[#DCEDE6] font-medium transition">
                       + বকেয়া
                     </button>
-                    <button type="button" onClick={() => insertVarToCampaign('{school_name}')} className="rounded bg-indigo-50 text-indigo-700 px-2 py-0.5 hover:bg-indigo-100">
+                    <button type="button" onClick={() => insertVarToCampaign('{school_name}')} className="rounded-[6px] bg-[#EAF2EF] text-[#0E3B2E] border border-[#C7DDD4] px-2 py-0.5 hover:bg-[#DCEDE6] font-medium transition">
                       + প্রতিষ্ঠান
                     </button>
                   </div>
@@ -713,18 +713,18 @@ export default function NotificationsPage() {
                     value={campMessage}
                     onChange={(e) => setCampMessage(e.target.value)}
                     placeholder="এসএমএস টেক্সট লিখুন..."
-                    className="w-full rounded-lg border border-gray-300 p-3 text-sm focus:border-indigo-500 focus:outline-none"
+                    className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-white p-3 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
                     required
                   />
                 </div>
 
                 {/* SMS Parts & Cost Live Card */}
-                <div className="rounded-lg bg-gray-50 p-3 text-xs flex justify-between items-center text-gray-600">
+                <div className="rounded-[10px] bg-[var(--surface-subtle)] p-3 text-xs flex justify-between items-center text-gray-600">
                   <div>
                     <span className="font-semibold text-gray-800">কাউন্টার: </span>
                     {charCount} ক্যারেক্টার | প্রতিটি এসএমএস: {smsParts} পার্ট
                   </div>
-                  <Badge tone={isUnicode ? 'indigo' : 'green'}>
+                  <Badge tone={isUnicode ? 'brand' : 'green'}>
                     {isUnicode ? 'বাংলা ইউনিকোড (৭০ অক্ষর/পার্ট)' : 'ইংরেজি GSM (১৬০ অক্ষর/পার্ট)'}
                   </Badge>
                 </div>
@@ -773,7 +773,7 @@ export default function NotificationsPage() {
               {templates?.map((t) => (
                 <tr key={t.id}>
                   <Td className="font-semibold text-gray-900">{t.name}</Td>
-                  <Td className="font-mono text-xs text-indigo-700 font-semibold">{t.code}</Td>
+                  <Td className="font-mono text-xs text-[#0E3B2E] font-semibold">{t.code}</Td>
                   <Td>{getCategoryBadge(t.category)}</Td>
                   <Td className="text-xs text-gray-600 max-w-xs truncate">{t.templateBody}</Td>
                   <Td>

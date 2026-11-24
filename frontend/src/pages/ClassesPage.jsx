@@ -66,7 +66,7 @@ export default function ClassesPage() {
                   <Td>
                     <Link
                       to={`/classes/${schoolClass.id}`}
-                      className="font-medium text-indigo-600 hover:text-indigo-700"
+                      className="font-medium text-[#0E3B2E] hover:underline"
                     >
                       {schoolClass.name}
                     </Link>

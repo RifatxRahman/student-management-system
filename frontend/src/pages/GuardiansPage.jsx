@@ -19,7 +19,7 @@ function ChildrenModal({ guardian, onClose }) {
             {data?.children.map((child) => (
               <li key={child.studentId} className="flex items-center justify-between gap-3 px-3 py-2">
                 <div>
-                  <Link to={`/students/${child.studentId}`} className="text-sm font-medium text-gray-900 hover:text-indigo-700">
+                  <Link to={`/students/${child.studentId}`} className="text-sm font-semibold text-gray-900 hover:text-[#0E3B2E] transition">
                     {child.fullName}
                   </Link>
                   <p className="text-xs text-gray-500">

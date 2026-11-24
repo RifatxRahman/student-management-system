@@ -364,7 +364,7 @@ export function BkashPaymentModal({ invoice, onDone, onClose }) {
               <div className="rounded-xl border border-gray-200 bg-gray-50/70 p-4 space-y-2.5 text-xs">
                 <div className="flex justify-between border-b pb-2">
                   <span className="text-gray-500">অফিসিয়াল রসিদ নম্বর:</span>
-                  <span className="font-bold text-indigo-700">{receiptSummary.receiptNumber}</span>
+                  <span className="font-bold text-[#0E3B2E]">{receiptSummary.receiptNumber}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">বিকাশ TrxID:</span>

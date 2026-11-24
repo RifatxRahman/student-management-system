@@ -89,7 +89,7 @@ function ExpenseCategoryModal({ initial, onDone, onClose }) {
             type="checkbox"
             checked={values.active}
             onChange={(e) => setValues({ ...values, active: e.target.checked })}
-            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+            className="h-4 w-4 rounded border-gray-300 text-[#0E3B2E] focus:ring-[#E8A317]"
           />
           <label htmlFor="catActive" className="text-sm font-medium text-gray-700">
             এই ব্যয়ের খাত সক্রিয় রাখুন
@@ -451,29 +451,29 @@ export default function AccountsPage() {
                   </div>
 
                   <div
-                    className={`rounded-xl border p-5 shadow-sm ${
+                    className={`rounded-[16px] border p-5 shadow-sm ${
                       summary.isSurplus
-                        ? 'border-indigo-200 bg-indigo-50/50'
-                        : 'border-amber-200 bg-amber-50/50'
+                        ? 'border-[#BDE3CC] bg-[#EAF5EE]/60'
+                        : 'border-[#F8E1B9] bg-[#FDF4E7]/60'
                     }`}
                   >
                     <p
-                      className={`text-xs font-semibold uppercase tracking-wider ${
-                        summary.isSurplus ? 'text-indigo-800' : 'text-amber-800'
+                      className={`text-[11px] font-semibold uppercase tracking-wider ${
+                        summary.isSurplus ? 'text-[#168754]' : 'text-[#B36B18]'
                       }`}
                     >
                       {summary.isSurplus ? 'নিট লাভ / উদ্বৃত্ত (Surplus)' : 'নিট ঘাটতি / লোকসান (Deficit)'}
                     </p>
                     <p
-                      className={`mt-2 text-3xl font-extrabold ${
-                        summary.isSurplus ? 'text-indigo-950' : 'text-amber-950'
+                      className={`mt-2 text-3xl font-extrabold font-['Anek_Bangla',sans-serif] tabular-nums ${
+                        summary.isSurplus ? 'text-[#168754]' : 'text-[#B36B18]'
                       }`}
                     >
                       ৳ {plain(summary.netSurplus)}
                     </p>
                     <p
                       className={`mt-1 text-xs ${
-                        summary.isSurplus ? 'text-indigo-700' : 'text-amber-700'
+                        summary.isSurplus ? 'text-[#168754]' : 'text-[#B36B18]'
                       }`}
                     >
                       {summary.isSurplus ? 'আয় ও ব্যয়ের উদ্বৃত্ত তহবিল' : 'আয়ের চেয়ে অতিরিক্ত ব্যয়'}
@@ -560,7 +560,7 @@ export default function AccountsPage() {
                 <select
                   value={filterCatId}
                   onChange={(e) => setFilterCatId(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
+                  className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-white px-3 py-2 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
                 >
                   <option value="">সকল খাত</option>
                   {categories?.map((c) => (
@@ -577,7 +577,7 @@ export default function AccountsPage() {
                   type="date"
                   value={filterStartDate}
                   onChange={(e) => setFilterStartDate(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
+                  className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-white px-3 py-2 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
                 />
               </div>
 
@@ -587,7 +587,7 @@ export default function AccountsPage() {
                   type="date"
                   value={filterEndDate}
                   onChange={(e) => setFilterEndDate(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
+                  className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-white px-3 py-2 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
                 />
               </div>
 
@@ -625,7 +625,7 @@ export default function AccountsPage() {
                 <Table headers={['ভাউচার নং', 'তারিখ', 'ব্যয়ের খাত', 'বিবরণ ও প্রাপক', 'টাকার পরিমাণ', 'মাধ্যম', 'অ্যাকশন']}>
                   {expenses?.map((exp) => (
                     <tr key={exp.id}>
-                      <Td className="font-mono text-xs font-semibold text-indigo-700">{exp.voucherNumber}</Td>
+                      <Td className="font-mono text-xs font-semibold text-[#0E3B2E]">{exp.voucherNumber}</Td>
                       <Td className="text-gray-600 text-xs">{exp.expenseDate}</Td>
                       <Td className="font-medium text-gray-900">{exp.categoryName}</Td>
                       <Td>
@@ -679,7 +679,7 @@ export default function AccountsPage() {
                 {categories?.map((c) => (
                   <tr key={c.id}>
                     <Td className="font-semibold text-gray-900">{c.name}</Td>
-                    <Td className="font-mono text-xs font-semibold text-indigo-600">{c.code}</Td>
+                    <Td className="font-mono text-xs font-semibold text-[#0E3B2E]">{c.code}</Td>
                     <Td className="text-gray-600">{c.description || '—'}</Td>
                     <Td>
                       <Badge tone={c.active ? 'green' : 'gray'}>

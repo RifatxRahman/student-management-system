@@ -9,9 +9,9 @@ import { formatDate } from '../utils/format.js'
 const EVENT_TYPES = [
   { value: 'EXAM', label: 'পরীক্ষা (Exam)', color: 'bg-rose-100 text-rose-800 border-rose-200' },
   { value: 'SPORTS', label: 'খেলাধুলা (Sports)', color: 'bg-emerald-100 text-emerald-800 border-emerald-200' },
-  { value: 'CULTURAL', label: 'সাংস্কৃতিক অনুষ্ঠান (Cultural)', color: 'bg-indigo-100 text-indigo-800 border-indigo-200' },
-  { value: 'MEETING', label: 'সমাবেশ / মিটিং (Meeting)', color: 'bg-amber-100 text-amber-800 border-amber-200' },
-  { value: 'VACATION', label: 'অবকাশ / ছুটি (Vacation)', color: 'bg-purple-100 text-purple-800 border-purple-200' },
+  { value: 'CULTURAL', label: 'সাংস্কৃতিক অনুষ্ঠান (Cultural)', color: 'bg-[#EAF2EF] text-[#0E3B2E] border-[#C7DDD4]' },
+  { value: 'MEETING', label: 'সমাবেশ / মিটিং (Meeting)', color: 'bg-[#FDF4E7] text-[#B36B18] border-[#F8E1B9]' },
+  { value: 'VACATION', label: 'অবকাশ / ছুটি (Vacation)', color: 'bg-[#FEF3D6] text-[#8C5E0E] border-[#FDE5A3]' },
   { value: 'OBSERVANCE', label: 'দিবস উদযাপন (Observance)', color: 'bg-sky-100 text-sky-800 border-sky-200' },
   { value: 'OTHER', label: 'অন্যান্য (Other)', color: 'bg-gray-100 text-gray-800 border-gray-200' },
 ]
@@ -104,7 +104,7 @@ function EventModal({ initial, onDone, onClose }) {
             type="checkbox"
             checked={values.isHoliday}
             onChange={(e) => setValues((c) => ({ ...c, isHoliday: e.target.checked }))}
-            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+            className="h-4 w-4 rounded border-gray-300 text-[#0E3B2E] focus:ring-[#E8A317]"
           />
           <label htmlFor="isHoliday" className="text-sm font-medium text-gray-700">
             এই দিনটিতে স্কুল ছুটি থাকবে (হাজিরা বন্ধ থাকবে)
@@ -123,7 +123,7 @@ function EventModal({ initial, onDone, onClose }) {
             rows={3}
             value={values.description}
             onChange={(e) => setValues((c) => ({ ...c, description: e.target.value }))}
-            className="w-full rounded-md border border-gray-300 p-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none"
+            className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-white p-2.5 text-sm text-[var(--ink-primary)] shadow-sm focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
             placeholder="ইভেন্টের বিস্তারিত তথ্য, সময়সূচি বা নির্দেশনা..."
           />
         </div>
@@ -224,13 +224,13 @@ export default function AcademicCalendarPage() {
           <p className="text-xs text-slate-500">বাংলা শিক্ষাবর্ষ অনুযায়ী ক্যালেন্ডার সূচি</p>
         </div>
         <div className="flex gap-4">
-          <div className="rounded-lg bg-indigo-50 px-3 py-1.5 text-center">
-            <p className="text-xs text-indigo-600 font-medium">মোট ইভেন্ট</p>
-            <p className="text-lg font-bold text-indigo-900">{calendar.data?.totalEvents ?? 0}</p>
+          <div className="rounded-[12px] border border-[var(--border-hairline)] bg-[var(--surface-subtle)] px-3.5 py-1.5 text-center">
+            <p className="text-xs text-[var(--ink-secondary)] font-medium">মোট ইভেন্ট</p>
+            <p className="text-lg font-bold text-[var(--ink-primary)] font-['Anek_Bangla',sans-serif] tabular-nums">{calendar.data?.totalEvents ?? 0}</p>
           </div>
-          <div className="rounded-lg bg-rose-50 px-3 py-1.5 text-center">
-            <p className="text-xs text-rose-600 font-medium">ছুটির দিন</p>
-            <p className="text-lg font-bold text-rose-900">{calendar.data?.totalHolidays ?? 0}</p>
+          <div className="rounded-[12px] border border-[#F6C2BE] bg-[#FCECEB]/60 px-3.5 py-1.5 text-center">
+            <p className="text-xs text-[#C8372D] font-medium">ছুটির দিন</p>
+            <p className="text-lg font-bold text-[#C8372D] font-['Anek_Bangla',sans-serif] tabular-nums">{calendar.data?.totalHolidays ?? 0}</p>
           </div>
         </div>
       </div>
@@ -262,13 +262,13 @@ export default function AcademicCalendarPage() {
                   key={day.date}
                   className={`min-h-[110px] p-2 transition flex flex-col justify-between ${
                     isFriday ? 'bg-rose-50/30' : ''
-                  } ${isToday ? 'ring-2 ring-indigo-500 ring-inset bg-indigo-50/20' : ''}`}
+                  } ${isToday ? 'ring-2 ring-[#0E3B2E] ring-inset bg-[#0E3B2E]/5' : ''}`}
                 >
                   <div className="flex items-center justify-between">
                     <span
                       className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${
                         isToday
-                          ? 'bg-indigo-600 text-white'
+                          ? 'bg-[#0E3B2E] text-white'
                           : isFriday
                           ? 'text-rose-600'
                           : 'text-gray-700'

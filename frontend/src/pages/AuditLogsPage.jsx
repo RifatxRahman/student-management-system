@@ -78,7 +78,7 @@ export default function AuditLogsPage() {
                       {log.entityId ? <span className="font-mono text-gray-400"> #{log.entityId}</span> : ''}
                     </Td>
                     <Td className="text-xs">
-                      <div className="font-mono text-indigo-600 font-medium">
+                      <div className="font-mono text-[#0E3B2E] font-medium">
                         {log.ipAddress || '127.0.0.1'}
                       </div>
                       <div className="text-[11px] text-gray-400 truncate max-w-[140px]" title={log.userAgent}>

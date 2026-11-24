@@ -301,7 +301,7 @@ export default function DashboardPage() {
                     {activities.map((act) => (
                       <li key={act.id} className="py-3">
                         <div className="flex items-center justify-between">
-                          <Badge tone="indigo">{act.action}</Badge>
+                          <Badge tone="brand">{act.action}</Badge>
                           <span className="text-xs text-[var(--ink-tertiary)] font-mono">{formatDate(act.createdAt)}</span>
                         </div>
                         <p className="mt-1.5 text-xs text-[var(--ink-secondary)] line-clamp-2 leading-relaxed">

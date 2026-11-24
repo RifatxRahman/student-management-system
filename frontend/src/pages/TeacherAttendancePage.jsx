@@ -97,7 +97,7 @@ export default function TeacherAttendancePage() {
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-medium shadow-sm focus:border-indigo-500 focus:outline-none"
+              className="rounded-[10px] border border-[var(--border-hairline)] px-3 py-1.5 text-sm font-medium shadow-sm focus:border-[#E8A317] focus:ring-1 focus:ring-[#E8A317] focus:outline-none"
             />
             <Button variant="secondary" size="sm" onClick={markAllPresent}>
               সবাইকে উপস্থিত দাগান
@@ -198,14 +198,14 @@ export default function TeacherAttendancePage() {
                         type="time"
                         value={r.inTime}
                         onChange={(e) => updateRow(r.teacherId, { inTime: e.target.value })}
-                        className="w-24 rounded border border-gray-300 px-1.5 py-1 text-xs focus:border-indigo-500 focus:outline-none"
+                        className="w-24 rounded-[8px] border border-[var(--border-hairline)] px-1.5 py-1 text-xs focus:border-[#E8A317] focus:ring-1 focus:ring-[#E8A317] focus:outline-none"
                       />
                       <span className="text-gray-400">-</span>
                       <input
                         type="time"
                         value={r.outTime}
                         onChange={(e) => updateRow(r.teacherId, { outTime: e.target.value })}
-                        className="w-24 rounded border border-gray-300 px-1.5 py-1 text-xs focus:border-indigo-500 focus:outline-none"
+                        className="w-24 rounded-[8px] border border-[var(--border-hairline)] px-1.5 py-1 text-xs focus:border-[#E8A317] focus:ring-1 focus:ring-[#E8A317] focus:outline-none"
                       />
                     </div>
                   </Td>
@@ -215,7 +215,7 @@ export default function TeacherAttendancePage() {
                       placeholder="মন্তব্য..."
                       value={r.remark}
                       onChange={(e) => updateRow(r.teacherId, { remark: e.target.value })}
-                      className="w-full rounded border border-gray-300 px-2 py-1 text-xs focus:border-indigo-500 focus:outline-none"
+                      className="w-full rounded-[8px] border border-[var(--border-hairline)] px-2 py-1 text-xs focus:border-[#E8A317] focus:ring-1 focus:ring-[#E8A317] focus:outline-none"
                     />
                   </Td>
                 </tr>

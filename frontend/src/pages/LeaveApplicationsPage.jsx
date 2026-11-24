@@ -112,7 +112,7 @@ function ApplyLeaveModal({ teachers, isAdmin, onDone, onClose }) {
             rows={3}
             value={values.reason}
             onChange={(e) => setValues((c) => ({ ...c, reason: e.target.value }))}
-            className="w-full rounded-md border border-gray-300 p-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none"
+            className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-white p-2.5 text-sm text-[var(--ink-primary)] shadow-sm focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
             placeholder="ছুটির সুনির্দিষ্ট কারণ লিখুন..."
           />
         </div>
@@ -246,10 +246,10 @@ export default function LeaveApplicationsPage() {
             <button
               key={f.value}
               onClick={() => setStatusFilter(f.value)}
-              className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
+              className={`rounded-[8px] px-3 py-1.5 text-xs font-semibold transition ${
                 statusFilter === f.value
-                  ? 'bg-indigo-600 text-white shadow-sm'
-                  : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+                  ? 'bg-[#0E3B2E] text-white shadow-sm'
+                  : 'bg-white text-[var(--ink-secondary)] border border-[var(--border-hairline)] hover:bg-[var(--surface-subtle)] hover:text-[var(--ink-primary)]'
               }`}
             >
               {f.label}
@@ -268,7 +268,7 @@ export default function LeaveApplicationsPage() {
                 <tr key={l.id}>
                   <Td>
                     <p className="font-medium text-gray-900">{l.teacherName}</p>
-                    <p className="font-mono text-xs text-indigo-600">{l.employeeId || '—'}</p>
+                    <p className="font-mono text-xs text-[#0E3B2E] font-medium">{l.employeeId || '—'}</p>
                   </Td>
                   <Td>
                     <Badge tone={l.leaveType === 'UNPAID' ? 'red' : 'blue'}>
