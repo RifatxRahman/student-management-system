@@ -1,5 +1,285 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Segoe UI", "Nirmala UI", system-ui, -apple-system, sans-serif;
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-active: var(--brand-active);
+  --color-brand-muted: var(--brand-muted);
+
+  --color-accent-marigold: var(--accent-marigold);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-ink: var(--accent-ink);
+
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-subtle: var(--surface-subtle);
+  --color-surface-hover: var(--surface-hover);
+
+  --color-ink-primary: var(--ink-primary);
+  --color-ink-secondary: var(--ink-secondary);
+  --color-ink-tertiary: var(--ink-tertiary);
+  --color-border-hairline: var(--border-hairline);
+
+  --color-signature-margin: var(--signature-margin);
+
+  --color-semantic-success: var(--semantic-success);
+  --color-semantic-success-bg: var(--semantic-success-bg);
+  --color-semantic-warning: var(--semantic-warning);
+  --color-semantic-warning-bg: var(--semantic-warning-bg);
+  --color-semantic-danger: var(--semantic-danger);
+  --color-semantic-danger-bg: var(--semantic-danger-bg);
+  --color-semantic-neutral: var(--semantic-neutral);
+  --color-semantic-neutral-bg: var(--semantic-neutral-bg);
+
+  --font-heading: 'Anek Bangla', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-body: 'Hind Siliguri', 'Noto Sans Bengali', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sans: 'Hind Siliguri', 'Noto Sans Bengali', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  --radius-control: 10px;
+  --radius-container: 16px;
+  --radius-pill: 9999px;
+}
+
+@layer base {
+  :root {
+    /* Base Brand: Bottle Green */
+    --brand-primary: #0E3B2E;
+    --brand-hover: #164E3D;
+    --brand-active: #1F634E;
+    --brand-muted: #2A7961;
+
+    /* Accent: Marigold */
+    --accent-marigold: #E8A317;
+    --accent-hover: #D49210;
+    --accent-ink: #12231D;
+
+    /* Canvas & Surfaces */
+    --canvas: #F3F5F2;
+    --surface: #FFFFFF;
+    --surface-subtle: #F7F9F6;
+    --surface-hover: #EEF2ED;
+
+    /* Ink & Typography */
+    --ink-primary: #12231D;
+    --ink-secondary: #4D6259;
+    --ink-tertiary: #5F736A;
+    --border-hairline: rgba(18, 35, 29, 0.09);
+
+    /* Signature Margin Line */
+    --signature-margin: rgba(200, 55, 45, 0.5);
+    --margin-line-width: 1px;
+    --margin-line-offset: 12px;
+
+    /* Semantics */
+    --semantic-success: #168754;
+    --semantic-success-bg: #EAF5EE;
+    --semantic-warning: #B36B18;
+    --semantic-warning-bg: #FDF4E7;
+    --semantic-danger: #C8372D;
+    --semantic-danger-bg: #FCECEB;
+    --semantic-neutral: #5F736A;
+    --semantic-neutral-bg: #EEF2F0;
+
+    /* Chart */
+    --chart-bar: #0E3B2E;
+    --chart-bar-highlight: #E8A317;
+    --chart-gridline: rgba(18, 35, 29, 0.08);
+
+    /* Focus Rings */
+    --focus-ring: 0 0 0 2px #12231D, 0 0 0 4px #E8A317;
+    --focus-ring-on-dark: 0 0 0 2px #FFFFFF, 0 0 0 4px #E8A317;
+
+    /* Radii */
+    --radius-control: 10px;
+    --radius-container: 16px;
+    --radius-pill: 9999px;
+
+    /* Shadows */
+    --shadow-subtle: 0 1px 2px 0 rgba(18, 35, 29, 0.04);
+    --shadow-card: 0 3px 10px 0 rgba(18, 35, 29, 0.04), 0 1px 2px 0 rgba(18, 35, 29, 0.03);
+    --shadow-modal: 0 20px 40px -6px rgba(18, 35, 29, 0.16);
+
+    /* Sidebar Dimensions */
+    --sidebar-width: 264px;
+    --sidebar-width-collapsed: 72px;
+
+    /* Touch & Layout */
+    --touch-target-min: 44px;
+    --opacity-disabled: 0.45;
+
+    /* Z-Index Layers */
+    --z-dropdown: 30;
+    --z-sticky: 40;
+    --z-sidebar: 50;
+    --z-modal: 60;
+    --z-toast: 70;
+
+    /* Typography & Font Stacks */
+    --font-heading: 'Anek Bangla', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-body: 'Hind Siliguri', 'Noto Sans Bengali', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-sans: 'Hind Siliguri', 'Noto Sans Bengali', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --brand-primary: #0A241C;
+      --brand-hover: #13392D;
+      --brand-active: #1D4B3C;
+      --brand-muted: #245847;
+
+      --accent-marigold: #F0B232;
+      --accent-hover: #DDA022;
+      --accent-ink: #0A1B14;
+
+      --canvas: #091510;
+      --surface: #10211A;
+      --surface-subtle: #152B22;
+      --surface-hover: #1A342A;
+
+      --ink-primary: #EDF4F0;
+      --ink-secondary: #ADC3B9;
+      --ink-tertiary: #849E93;
+      --border-hairline: rgba(237, 244, 240, 0.1);
+
+      --signature-margin: rgba(230, 85, 75, 0.55);
+
+      --semantic-success: #34B376;
+      --semantic-success-bg: #12281E;
+      --semantic-warning: #E89E3A;
+      --semantic-warning-bg: #291F0E;
+      --semantic-danger: #E65A50;
+      --semantic-danger-bg: #2C1614;
+      --semantic-neutral: #849E93;
+      --semantic-neutral-bg: #16241E;
+
+      --chart-bar: #1D4B3C;
+      --chart-bar-highlight: #F0B232;
+      --chart-gridline: rgba(237, 244, 240, 0.08);
+
+      --focus-ring: 0 0 0 2px #EDF4F0, 0 0 0 4px #F0B232;
+      --focus-ring-on-dark: 0 0 0 2px #FFFFFF, 0 0 0 4px #F0B232;
+
+      --shadow-subtle: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+      --shadow-card: 0 4px 12px 0 rgba(0, 0, 0, 0.35);
+      --shadow-modal: 0 24px 48px -8px rgba(0, 0, 0, 0.6);
+    }
+  }
+
+  :root.dark,
+  [data-theme="dark"] {
+    --brand-primary: #0A241C;
+    --brand-hover: #13392D;
+    --brand-active: #1D4B3C;
+    --brand-muted: #245847;
+
+    --accent-marigold: #F0B232;
+    --accent-hover: #DDA022;
+    --accent-ink: #0A1B14;
+
+    --canvas: #091510;
+    --surface: #10211A;
+    --surface-subtle: #152B22;
+    --surface-hover: #1A342A;
+
+    --ink-primary: #EDF4F0;
+    --ink-secondary: #ADC3B9;
+    --ink-tertiary: #849E93;
+    --border-hairline: rgba(237, 244, 240, 0.1);
+
+    --signature-margin: rgba(230, 85, 75, 0.55);
+
+    --semantic-success: #34B376;
+    --semantic-success-bg: #12281E;
+    --semantic-warning: #E89E3A;
+    --semantic-warning-bg: #291F0E;
+    --semantic-danger: #E65A50;
+    --semantic-danger-bg: #2C1614;
+    --semantic-neutral: #849E93;
+    --semantic-neutral-bg: #16241E;
+
+    --chart-bar: #1D4B3C;
+    --chart-bar-highlight: #F0B232;
+    --chart-gridline: rgba(237, 244, 240, 0.08);
+
+    --focus-ring: 0 0 0 2px #EDF4F0, 0 0 0 4px #F0B232;
+    --focus-ring-on-dark: 0 0 0 2px #FFFFFF, 0 0 0 4px #F0B232;
+
+    --shadow-subtle: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-card: 0 4px 12px 0 rgba(0, 0, 0, 0.35);
+    --shadow-modal: 0 24px 48px -8px rgba(0, 0, 0, 0.6);
+  }
+
+  body {
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--ink-primary);
+    background-color: var(--canvas);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    line-height: 1.35;
+    color: var(--ink-primary);
+    letter-spacing: normal !important;
+  }
+}
+
+/* Signature Detail: খাতার মার্জিন (Title blocks only) */
+.signature-margin {
+  position: relative;
+  padding-left: 14px;
+}
+
+.signature-margin::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: var(--margin-line-width, 1px);
+  background-color: var(--signature-margin);
+  border-radius: 1px;
+}
+
+/* Focus Utility */
+.focus-ring-apple {
+  outline: none;
+}
+.focus-ring-apple:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+.focus-ring-apple-dark:focus-visible {
+  box-shadow: var(--focus-ring-on-dark);
+}
+
+/* Slim Overlay Scrollbar (Hover only) */
+.sidebar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(243, 245, 242, 0.15) transparent;
+}
+.sidebar-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: rgba(243, 245, 242, 0.12);
+  border-radius: 9999px;
+}
+.sidebar-scroll:hover::-webkit-scrollbar-thumb {
+  background: rgba(243, 245, 242, 0.28);
+}
+
+/* Reduced Motion Override */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
