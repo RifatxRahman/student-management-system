@@ -105,7 +105,7 @@ export default function RoutineCellModal({ sessionId, sectionId, day, slot, entr
         />
         <FormActions busy={busy} submitLabel={entry ? 'সংরক্ষণ করুন' : 'বসান'} onCancel={onClose} />
         {entry && (
-          <div className="border-t border-gray-100 pt-3">
+          <div className="border-t border-[var(--border-hairline)] pt-3">
             <Button variant="danger" size="sm" onClick={() => setConfirming(true)}>
               এই ঘর থেকে সরান
             </Button>

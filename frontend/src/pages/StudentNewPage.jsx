@@ -37,7 +37,7 @@ export default function StudentNewPage() {
   return (
     <>
       <div className="mb-3">
-        <Link to="/students" className="text-sm text-gray-500 hover:text-gray-700">
+        <Link to="/students" className="text-sm text-[var(--ink-secondary)] hover:text-[var(--ink-primary)] transition-colors">
           ← সব শিক্ষার্থী
         </Link>
       </div>
@@ -46,12 +46,12 @@ export default function StudentNewPage() {
 
       <div className="max-w-xl space-y-6">
         <Card className="p-5">
-          <h2 className="mb-3 text-sm font-semibold text-gray-900">১. অভিভাবক</h2>
+          <h2 className="mb-3 text-sm font-semibold text-[var(--ink-primary)]">১. অভিভাবক</h2>
           {guardian ? (
-            <div className="flex items-center justify-between gap-3 rounded-lg bg-gray-50 px-4 py-3">
+            <div className="flex items-center justify-between gap-3 rounded-lg bg-[var(--surface-subtle)] border border-[var(--border-hairline)] px-4 py-3">
               <div>
-                <p className="text-sm font-medium text-gray-900">{guardian.fullName}</p>
-                <p className="text-xs text-gray-500">{guardian.phone}</p>
+                <p className="text-sm font-semibold text-[var(--ink-primary)]">{guardian.fullName}</p>
+                <p className="text-xs text-[var(--ink-secondary)]">{guardian.phone}</p>
               </div>
               <Button variant="secondary" size="sm" onClick={() => setGuardian(null)}>
                 বদলান
@@ -60,7 +60,7 @@ export default function StudentNewPage() {
           ) : (
             <div className="space-y-4">
               <GuardianPicker onSelect={setGuardian} />
-              <div className="border-t border-gray-100 pt-3">
+              <div className="border-t border-[var(--border-hairline)] pt-3">
                 <Button variant="ghost" size="sm" onClick={() => setShowNewGuardian(true)}>
                   খুঁজে না পেলে নতুন অভিভাবক বানান
                 </Button>
@@ -71,7 +71,7 @@ export default function StudentNewPage() {
 
         {guardian && (
           <Card className="p-5">
-            <h2 className="mb-3 text-sm font-semibold text-gray-900">২. শিক্ষার্থীর তথ্য</h2>
+            <h2 className="mb-3 text-sm font-semibold text-[var(--ink-primary)]">২. শিক্ষার্থীর তথ্য</h2>
             <EntityForm
               fields={NEW_FIELDS}
               submitLabel="শিক্ষার্থী তৈরি করুন"

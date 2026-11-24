@@ -228,7 +228,7 @@ export default function TeacherDetailPage() {
   return (
     <>
       <div className="mb-3">
-        <Link to="/teachers" className="text-sm text-[#0E3B2E] hover:underline font-semibold">
+        <Link to="/teachers" className="text-sm text-[var(--ink-secondary)] hover:text-[var(--ink-primary)] font-medium transition-colors">
           ← সব শিক্ষক
         </Link>
       </div>
@@ -268,8 +268,8 @@ export default function TeacherDetailPage() {
           <Card className="p-6 flex flex-col items-center">
             <PhotoCard teacher={teacher} onPhotoChange={() => teachers.reload()} />
             <div className="mt-4 text-center">
-              <h3 className="font-semibold text-gray-900 text-lg">{teacher.fullName}</h3>
-              <p className="text-sm text-[#0E3B2E] font-semibold font-mono">{teacher.employeeId ?? 'আইডি দেওয়া নেই'}</p>
+              <h3 className="font-semibold text-[var(--ink-primary)] text-lg">{teacher.fullName}</h3>
+              <p className="text-sm text-[var(--ink-secondary)] font-semibold font-mono">{teacher.employeeId ?? 'আইডি দেওয়া নেই'}</p>
               <div className="mt-2">
                 <Badge tone={teacher.active ? 'green' : 'gray'}>{teacher.active ? 'সক্রিয়' : 'নিষ্ক্রিয়'}</Badge>
               </div>
@@ -277,8 +277,8 @@ export default function TeacherDetailPage() {
           </Card>
 
           <Card className="p-6 md:col-span-2">
-            <h3 className="font-semibold text-gray-800 border-b border-gray-100 pb-2 mb-3">ব্যক্তিগত ও প্রাতিষ্ঠানিক তথ্য</h3>
-            <dl className="divide-y divide-gray-100">
+            <h3 className="font-semibold text-[var(--ink-primary)] border-b border-[var(--border-hairline)] pb-2 mb-3">ব্যক্তিগত ও প্রাতিষ্ঠানিক তথ্য</h3>
+            <dl className="divide-y divide-[var(--border-hairline)]">
               <InfoRow label="কর্মচারী আইডি">{teacher.employeeId ?? '—'}</InfoRow>
               <InfoRow label="পদবি">{teacher.designation ?? '—'}</InfoRow>
               <InfoRow label="শিক্ষাগত যোগ্যতা">{teacher.qualification ?? '—'}</InfoRow>
@@ -293,7 +293,7 @@ export default function TeacherDetailPage() {
       )}
 
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-800">শিক্ষক ক্লাস ও বিষয় বরাদ্দ</h3>
+        <h3 className="text-lg font-semibold text-[var(--ink-primary)]">শিক্ষক ক্লাস ও বিষয় বরাদ্দ</h3>
         <div className="w-56">
           <SelectField
             options={sessionOptions}
@@ -311,7 +311,7 @@ export default function TeacherDetailPage() {
             <Table headers={['সেশন', 'ক্লাস / সেকশন', 'বিষয়', 'কাজ']}>
               {assignments.data?.map((a) => (
                 <tr key={a.id}>
-                  <Td className="font-medium text-gray-900">{a.sessionName}</Td>
+                  <Td className="font-medium text-[var(--ink-primary)]">{a.sessionName}</Td>
                   <Td>
                     {a.className} / {a.sectionName}
                   </Td>

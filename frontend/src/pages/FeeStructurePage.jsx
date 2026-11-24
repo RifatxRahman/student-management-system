@@ -93,9 +93,9 @@ function FeeHeadModal({ initial, onDone, onClose }) {
             type="checkbox"
             checked={values.active}
             onChange={(e) => setValues({ ...values, active: e.target.checked })}
-            className="h-4 w-4 rounded border-gray-300 text-[#0E3B2E] focus:ring-[#E8A317]"
+            className="h-4 w-4 rounded border-[var(--border-hairline)] text-[#0E3B2E] focus:ring-[#E8A317]"
           />
-          <label htmlFor="headActive" className="text-sm font-medium text-gray-700">
+          <label htmlFor="headActive" className="text-sm font-medium text-[var(--ink-secondary)]">
             এই ফি খাত সক্রিয় রাখুন
           </label>
         </div>
@@ -242,9 +242,9 @@ function FeeStructureModal({ initial, sessions, classes, feeHeads, defaultSessio
             type="checkbox"
             checked={values.active}
             onChange={(e) => setValues({ ...values, active: e.target.checked })}
-            className="h-4 w-4 rounded border-gray-300 text-[#0E3B2E] focus:ring-[#E8A317]"
+            className="h-4 w-4 rounded border-[var(--border-hairline)] text-[#0E3B2E] focus:ring-[#E8A317]"
           />
-          <label htmlFor="structureActive" className="text-sm font-medium text-gray-700">
+          <label htmlFor="structureActive" className="text-sm font-medium text-[var(--ink-secondary)]">
             এই ফি নিয়ম সক্রিয় রাখুন
           </label>
         </div>
@@ -373,8 +373,8 @@ export default function FeeStructurePage() {
           onClick={() => setActiveTab('structure')}
           className={`border-b-2 px-5 py-2.5 text-sm font-semibold transition ${
             activeTab === 'structure'
-              ? 'border-[#0E3B2E] text-[#0E3B2E]'
-              : 'border-transparent text-[var(--ink-secondary)] hover:border-gray-300 hover:text-[var(--ink-primary)]'
+              ? 'border-[#E8A317] dark:border-[#F0B232] text-[#E8A317] dark:text-[#F0B232]'
+              : 'border-transparent text-[var(--ink-secondary)] hover:border-[var(--border-hairline)] hover:text-[var(--ink-primary)]'
           }`}
         >
           শ্রেণিভিত্তিক ফি কাঠামো
@@ -384,8 +384,8 @@ export default function FeeStructurePage() {
           onClick={() => setActiveTab('heads')}
           className={`border-b-2 px-5 py-2.5 text-sm font-semibold transition ${
             activeTab === 'heads'
-              ? 'border-[#0E3B2E] text-[#0E3B2E]'
-              : 'border-transparent text-[var(--ink-secondary)] hover:border-gray-300 hover:text-[var(--ink-primary)]'
+              ? 'border-[#E8A317] dark:border-[#F0B232] text-[#E8A317] dark:text-[#F0B232]'
+              : 'border-transparent text-[var(--ink-secondary)] hover:border-[var(--border-hairline)] hover:text-[var(--ink-primary)]'
           }`}
         >
           ফি খাতসমূহ ({feeHeads?.length || 0})
@@ -395,8 +395,8 @@ export default function FeeStructurePage() {
           onClick={() => setActiveTab('clone')}
           className={`border-b-2 px-5 py-2.5 text-sm font-semibold transition ${
             activeTab === 'clone'
-              ? 'border-[#0E3B2E] text-[#0E3B2E]'
-              : 'border-transparent text-[var(--ink-secondary)] hover:border-gray-300 hover:text-[var(--ink-primary)]'
+              ? 'border-[#E8A317] dark:border-[#F0B232] text-[#E8A317] dark:text-[#F0B232]'
+              : 'border-transparent text-[var(--ink-secondary)] hover:border-[var(--border-hairline)] hover:text-[var(--ink-primary)]'
           }`}
         >
           সেশন অনুলিপি / কপি
@@ -407,16 +407,16 @@ export default function FeeStructurePage() {
       {activeTab === 'structure' && (
         <div className="space-y-6">
           {/* Filter Bar */}
-          <Card className="p-4 bg-gray-50/50">
+          <Card className="p-4 bg-[var(--surface-subtle)]">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 items-end">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--ink-secondary)] mb-1">
                   শিক্ষাবর্ষ (সেশন)
                 </label>
                 <select
                   value={currentSessionId}
                   onChange={(e) => setSelectedSessionId(e.target.value)}
-                  className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-white px-3 py-2 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
+                  className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-[var(--surface-subtle)] px-3 py-2 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
                 >
                   {sessions?.map((s) => (
                     <option key={s.id} value={s.id}>
@@ -427,13 +427,13 @@ export default function FeeStructurePage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--ink-secondary)] mb-1">
                   শ্রেণি (ক্লাস)
                 </label>
                 <select
                   value={currentClassId}
                   onChange={(e) => setSelectedClassId(e.target.value)}
-                  className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-white px-3 py-2 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
+                  className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-[var(--surface-subtle)] px-3 py-2 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
                 >
                   {classes?.map((c) => (
                     <option key={c.id} value={c.id}>
@@ -467,16 +467,16 @@ export default function FeeStructurePage() {
                 <p className="mt-1 text-xs text-[var(--ink-tertiary)]">প্রতি মাসে শিক্ষার্থীর প্রদেয়</p>
               </div>
 
-              <div className="rounded-[16px] border border-[#F6DFC0] bg-[#FDF4E7]/60 p-4">
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-[#B36B18]">টার্ম / পরীক্ষা ফি</p>
-                <p className="mt-1 text-2xl font-bold text-[#B36B18] font-['Anek_Bangla',sans-serif] tabular-nums">৳ {plain(classSummary.totalTermlyAmount)}</p>
-                <p className="mt-1 text-xs text-[#B36B18]">প্রতি টার্মে প্রদেয়</p>
+              <div className="rounded-[16px] border border-[var(--semantic-warning)]/30 bg-[var(--semantic-warning-bg)] p-4">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--semantic-warning)]">টার্ম / পরীক্ষা ফি</p>
+                <p className="mt-1 text-2xl font-bold text-[var(--semantic-warning)] font-['Anek_Bangla',sans-serif] tabular-nums">৳ {plain(classSummary.totalTermlyAmount)}</p>
+                <p className="mt-1 text-xs text-[var(--semantic-warning)]">প্রতি টার্মে প্রদেয়</p>
               </div>
 
-              <div className="rounded-[16px] border border-[#BDE3CC] bg-[#EAF5EE]/60 p-4">
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-[#168754]">বাৎসরিক সেশন চার্জ</p>
-                <p className="mt-1 text-2xl font-bold text-[#168754] font-['Anek_Bangla',sans-serif] tabular-nums">৳ {plain(classSummary.totalYearlyAmount)}</p>
-                <p className="mt-1 text-xs text-[#168754]">বছরের শুরুতে একবার</p>
+              <div className="rounded-[16px] border border-[var(--semantic-success)]/30 bg-[var(--semantic-success-bg)] p-4">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--semantic-success)]">বাৎসরিক সেশন চার্জ</p>
+                <p className="mt-1 text-2xl font-bold text-[var(--semantic-success)] font-['Anek_Bangla',sans-serif] tabular-nums">৳ {plain(classSummary.totalYearlyAmount)}</p>
+                <p className="mt-1 text-xs text-[var(--semantic-success)]">বছরের শুরুতে একবার</p>
               </div>
 
               <div className="rounded-[16px] border border-[var(--border-hairline)] bg-[var(--surface-subtle)] p-4">
@@ -498,10 +498,10 @@ export default function FeeStructurePage() {
               ) : (
                 <Table headers={['ফি খাত', 'কোড', 'টাকার পরিমাণ', 'ফ্রিকোয়েন্সি', 'পরিশোধের শেষ তারিখ', 'স্ট্যাটাস', 'অ্যাকশন']}>
                   {feeStructures?.map((fs) => (
-                    <tr key={fs.id} className={!fs.active ? 'opacity-60 bg-gray-50' : ''}>
-                      <Td className="font-semibold text-gray-900">
+                    <tr key={fs.id} className={!fs.active ? 'opacity-60 bg-[var(--surface-subtle)]' : ''}>
+                      <Td className="font-semibold text-[var(--ink-primary)]">
                         {fs.feeHeadName}
-                        {fs.description && <p className="text-xs text-gray-500 font-normal">{fs.description}</p>}
+                        {fs.description && <p className="text-xs text-[var(--ink-secondary)] font-normal">{fs.description}</p>}
                       </Td>
                       <Td className="font-mono text-xs">{fs.feeHeadCode}</Td>
                       <Td className="font-bold text-[var(--ink-primary)] text-base">৳ {plain(fs.amount)}</Td>
@@ -552,9 +552,9 @@ export default function FeeStructurePage() {
               <Table headers={['খাতের নাম', 'ইউনিক কোড', 'বিবরণ', 'অবস্থা', 'অ্যাকশন']}>
                 {feeHeads?.map((h) => (
                   <tr key={h.id}>
-                    <Td className="font-semibold text-gray-900">{h.name}</Td>
+                    <Td className="font-semibold text-[var(--ink-primary)]">{h.name}</Td>
                     <Td className="font-mono text-xs font-semibold text-[var(--ink-secondary)]">{h.code}</Td>
-                    <Td className="text-gray-600">{h.description || '—'}</Td>
+                    <Td className="text-[var(--ink-secondary)]">{h.description || '—'}</Td>
                     <Td>
                       <Badge tone={h.active ? 'green' : 'gray'}>
                         {h.active ? 'সক্রিয়' : 'নিষ্ক্রিয়'}
@@ -592,8 +592,8 @@ export default function FeeStructurePage() {
       {/* TAB 3: Clone / Copy Session Fee Matrix */}
       {activeTab === 'clone' && (
         <Card className="max-w-2xl p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">সেশন ফি অনুলিপি (Clone Fee Matrix)</h3>
-          <p className="text-sm text-gray-600 mb-6">
+          <h3 className="text-lg font-semibold text-[var(--ink-primary)] mb-2">সেশন ফি অনুলিপি (Clone Fee Matrix)</h3>
+          <p className="text-sm text-[var(--ink-secondary)] mb-6">
             নতুন শিক্ষাবর্ষ শুরুর সময় পূর্ববর্তী শিক্ষাবর্ষের সকল শ্রেণির ফি নিয়মাবলি এক ক্লিকে নতুন শিক্ষাবর্ষে অনুলিপি
             করুন। এতে প্রতি ক্লাসের জন্য আলাদা আলাদা ফি পুনরায় সেট করার পরিশ্রম বাঁচে।
           </p>
@@ -639,9 +639,9 @@ export default function FeeStructurePage() {
                 type="checkbox"
                 checked={cloneOverwrite}
                 onChange={(e) => setCloneOverwrite(e.target.checked)}
-                className="h-4 w-4 rounded border-gray-300 text-[#0E3B2E] focus:ring-[#E8A317]"
+                className="h-4 w-4 rounded border-[var(--border-hairline)] text-[#0E3B2E] focus:ring-[#E8A317]"
               />
-              <label htmlFor="overwrite" className="text-sm text-gray-700">
+              <label htmlFor="overwrite" className="text-sm text-[var(--ink-secondary)]">
                 টার্গেট সেশনে ইতিমধ্যে বিদ্যমান ফি কাঠামো থাকলে তা প্রতিস্থাপন (Overwrite) করুন
               </label>
             </div>

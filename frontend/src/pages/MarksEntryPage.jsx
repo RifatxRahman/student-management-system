@@ -120,7 +120,7 @@ function MarksEditor({ sheet, onSaved }) {
       ) : (
         <>
           <Card>
-            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 px-4 py-3 text-sm text-gray-700">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border-hairline)] px-4 py-3 text-sm text-[var(--ink-secondary)]">
               <span>
                 {sheet.subjectName} · ফুল মার্কস <strong>{plain(sheet.fullMarks)}</strong> · পাস মার্কস{' '}
                 <strong>{plain(sheet.passMarks)}</strong>
@@ -131,7 +131,7 @@ function MarksEditor({ sheet, onSaved }) {
               </Badge>
             </div>
 
-            <ul className="divide-y divide-gray-100">
+            <ul className="divide-y divide-[var(--border-hairline)]">
               {rows.map((row) => {
                 const current = draft[row.enrollmentId]
                 const text = clean(current.marks)
@@ -141,12 +141,12 @@ function MarksEditor({ sheet, onSaved }) {
                   <li key={row.enrollmentId} className="px-4 py-3">
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div className="flex items-center gap-3">
-                        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-sm font-medium text-gray-700">
+                        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--surface-subtle)] text-sm font-medium text-[var(--ink-secondary)] border border-[var(--border-hairline)]">
                           {row.rollNumber}
                         </span>
                         <div>
-                          <p className="text-sm font-medium text-gray-900">{row.studentName}</p>
-                          <p className="font-mono text-xs text-gray-500">{row.studentCode}</p>
+                          <p className="text-sm font-semibold text-[var(--ink-primary)]">{row.studentName}</p>
+                          <p className="font-mono text-xs text-[var(--ink-secondary)]">{row.studentCode}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
@@ -158,24 +158,25 @@ function MarksEditor({ sheet, onSaved }) {
                           onChange={(event) => setMarks(row.enrollmentId, event.target.value)}
                           placeholder="নম্বর"
                           aria-label={`${row.studentName}-এর নম্বর`}
-                          className={`w-24 rounded-[10px] border px-3 py-1.5 text-sm outline-none transition focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 disabled:bg-gray-50 tabular-nums ${
+                          className={`w-24 rounded-[10px] border px-3 py-1.5 text-sm bg-[var(--surface-subtle)] text-[var(--ink-primary)] placeholder-[var(--ink-tertiary)] outline-none transition focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 disabled:opacity-50 tabular-nums ${
                             problem ? 'border-[#C8372D]' : 'border-[var(--border-hairline)]'
                           }`}
                         />
-                        <label className="flex items-center gap-1.5 text-sm text-gray-700">
+                        <label className="flex items-center gap-1.5 text-sm text-[var(--ink-secondary)] cursor-pointer">
                           <input
                             type="checkbox"
                             disabled={locked}
                             checked={current.absent}
                             onChange={(event) => setAbsent(row.enrollmentId, event.target.checked)}
+                            className="rounded border-[var(--border-hairline)] text-[#0E3B2E] focus:ring-[#E8A317]"
                           />
                           অনুপস্থিত
                         </label>
                       </div>
                     </div>
-                    {problem && <p className="mt-1.5 text-xs text-red-600">{problem}</p>}
+                    {problem && <p className="mt-1.5 text-xs text-[var(--semantic-danger)] font-medium">{problem}</p>}
                     {willFail && (
-                      <p className="mt-1.5 text-xs text-amber-700">
+                      <p className="mt-1.5 text-xs text-[var(--semantic-warning)] font-medium">
                         {current.absent ? 'অনুপস্থিত মানে এই বিষয়ে ফেল' : `পাস মার্কসের (${plain(sheet.passMarks)}) নিচে, ফেল ধরা হবে`}
                       </p>
                     )}
@@ -198,10 +199,10 @@ function MarksEditor({ sheet, onSaved }) {
               )}
               {error && <Alert>{error}</Alert>}
               {problemCount > 0 && (
-                <p className="text-xs text-red-600">{problemCount}টা সারিতে সমস্যা আছে, ঠিক না করলে সেভ হবে না।</p>
+                <p className="text-xs text-[var(--semantic-danger)] font-medium">{problemCount}টা সারিতে সমস্যা আছে, ঠিক না করলে সেভ হবে না।</p>
               )}
               <div className="flex items-center justify-between gap-3">
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-[var(--ink-secondary)]">
                   {changedRows.length > 0 ? `${changedRows.length} জনের নতুন বা বদলানো নম্বর সেভ হবে।` : 'সেভ করার মতো কোনো বদল নেই।'}
                 </p>
                 <Button disabled={!canSave || busy} onClick={save}>
@@ -263,7 +264,7 @@ export default function MarksEntryPage() {
   return (
     <>
       <div className="mb-3">
-        <Link to={`/exams/${examId}`} className="text-sm text-gray-500 hover:text-gray-700">
+        <Link to={`/exams/${examId}`} className="text-sm text-[var(--ink-secondary)] hover:text-[var(--ink-primary)] transition-colors">
           ← পরীক্ষায় ফিরে যান
         </Link>
       </div>

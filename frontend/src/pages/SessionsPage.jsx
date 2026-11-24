@@ -62,7 +62,7 @@ export default function SessionsPage() {
             <Table headers={['নাম', 'শুরু', 'শেষ', 'অবস্থা', isAdmin ? 'কাজ' : '']}>
               {data?.map((session) => (
                 <tr key={session.id}>
-                  <Td className="font-medium text-gray-900">{session.name}</Td>
+                  <Td className="font-medium text-[var(--ink-primary)]">{session.name}</Td>
                   <Td>{formatDate(session.startDate)}</Td>
                   <Td>{formatDate(session.endDate)}</Td>
                   <Td>

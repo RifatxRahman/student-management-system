@@ -52,7 +52,7 @@ export default function ExamDetailPage() {
   return (
     <>
       <div className="mb-3">
-        <Link to="/exams" className="text-sm text-gray-500 hover:text-gray-700">
+        <Link to="/exams" className="text-sm text-[var(--ink-secondary)] hover:text-[var(--ink-primary)] transition-colors">
           ← সব পরীক্ষা
         </Link>
       </div>
@@ -103,8 +103,8 @@ export default function ExamDetailPage() {
             {/* ---------- বিষয় ---------- */}
             <section className="mb-6">
               <div className="mb-3 flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-gray-900">
-                  বিষয় <span className="text-sm font-normal text-gray-500">(আবশ্যিক বিষয়ের মোট ফুল মার্কস: {plain(data.totalFullMarks)})</span>
+                <h2 className="text-lg font-semibold text-[var(--ink-primary)]">
+                  বিষয় <span className="text-sm font-normal text-[var(--ink-secondary)]">(আবশ্যিক বিষয়ের মোট ফুল মার্কস: {plain(data.totalFullMarks)})</span>
                 </h2>
                 {canEdit && (
                   <Button size="sm" onClick={() => setModal({ type: 'addSubject' })}>
@@ -119,7 +119,7 @@ export default function ExamDetailPage() {
                   <Table headers={['বিষয়', 'কোড', 'ফুল মার্কস', 'পাস মার্কস', 'ধরন', canEdit ? 'কাজ' : '']}>
                     {data.subjects.map((subject) => (
                       <tr key={subject.id}>
-                        <Td className="font-medium text-gray-900">{subject.subjectName}</Td>
+                        <Td className="font-medium text-[var(--ink-primary)]">{subject.subjectName}</Td>
                         <Td className="font-mono text-xs">{subject.subjectCode}</Td>
                         <Td>{plain(subject.fullMarks)}</Td>
                         <Td>{plain(subject.passMarks)}</Td>
@@ -148,15 +148,15 @@ export default function ExamDetailPage() {
             {/* ---------- মার্কস এন্ট্রি ও অগ্রগতি ---------- */}
             <section>
               <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-                <h2 className="text-lg font-semibold text-gray-900">মার্কস এন্ট্রি ও অগ্রগতি</h2>
+                <h2 className="text-lg font-semibold text-[var(--ink-primary)]">মার্কস এন্ট্রি ও অগ্রগতি</h2>
                 {progress.data && (
                   <div className="flex items-center gap-3 text-xs">
-                    <span className="text-gray-600">
-                      অগ্রগতি: <strong className="text-[#0E3B2E] font-bold">{progress.data.overallCompletionPercentage}%</strong> ({progress.data.completedSheets}/{progress.data.totalSheets} বিষয় সম্পন্ন)
+                    <span className="text-[var(--ink-secondary)]">
+                      অগ্রগতি: <strong className="text-[#E8A317] dark:text-[#F0B232] font-bold">{progress.data.overallCompletionPercentage}%</strong> ({progress.data.completedSheets}/{progress.data.totalSheets} বিষয় সম্পন্ন)
                     </span>
-                    <div className="h-2 w-32 overflow-hidden rounded-full bg-gray-200">
+                    <div className="h-2 w-32 overflow-hidden rounded-full bg-[var(--surface-subtle)] border border-[var(--border-hairline)]">
                       <div
-                        className="h-full bg-[#0E3B2E] transition-all"
+                        className="h-full bg-[#E8A317] dark:bg-[#F0B232] transition-all"
                         style={{ width: `${progress.data.overallCompletionPercentage}%` }}
                       />
                     </div>
@@ -175,8 +175,8 @@ export default function ExamDetailPage() {
                   ) : (
                     <div className="space-y-6">
                       {groups.map((group) => (
-                        <div key={group.key} className="border-b border-gray-100 pb-4 last:border-b-0 last:pb-0">
-                          <p className="mb-3 text-sm font-bold text-gray-800">{group.name}</p>
+                        <div key={group.key} className="border-b border-[var(--border-hairline)] pb-4 last:border-b-0 last:pb-0">
+                          <p className="mb-3 text-sm font-bold text-[var(--ink-primary)]">{group.name}</p>
                           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                             {group.items.map((target) => {
                               const prog = progress.data?.progressList?.find(
@@ -189,12 +189,12 @@ export default function ExamDetailPage() {
                                 <Link
                                   key={`${target.sectionId}-${target.subjectId}`}
                                   to={`/exams/${id}/marks?sectionId=${target.sectionId}&subjectId=${target.subjectId}`}
-                                  className="flex flex-col justify-between rounded-xl border border-gray-200 bg-white p-3 hover:border-[#0E3B2E]/40 hover:shadow-sm transition"
+                                  className="flex flex-col justify-between rounded-xl border border-[var(--border-hairline)] bg-[var(--surface-subtle)] p-3 hover:border-[#E8A317] hover:shadow-xs transition"
                                 >
                                   <div className="flex items-start justify-between gap-2">
                                     <div>
-                                      <p className="font-semibold text-sm text-gray-900">{target.subjectName}</p>
-                                      <p className="text-xs text-gray-500 font-mono">
+                                      <p className="font-semibold text-sm text-[var(--ink-primary)]">{target.subjectName}</p>
+                                      <p className="text-xs text-[var(--ink-secondary)] font-mono">
                                         ফুল: {plain(target.fullMarks)} | পাস: {plain(target.passMarks)}
                                         {target.optional ? ' (ঐচ্ছিক)' : ''}
                                       </p>
@@ -204,9 +204,9 @@ export default function ExamDetailPage() {
                                     </Badge>
                                   </div>
                                   {prog?.assignedTeacherName && (
-                                    <div className="mt-2 pt-2 border-t border-gray-50 flex items-center justify-between text-xs text-gray-500">
-                                      <span>শিক্ষক: <strong className="text-gray-700">{prog.assignedTeacherName}</strong></span>
-                                      <span className="text-[#0E3B2E] font-semibold">নম্বর দিন →</span>
+                                    <div className="mt-2 pt-2 border-t border-[var(--border-hairline)] flex items-center justify-between text-xs text-[var(--ink-secondary)]">
+                                      <span>শিক্ষক: <strong className="text-[var(--ink-primary)]">{prog.assignedTeacherName}</strong></span>
+                                      <span className="text-[#E8A317] dark:text-[#F0B232] font-semibold">নম্বর দিন →</span>
                                     </div>
                                   )}
                                 </Link>

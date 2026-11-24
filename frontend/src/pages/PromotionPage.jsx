@@ -195,7 +195,7 @@ export default function PromotionPage() {
       {/* কনফিগারেশন ও ফিল্টার ফর্ম */}
       <Card className="mb-6 p-5">
         <form onSubmit={handleGeneratePreview} className="space-y-4">
-          <h3 className="text-base font-semibold text-gray-900 border-b pb-2">
+          <h3 className="text-base font-semibold text-[var(--ink-primary)] border-b border-[var(--border-hairline)] pb-2">
             ১. সেশন ও শ্রেণি নির্বাচন
           </h3>
 
@@ -253,13 +253,13 @@ export default function PromotionPage() {
             />
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-4 border-t pt-3">
-            <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+          <div className="flex flex-wrap items-center justify-between gap-4 border-t border-[var(--border-hairline)] pt-3">
+            <label className="flex items-center gap-2 text-sm text-[var(--ink-secondary)] cursor-pointer">
               <input
                 type="checkbox"
                 checked={meritRoll}
                 onChange={(e) => setMeritRoll(e.target.checked)}
-                className="h-4 w-4 rounded border-gray-300 text-[#0E3B2E] focus:ring-[#E8A317]"
+                className="h-4 w-4 rounded border-[var(--border-hairline)] text-[#0E3B2E] focus:ring-[#E8A317]"
               />
               <span>ফাইনাল পরীক্ষার মেধা অবস্থান (GPA / প্রাপ্ত নম্বর) অনুযায়ী নতুন রোল বরাদ্দ করুন</span>
             </label>
@@ -280,18 +280,18 @@ export default function PromotionPage() {
       {/* প্রিভিউ ও ক্যান্ডিডেট তালিকা */}
       {previewData && (
         <Card className="p-5">
-          <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b pb-3">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-[var(--border-hairline)] pb-3">
             <div>
-              <h3 className="text-lg font-bold text-gray-900">
+              <h3 className="text-lg font-bold text-[var(--ink-primary)]">
                 ২. প্রমোশন খসড়া ও শিক্ষার্থী তালিকা
               </h3>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-[var(--ink-tertiary)]">
                 {previewData.sourceSessionName} ({previewData.sourceClassName}) ➔ {previewData.targetSessionName} ({previewData.targetClassName})
               </p>
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs font-semibold text-gray-500">বাল্ক অ্যাকশন:</span>
+              <span className="text-xs font-semibold text-[var(--ink-secondary)]">বাল্ক অ্যাকশন:</span>
               <Button size="sm" variant="secondary" onClick={() => applyBulkAction('PROMOTE')}>
                 সবাইকে উত্তীর্ণ (Promote)
               </Button>
@@ -306,21 +306,21 @@ export default function PromotionPage() {
 
           {/* পরিসংখ্যান সামারি */}
           <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4 text-center">
-            <div className="rounded-lg bg-gray-50 p-2.5 ring-1 ring-gray-200">
-              <span className="text-xs text-gray-500">মোট শিক্ষার্থী</span>
-              <p className="text-base font-bold text-gray-900">{previewData.totalStudents}</p>
+            <div className="rounded-lg bg-[var(--surface-subtle)] p-2.5 border border-[var(--border-hairline)]">
+              <span className="text-xs text-[var(--ink-secondary)]">মোট শিক্ষার্থী</span>
+              <p className="text-base font-bold text-[var(--ink-primary)] font-['Anek_Bangla',sans-serif] tabular-nums">{previewData.totalStudents}</p>
             </div>
-            <div className="rounded-lg bg-emerald-50 p-2.5 ring-1 ring-emerald-200">
-              <span className="text-xs text-emerald-700">উত্তীর্ণ (পাস)</span>
-              <p className="text-base font-bold text-emerald-700">{previewData.passedStudents}</p>
+            <div className="rounded-lg bg-[var(--semantic-success-bg)] p-2.5 border border-[var(--semantic-success)]/30">
+              <span className="text-xs text-[var(--semantic-success)]">উত্তীর্ণ (পাস)</span>
+              <p className="text-base font-bold text-[var(--semantic-success)] font-['Anek_Bangla',sans-serif] tabular-nums">{previewData.passedStudents}</p>
             </div>
-            <div className="rounded-lg bg-rose-50 p-2.5 ring-1 ring-rose-200">
-              <span className="text-xs text-rose-700">অকৃতকার্য (ফেল)</span>
-              <p className="text-base font-bold text-rose-700">{previewData.failedStudents}</p>
+            <div className="rounded-lg bg-[var(--semantic-danger-bg)] p-2.5 border border-[var(--semantic-danger)]/30">
+              <span className="text-xs text-[var(--semantic-danger)]">অকৃতকার্য (ফেল)</span>
+              <p className="text-base font-bold text-[var(--semantic-danger)] font-['Anek_Bangla',sans-serif] tabular-nums">{previewData.failedStudents}</p>
             </div>
-            <div className="rounded-[12px] bg-[#EAF2EF] p-2.5 border border-[#C7DDD4]">
-              <span className="text-xs text-[#0E3B2E] font-medium">নির্বাচিত প্রমোশন</span>
-              <p className="text-base font-bold text-[#0E3B2E] font-['Anek_Bangla',sans-serif] tabular-nums">
+            <div className="rounded-[12px] bg-[var(--surface-subtle)] p-2.5 border border-[var(--border-hairline)]">
+              <span className="text-xs text-[var(--ink-secondary)] font-medium">নির্বাচিত প্রমোশন</span>
+              <p className="text-base font-bold text-[var(--ink-primary)] font-['Anek_Bangla',sans-serif] tabular-nums">
                 {candidateRows.filter((r) => r.action === 'PROMOTE').length}
               </p>
             </div>
@@ -335,21 +335,21 @@ export default function PromotionPage() {
                   {candidateRows.map((row) => (
                     <tr key={row.studentId} className={row.action === 'SKIP' ? 'opacity-50' : ''}>
                       <Td className="font-mono text-xs">{row.studentCode}</Td>
-                      <Td className="font-medium text-gray-900">{row.fullName}</Td>
+                      <Td className="font-medium text-[var(--ink-primary)]">{row.fullName}</Td>
                       <Td className="font-mono">{row.currentRollNumber} ({row.currentSectionName})</Td>
                       <Td>
                         {row.gpa != null ? (
-                          <span className={`inline-flex items-center gap-1 font-bold ${row.passed ? 'text-emerald-700' : 'text-rose-700'}`}>
+                          <span className={`inline-flex items-center gap-1 font-bold ${row.passed ? 'text-[var(--semantic-success)]' : 'text-[var(--semantic-danger)]'}`}>
                             {row.gpa} ({row.grade})
                             <Badge tone={row.passed ? 'green' : 'red'}>{row.passed ? 'পাস' : 'ফেল'}</Badge>
                           </span>
                         ) : (
-                          <span className="text-gray-400 text-xs">মূল্যায়ন ছাড়া</span>
+                          <span className="text-[var(--ink-tertiary)] text-xs">মূল্যায়ন ছাড়া</span>
                         )}
                       </Td>
                       <Td>
                         {row.meritPosition != null ? (
-                          <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-bold text-amber-800">
+                          <span className="rounded-full bg-[var(--semantic-warning-bg)] border border-[var(--semantic-warning)]/30 px-2 py-0.5 text-xs font-bold text-[var(--semantic-warning)]">
                             #{row.meritPosition}
                           </span>
                         ) : (
@@ -360,7 +360,7 @@ export default function PromotionPage() {
                         <select
                           value={row.action}
                           onChange={(e) => updateRow(row.studentId, { action: e.target.value })}
-                          className="rounded-[8px] border border-[var(--border-hairline)] bg-white px-2.5 py-1 text-xs font-semibold shadow-sm focus:border-[#E8A317] focus:ring-1 focus:ring-[#E8A317] focus:outline-none"
+                          className="rounded-[8px] border border-[var(--border-hairline)] bg-[var(--surface-subtle)] px-2.5 py-1 text-xs font-semibold text-[var(--ink-primary)] shadow-xs focus:border-[#E8A317] focus:ring-1 focus:ring-[#E8A317] focus:outline-none"
                         >
                           {ACTION_OPTIONS.map((opt) => (
                             <option key={opt.value} value={opt.value}>
@@ -374,7 +374,7 @@ export default function PromotionPage() {
                           <select
                             value={row.targetSectionId || ''}
                             onChange={(e) => updateRow(row.studentId, { targetSectionId: Number(e.target.value) || null })}
-                            className="rounded-[8px] border border-[var(--border-hairline)] bg-white px-2 py-1 text-xs shadow-sm focus:border-[#E8A317] focus:ring-1 focus:ring-[#E8A317] focus:outline-none"
+                            className="rounded-[8px] border border-[var(--border-hairline)] bg-[var(--surface-subtle)] px-2 py-1 text-xs text-[var(--ink-primary)] shadow-xs focus:border-[#E8A317] focus:ring-1 focus:ring-[#E8A317] focus:outline-none"
                           >
                             {targetSectionList.map((sec) => (
                               <option key={sec.id} value={sec.id}>
@@ -393,7 +393,7 @@ export default function PromotionPage() {
                             min="1"
                             value={row.newRollNumber || ''}
                             onChange={(e) => updateRow(row.studentId, { newRollNumber: e.target.value ? Number(e.target.value) : '' })}
-                            className="w-16 rounded-[8px] border border-[var(--border-hairline)] px-2 py-1 text-center font-bold text-[#0E3B2E] shadow-sm focus:border-[#E8A317] focus:ring-1 focus:ring-[#E8A317] focus:outline-none"
+                            className="w-16 rounded-[8px] border border-[var(--border-hairline)] bg-[var(--surface-subtle)] px-2 py-1 text-center font-bold text-[var(--ink-primary)] shadow-xs focus:border-[#E8A317] focus:ring-1 focus:ring-[#E8A317] focus:outline-none"
                           />
                         ) : (
                           '—'
@@ -405,15 +405,14 @@ export default function PromotionPage() {
               </div>
 
               {/* প্রমোশন কার্যকর করার বাটন */}
-              <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t pt-4">
-                <span className="text-xs text-gray-500">
+              <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-[var(--border-hairline)] pt-4">
+                <span className="text-xs text-[var(--ink-secondary)]">
                   সতর্কতা: প্রমোশন কার্যকর করলে পূর্ববর্তী সেশনের স্থিতি 'সমাপ্ত' হবে এবং নতুন সেশনে ভর্তি সম্পন্ন হবে।
                 </span>
 
                 <Button
                   onClick={handleExecutePromotion}
                   disabled={executing || candidateRows.filter((r) => r.action !== 'SKIP').length === 0}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white"
                 >
                   {executing ? (
                     <span className="flex items-center gap-2">

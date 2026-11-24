@@ -91,7 +91,7 @@ function ExpenseCategoryModal({ initial, onDone, onClose }) {
             onChange={(e) => setValues({ ...values, active: e.target.checked })}
             className="h-4 w-4 rounded border-gray-300 text-[#0E3B2E] focus:ring-[#E8A317]"
           />
-          <label htmlFor="catActive" className="text-sm font-medium text-gray-700">
+          <label htmlFor="catActive" className="text-sm font-medium text-[var(--ink-secondary)]">
             এই ব্যয়ের খাত সক্রিয় রাখুন
           </label>
         </div>
@@ -363,8 +363,8 @@ export default function AccountsPage() {
           onClick={() => setActiveTab('summary')}
           className={`border-b-2 px-5 py-2.5 text-sm font-semibold transition ${
             activeTab === 'summary'
-              ? 'border-[#0E3B2E] text-[#0E3B2E]'
-              : 'border-transparent text-[var(--ink-secondary)] hover:border-gray-300 hover:text-[var(--ink-primary)]'
+              ? 'border-[#0E3B2E] dark:border-[#E8A317] text-[#0E3B2E] dark:text-[#E8A317]'
+              : 'border-transparent text-[var(--ink-secondary)] hover:border-[var(--border-hairline)] hover:text-[var(--ink-primary)]'
           }`}
         >
           আর্থিক হিসাব ও লাভ-ক্ষতি
@@ -374,8 +374,8 @@ export default function AccountsPage() {
           onClick={() => setActiveTab('expenses')}
           className={`border-b-2 px-5 py-2.5 text-sm font-semibold transition ${
             activeTab === 'expenses'
-              ? 'border-[#0E3B2E] text-[#0E3B2E]'
-              : 'border-transparent text-[var(--ink-secondary)] hover:border-gray-300 hover:text-[var(--ink-primary)]'
+              ? 'border-[#0E3B2E] dark:border-[#E8A317] text-[#0E3B2E] dark:text-[#E8A317]'
+              : 'border-transparent text-[var(--ink-secondary)] hover:border-[var(--border-hairline)] hover:text-[var(--ink-primary)]'
           }`}
         >
           খরচ ভাউচারসমূহ ({expenses?.length || 0})
@@ -385,8 +385,8 @@ export default function AccountsPage() {
           onClick={() => setActiveTab('categories')}
           className={`border-b-2 px-5 py-2.5 text-sm font-semibold transition ${
             activeTab === 'categories'
-              ? 'border-[#0E3B2E] text-[#0E3B2E]'
-              : 'border-transparent text-[var(--ink-secondary)] hover:border-gray-300 hover:text-[var(--ink-primary)]'
+              ? 'border-[#0E3B2E] dark:border-[#E8A317] text-[#0E3B2E] dark:text-[#E8A317]'
+              : 'border-transparent text-[var(--ink-secondary)] hover:border-[var(--border-hairline)] hover:text-[var(--ink-primary)]'
           }`}
         >
           ব্যয়ের খাতসমূহ ({categories?.length || 0})
@@ -397,22 +397,22 @@ export default function AccountsPage() {
       {activeTab === 'summary' && (
         <div className="space-y-6">
           {/* Date Range Selector Bar */}
-          <Card className="p-4 bg-gray-50/50">
+          <Card className="p-4 bg-[var(--surface-subtle)]">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div className="flex flex-wrap items-center gap-3">
-                <span className="text-xs font-semibold uppercase tracking-wider text-gray-600">সময়সীমা:</span>
+                <span className="text-xs font-semibold uppercase tracking-wider text-[var(--ink-secondary)]">সময়সীমা:</span>
                 <input
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
-                  className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm"
+                  className="rounded-[10px] border border-[var(--border-hairline)] bg-[var(--surface)] px-3 py-1.5 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
                 />
-                <span className="text-gray-500 text-sm">হতে</span>
+                <span className="text-[var(--ink-secondary)] text-sm">হতে</span>
                 <input
                   type="date"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
-                  className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm"
+                  className="rounded-[10px] border border-[var(--border-hairline)] bg-[var(--surface)] px-3 py-1.5 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
                 />
               </div>
 
@@ -438,52 +438,52 @@ export default function AccountsPage() {
               <>
                 {/* 4 Financial KPI Cards */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                  <div className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-5 shadow-sm">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-emerald-800">মোট আয় / ফি সংগ্রহ</p>
-                    <p className="mt-2 text-3xl font-extrabold text-emerald-950">৳ {plain(summary.totalIncome)}</p>
-                    <p className="mt-1 text-xs text-emerald-700">{summary.totalIncomeTransactions} টি ট্রানজ্যাকশন</p>
+                  <div className="rounded-[16px] border border-[#BDE3CC]/30 dark:border-emerald-500/20 bg-[#EAF5EE]/60 dark:bg-emerald-950/20 p-5 shadow-sm">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-[#168754] dark:text-emerald-400">মোট আয় / ফি সংগ্রহ</p>
+                    <p className="mt-2 text-3xl font-extrabold text-[#168754] dark:text-emerald-300 font-['Anek_Bangla',sans-serif] tabular-nums">৳ {plain(summary.totalIncome)}</p>
+                    <p className="mt-1 text-xs text-[#168754] dark:text-emerald-400">{summary.totalIncomeTransactions} টি ট্রানজ্যাকশন</p>
                   </div>
 
-                  <div className="rounded-xl border border-rose-200 bg-rose-50/50 p-5 shadow-sm">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-rose-800">মোট পরিচালন ব্যয়</p>
-                    <p className="mt-2 text-3xl font-extrabold text-rose-950">৳ {plain(summary.totalExpense)}</p>
-                    <p className="mt-1 text-xs text-rose-700">{summary.totalExpenseVouchers} টি খরচ ভাউচার</p>
+                  <div className="rounded-[16px] border border-[#F6C2BE]/30 dark:border-rose-500/20 bg-[#FCECEB]/60 dark:bg-rose-950/20 p-5 shadow-sm">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-[#C8372D] dark:text-rose-400">মোট পরিচালন ব্যয়</p>
+                    <p className="mt-2 text-3xl font-extrabold text-[#C8372D] dark:text-rose-300 font-['Anek_Bangla',sans-serif] tabular-nums">৳ {plain(summary.totalExpense)}</p>
+                    <p className="mt-1 text-xs text-[#C8372D] dark:text-rose-400">{summary.totalExpenseVouchers} টি খরচ ভাউচার</p>
                   </div>
 
                   <div
                     className={`rounded-[16px] border p-5 shadow-sm ${
                       summary.isSurplus
-                        ? 'border-[#BDE3CC] bg-[#EAF5EE]/60'
-                        : 'border-[#F8E1B9] bg-[#FDF4E7]/60'
+                        ? 'border-[#BDE3CC]/30 dark:border-emerald-500/20 bg-[#EAF5EE]/60 dark:bg-emerald-950/20'
+                        : 'border-[#F8E1B9]/30 dark:border-amber-500/20 bg-[#FDF4E7]/60 dark:bg-amber-950/20'
                     }`}
                   >
                     <p
                       className={`text-[11px] font-semibold uppercase tracking-wider ${
-                        summary.isSurplus ? 'text-[#168754]' : 'text-[#B36B18]'
+                        summary.isSurplus ? 'text-[#168754] dark:text-emerald-400' : 'text-[#B36B18] dark:text-amber-400'
                       }`}
                     >
                       {summary.isSurplus ? 'নিট লাভ / উদ্বৃত্ত (Surplus)' : 'নিট ঘাটতি / লোকসান (Deficit)'}
                     </p>
                     <p
                       className={`mt-2 text-3xl font-extrabold font-['Anek_Bangla',sans-serif] tabular-nums ${
-                        summary.isSurplus ? 'text-[#168754]' : 'text-[#B36B18]'
+                        summary.isSurplus ? 'text-[#168754] dark:text-emerald-300' : 'text-[#B36B18] dark:text-amber-300'
                       }`}
                     >
                       ৳ {plain(summary.netSurplus)}
                     </p>
                     <p
                       className={`mt-1 text-xs ${
-                        summary.isSurplus ? 'text-[#168754]' : 'text-[#B36B18]'
+                        summary.isSurplus ? 'text-[#168754] dark:text-emerald-400' : 'text-[#B36B18] dark:text-amber-400'
                       }`}
                     >
                       {summary.isSurplus ? 'আয় ও ব্যয়ের উদ্বৃত্ত তহবিল' : 'আয়ের চেয়ে অতিরিক্ত ব্যয়'}
                     </p>
                   </div>
 
-                  <div className="rounded-xl border border-amber-200 bg-amber-50/40 p-5 shadow-sm">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-amber-800">মোট শিক্ষার্থী বকেয়া</p>
-                    <p className="mt-2 text-3xl font-extrabold text-amber-950">৳ {plain(summary.totalOutstandingDues)}</p>
-                    <p className="mt-1 text-xs text-amber-700">সকল শ্রেণির অনাদায়ী ফি</p>
+                  <div className="rounded-[16px] border border-[#F8E1B9]/30 dark:border-amber-500/20 bg-[#FDF4E7]/60 dark:bg-amber-950/20 p-5 shadow-sm">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-[#B36B18] dark:text-amber-400">মোট শিক্ষার্থী বকেয়া</p>
+                    <p className="mt-2 text-3xl font-extrabold text-[#B36B18] dark:text-amber-300 font-['Anek_Bangla',sans-serif] tabular-nums">৳ {plain(summary.totalOutstandingDues)}</p>
+                    <p className="mt-1 text-xs text-[#B36B18] dark:text-amber-400">সকল শ্রেণির অনাদায়ী ফি</p>
                   </div>
                 </div>
 
@@ -491,7 +491,7 @@ export default function AccountsPage() {
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                   {/* Expense Breakdown */}
                   <Card className="p-5">
-                    <h3 className="text-base font-semibold text-gray-900 mb-4">ব্যয়ের খাতভিত্তিক বণ্টন</h3>
+                    <h3 className="text-base font-semibold text-[var(--ink-primary)] mb-4">ব্যয়ের খাতভিত্তিক বণ্টন</h3>
                     {summary.expenseBreakdown?.length === 0 ? (
                       <EmptyState>নির্বাচিত সময়ে কোনো খরচ রেকর্ড করা হয়নি।</EmptyState>
                     ) : (
@@ -499,12 +499,12 @@ export default function AccountsPage() {
                         {summary.expenseBreakdown?.map((eb) => (
                           <div key={eb.categoryName} className="space-y-1">
                             <div className="flex justify-between text-xs font-medium">
-                              <span className="text-gray-700">{eb.categoryName}</span>
-                              <span className="text-gray-900 font-bold">
+                              <span className="text-[var(--ink-secondary)]">{eb.categoryName}</span>
+                              <span className="text-[var(--ink-primary)] font-bold">
                                 ৳ {plain(eb.amount)} ({plain(eb.percentage)}%)
                               </span>
                             </div>
-                            <div className="h-2 w-full rounded-full bg-gray-100 overflow-hidden">
+                            <div className="h-2 w-full rounded-full bg-[var(--surface-subtle)] overflow-hidden">
                               <div
                                 className="h-full bg-rose-500 rounded-full"
                                 style={{ width: `${Math.min(100, Number(eb.percentage))}%` }}
@@ -518,7 +518,7 @@ export default function AccountsPage() {
 
                   {/* Income by Method Breakdown */}
                   <Card className="p-5">
-                    <h3 className="text-base font-semibold text-gray-900 mb-4">আয়ের মাধ্যমভিত্তিক বণ্টন</h3>
+                    <h3 className="text-base font-semibold text-[var(--ink-primary)] mb-4">আয়ের মাধ্যমভিত্তিক বণ্টন</h3>
                     {summary.incomeBreakdown?.length === 0 ? (
                       <EmptyState>নির্বাচিত সময়ে কোনো ফি আদায় রেকর্ড করা হয়নি।</EmptyState>
                     ) : (
@@ -526,12 +526,12 @@ export default function AccountsPage() {
                         {summary.incomeBreakdown?.map((ib) => (
                           <div key={ib.method} className="space-y-1">
                             <div className="flex justify-between text-xs font-medium">
-                              <span className="text-gray-700">{ib.methodBangla}</span>
-                              <span className="text-gray-900 font-bold">
+                              <span className="text-[var(--ink-secondary)]">{ib.methodBangla}</span>
+                              <span className="text-[var(--ink-primary)] font-bold">
                                 ৳ {plain(ib.amount)} ({plain(ib.percentage)}%)
                               </span>
                             </div>
-                            <div className="h-2 w-full rounded-full bg-gray-100 overflow-hidden">
+                            <div className="h-2 w-full rounded-full bg-[var(--surface-subtle)] overflow-hidden">
                               <div
                                 className="h-full bg-emerald-500 rounded-full"
                                 style={{ width: `${Math.min(100, Number(ib.percentage))}%` }}
@@ -553,14 +553,14 @@ export default function AccountsPage() {
       {activeTab === 'expenses' && (
         <div className="space-y-6">
           {/* Filters */}
-          <Card className="p-4 bg-gray-50/50">
+          <Card className="p-4 bg-[var(--surface-subtle)]">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 items-end">
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1">ব্যয়ের খাত</label>
+                <label className="block text-xs font-semibold text-[var(--ink-secondary)] mb-1">ব্যয়ের খাত</label>
                 <select
                   value={filterCatId}
                   onChange={(e) => setFilterCatId(e.target.value)}
-                  className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-white px-3 py-2 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
+                  className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
                 >
                   <option value="">সকল খাত</option>
                   {categories?.map((c) => (
@@ -572,22 +572,22 @@ export default function AccountsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1">শুরুর তারিখ</label>
+                <label className="block text-xs font-semibold text-[var(--ink-secondary)] mb-1">শুরুর তারিখ</label>
                 <input
                   type="date"
                   value={filterStartDate}
                   onChange={(e) => setFilterStartDate(e.target.value)}
-                  className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-white px-3 py-2 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
+                  className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1">শেষ তারিখ</label>
+                <label className="block text-xs font-semibold text-[var(--ink-secondary)] mb-1">শেষ তারিখ</label>
                 <input
                   type="date"
                   value={filterEndDate}
                   onChange={(e) => setFilterEndDate(e.target.value)}
-                  className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-white px-3 py-2 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
+                  className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
                 />
               </div>
 
@@ -606,7 +606,7 @@ export default function AccountsPage() {
                 </Button>
                 <Button
                   variant="secondary"
-                  className="flex-1 border-emerald-600 text-emerald-700 hover:bg-emerald-50"
+                  className="flex-1 border-[#168754]/30 text-[#168754] dark:text-emerald-400 hover:bg-[#168754]/10"
                   onClick={handleExportExpenses}
                   disabled={exporting}
                 >
@@ -625,16 +625,16 @@ export default function AccountsPage() {
                 <Table headers={['ভাউচার নং', 'তারিখ', 'ব্যয়ের খাত', 'বিবরণ ও প্রাপক', 'টাকার পরিমাণ', 'মাধ্যম', 'অ্যাকশন']}>
                   {expenses?.map((exp) => (
                     <tr key={exp.id}>
-                      <Td className="font-mono text-xs font-semibold text-[#0E3B2E]">{exp.voucherNumber}</Td>
-                      <Td className="text-gray-600 text-xs">{exp.expenseDate}</Td>
-                      <Td className="font-medium text-gray-900">{exp.categoryName}</Td>
+                      <Td className="font-mono text-xs font-semibold text-[#0E3B2E] dark:text-[#E8A317]">{exp.voucherNumber}</Td>
+                      <Td className="text-[var(--ink-secondary)] text-xs">{exp.expenseDate}</Td>
+                      <Td className="font-medium text-[var(--ink-primary)]">{exp.categoryName}</Td>
                       <Td>
-                        <p className="font-medium text-gray-900">{exp.title}</p>
-                        <p className="text-xs text-gray-500">
+                        <p className="font-medium text-[var(--ink-primary)]">{exp.title}</p>
+                        <p className="text-xs text-[var(--ink-tertiary)]">
                           প্রাপক: {exp.payeeName} {exp.referenceNo ? `| মেমো: ${exp.referenceNo}` : ''}
                         </p>
                       </Td>
-                      <Td className="font-bold text-rose-700 text-base">৳ {plain(exp.amount)}</Td>
+                      <Td className="font-bold text-[#C8372D] dark:text-rose-400 text-base font-['Anek_Bangla',sans-serif] tabular-nums">৳ {plain(exp.amount)}</Td>
                       <Td>
                         <Badge tone="gray">{exp.paymentMethodBangla}</Badge>
                       </Td>
@@ -651,7 +651,7 @@ export default function AccountsPage() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="text-red-600 hover:text-red-700"
+                              className="text-[var(--semantic-danger)] hover:underline"
                               onClick={() => deleteExpense(exp.id)}
                             >
                               মুছুন
@@ -678,9 +678,9 @@ export default function AccountsPage() {
               <Table headers={['খাতের নাম', 'কোড', 'বিবরণ', 'অবস্থা', 'অ্যাকশন']}>
                 {categories?.map((c) => (
                   <tr key={c.id}>
-                    <Td className="font-semibold text-gray-900">{c.name}</Td>
-                    <Td className="font-mono text-xs font-semibold text-[#0E3B2E]">{c.code}</Td>
-                    <Td className="text-gray-600">{c.description || '—'}</Td>
+                    <Td className="font-semibold text-[var(--ink-primary)]">{c.name}</Td>
+                    <Td className="font-mono text-xs font-semibold text-[#0E3B2E] dark:text-[#E8A317]">{c.code}</Td>
+                    <Td className="text-[var(--ink-secondary)]">{c.description || '—'}</Td>
                     <Td>
                       <Badge tone={c.active ? 'green' : 'gray'}>
                         {c.active ? 'সক্রিয়' : 'নিষ্ক্রিয়'}
@@ -699,7 +699,7 @@ export default function AccountsPage() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="text-red-600 hover:text-red-700"
+                            className="text-[var(--semantic-danger)] hover:underline"
                             onClick={() => deleteCategory(c.id)}
                           >
                             মুছুন

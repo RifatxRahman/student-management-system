@@ -72,7 +72,7 @@ export default function HolidaysPage() {
             <Table headers={['তারিখ', 'বার', 'নাম', isAdmin ? 'কাজ' : '']}>
               {data?.map((holiday) => (
                 <tr key={holiday.id}>
-                  <Td className="font-medium text-gray-900">{formatDate(holiday.date)}</Td>
+                  <Td className="font-medium text-[var(--ink-primary)]">{formatDate(holiday.date)}</Td>
                   <Td>{formatWeekday(holiday.date)}</Td>
                   <Td>{holiday.name}</Td>
                   <Td>

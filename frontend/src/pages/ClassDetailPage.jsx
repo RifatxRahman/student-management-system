@@ -56,7 +56,7 @@ export default function ClassDetailPage() {
   return (
     <>
       <div className="mb-3">
-        <Link to="/classes" className="text-sm text-gray-500 hover:text-gray-700">
+        <Link to="/classes" className="text-sm text-[var(--ink-secondary)] hover:text-[var(--ink-primary)] transition-colors">
           ← সব ক্লাস
         </Link>
       </div>
@@ -80,7 +80,7 @@ export default function ClassDetailPage() {
         {/* ---------- সেকশন ---------- */}
         <section>
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-900">সেকশন</h2>
+            <h2 className="text-lg font-semibold text-[var(--ink-primary)]">সেকশন</h2>
             {isAdmin && schoolClass?.active && (
               <Button size="sm" onClick={() => setModal({ type: 'section' })}>
                 নতুন সেকশন
@@ -95,7 +95,7 @@ export default function ClassDetailPage() {
                 <Table headers={['নাম', 'অবস্থা', isAdmin ? 'কাজ' : '']}>
                   {sections.data?.map((section) => (
                     <tr key={section.id}>
-                      <Td className="font-medium text-gray-900">{section.name}</Td>
+                      <Td className="font-medium text-[var(--ink-primary)]">{section.name}</Td>
                       <Td>
                         <Badge tone={section.active ? 'green' : 'gray'}>
                           {section.active ? 'সক্রিয়' : 'নিষ্ক্রিয়'}
@@ -140,7 +140,7 @@ export default function ClassDetailPage() {
         {/* ---------- বিষয় ---------- */}
         <section>
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-900">এই ক্লাসের বিষয়</h2>
+            <h2 className="text-lg font-semibold text-[var(--ink-primary)]">এই ক্লাসের বিষয়</h2>
             {isAdmin && schoolClass?.active && (
               <Button size="sm" onClick={() => setModal({ type: 'subject' })}>
                 বিষয় যোগ করুন
@@ -155,7 +155,7 @@ export default function ClassDetailPage() {
                 <Table headers={['বিষয়', 'কোড', isAdmin ? 'কাজ' : '']}>
                   {assigned.data?.map((subject) => (
                     <tr key={subject.id}>
-                      <Td className="font-medium text-gray-900">{subject.name}</Td>
+                      <Td className="font-medium text-[var(--ink-primary)]">{subject.name}</Td>
                       <Td className="font-mono">{subject.code}</Td>
                       <Td>
                         {isAdmin && (

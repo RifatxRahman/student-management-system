@@ -120,11 +120,11 @@ export default function StudentBulkImportModal({ onClose, onSuccess }) {
     <Modal title="এক্সেল শিট থেকে শিক্ষার্থী বাল্ক ভর্তি" onClose={onClose}>
       <div className="max-h-[85vh] overflow-y-auto p-1">
         {/* ধাপ ১: টেমপ্লেট নির্দেশনা ও ডাউনলোড */}
-        <div className="mb-4 rounded-[14px] bg-[#EAF2EF] p-3.5 border border-[#C7DDD4]">
+        <div className="mb-4 rounded-[14px] bg-[var(--surface-subtle)] p-3.5 border border-[var(--border-hairline)]">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div>
-              <h4 className="text-sm font-semibold text-[#0E3B2E]">ধাপ ১: এক্সেল টেমপ্লেট ডাউনলোড করুন</h4>
-              <p className="mt-0.5 text-xs text-[#0E3B2E]/80">
+              <h4 className="text-sm font-semibold text-[var(--ink-primary)]">ধাপ ১: এক্সেল টেমপ্লেট ডাউনলোড করুন</h4>
+              <p className="mt-0.5 text-xs text-[var(--ink-secondary)]">
                 নির্দিষ্ট কলাম ফরম্যাটে শিক্ষার্থীদের তথ্য পূরণ করে আপলোড করুন।
               </p>
             </div>
@@ -148,7 +148,7 @@ export default function StudentBulkImportModal({ onClose, onSuccess }) {
         {/* ধাপ ২: ফাইল আপলোড ফর্ম */}
         {!result && (
           <form onSubmit={handleSubmit} className="space-y-4">
-            <h4 className="text-sm font-semibold text-gray-900">ধাপ ২: শ্রেণি নির্বাচন ও ফাইল আপলোড</h4>
+            <h4 className="text-sm font-semibold text-[var(--ink-primary)]">ধাপ ২: শ্রেণি নির্বাচন ও ফাইল আপলোড</h4>
             
             <div className="grid gap-3 sm:grid-cols-2">
               <SelectField
@@ -179,19 +179,19 @@ export default function StudentBulkImportModal({ onClose, onSuccess }) {
             />
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-semibold text-[var(--ink-primary)] mb-1">
                 এক্সেল ফাইল নির্বাচন করুন (.xlsx বা .xls) *
               </label>
               <input
                 type="file"
                 accept=".xlsx, .xls"
                 onChange={(e) => setFile(e.target.files[0] || null)}
-                className="mt-1 block w-full rounded-[10px] border border-[var(--border-hairline)] px-3 py-2 text-sm text-[var(--ink-secondary)] file:mr-3 file:rounded-md file:border-0 file:bg-[#0E3B2E]/10 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-[#0E3B2E] hover:file:bg-[#0E3B2E]/20"
+                className="mt-1 block w-full rounded-[10px] border border-[var(--border-hairline)] bg-[var(--surface-subtle)] px-3 py-2 text-sm text-[var(--ink-secondary)] file:mr-3 file:rounded-md file:border-0 file:bg-[#E8A317]/20 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-[#E8A317] dark:file:text-[#F0B232] hover:file:bg-[#E8A317]/30"
                 required
               />
             </div>
 
-            <div className="mt-6 flex justify-end gap-2 border-t pt-4">
+            <div className="mt-6 flex justify-end gap-2 border-t border-[var(--border-hairline)] pt-4">
               <Button variant="secondary" onClick={onClose} disabled={loading}>
                 বাতিল
               </Button>
@@ -216,33 +216,33 @@ export default function StudentBulkImportModal({ onClose, onSuccess }) {
             </Alert>
 
             <div className="grid grid-cols-3 gap-2 text-center">
-              <div className="rounded-lg bg-gray-50 p-3 ring-1 ring-gray-200">
-                <span className="text-xs text-gray-500">মোট রো</span>
-                <p className="text-lg font-bold text-gray-800">{result.totalRows}</p>
+              <div className="rounded-lg bg-[var(--surface-subtle)] p-3 border border-[var(--border-hairline)]">
+                <span className="text-xs text-[var(--ink-secondary)]">মোট রো</span>
+                <p className="text-lg font-bold text-[var(--ink-primary)] font-['Anek_Bangla',sans-serif] tabular-nums">{result.totalRows}</p>
               </div>
-              <div className="rounded-lg bg-green-50 p-3 ring-1 ring-green-200">
-                <span className="text-xs text-green-700">সফল ভর্তি</span>
-                <p className="text-lg font-bold text-green-700">{result.successCount}</p>
+              <div className="rounded-lg bg-[var(--semantic-success-bg)] p-3 border border-[var(--semantic-success)]/30">
+                <span className="text-xs text-[var(--semantic-success)]">সফল ভর্তি</span>
+                <p className="text-lg font-bold text-[var(--semantic-success)] font-['Anek_Bangla',sans-serif] tabular-nums">{result.successCount}</p>
               </div>
-              <div className="rounded-lg bg-red-50 p-3 ring-1 ring-red-200">
-                <span className="text-xs text-red-700">ব্যর্থ রো</span>
-                <p className="text-lg font-bold text-red-700">{result.failureCount}</p>
+              <div className="rounded-lg bg-[var(--semantic-danger-bg)] p-3 border border-[var(--semantic-danger)]/30">
+                <span className="text-xs text-[var(--semantic-danger)]">ব্যর্থ রো</span>
+                <p className="text-lg font-bold text-[var(--semantic-danger)] font-['Anek_Bangla',sans-serif] tabular-nums">{result.failureCount}</p>
               </div>
             </div>
 
             {/* কোনো এরর থাকলে তালিকা */}
             {result.errors?.length > 0 && (
               <div>
-                <h5 className="mb-2 text-xs font-semibold text-red-700">
+                <h5 className="mb-2 text-xs font-semibold text-[var(--semantic-danger)]">
                   ⚠️ যে যে রো-তে সমস্যা পাওয়া গেছে ({result.errors.length} টি):
                 </h5>
-                <div className="max-h-48 overflow-y-auto rounded-lg border border-red-200 bg-red-50/40 p-2">
+                <div className="max-h-48 overflow-y-auto rounded-lg border border-[var(--semantic-danger)]/30 bg-[var(--semantic-danger-bg)] p-2">
                   <Table headers={['রো', 'শিক্ষার্থীর নাম', 'ত্রুটির কারণ']}>
                     {result.errors.map((err, idx) => (
                       <tr key={idx} className="text-xs">
-                        <Td className="font-mono font-bold text-red-600">{err.rowNumber}</Td>
-                        <Td className="font-medium text-gray-900">{err.studentName}</Td>
-                        <Td className="text-red-700">{err.reason}</Td>
+                        <Td className="font-mono font-bold text-[var(--semantic-danger)]">{err.rowNumber}</Td>
+                        <Td className="font-medium text-[var(--ink-primary)]">{err.studentName}</Td>
+                        <Td className="text-[var(--semantic-danger)]">{err.reason}</Td>
                       </tr>
                     ))}
                   </Table>
@@ -253,22 +253,22 @@ export default function StudentBulkImportModal({ onClose, onSuccess }) {
             {/* সফলভাবে যুক্ত শিক্ষার্থীদের প্রিভিউ */}
             {result.importedStudents?.length > 0 && (
               <div>
-                <h5 className="mb-2 text-xs font-semibold text-green-700">
+                <h5 className="mb-2 text-xs font-semibold text-[var(--semantic-success)]">
                   ✔ সফলভাবে ভর্তি হওয়া শিক্ষার্থী তালিকা ({result.importedStudents.length} জন):
                 </h5>
-                <div className="max-h-48 overflow-y-auto rounded-lg border border-gray-200 p-2">
+                <div className="max-h-48 overflow-y-auto rounded-lg border border-[var(--border-hairline)] p-2">
                   <Table headers={['আইডি', 'নাম', 'শাখা', 'বরাদ্দকৃত রোল']}>
                     {result.importedStudents.slice(0, 50).map((st, idx) => (
                       <tr key={idx} className="text-xs">
-                        <Td className="font-mono text-[#0E3B2E] font-medium">{st.studentCode}</Td>
-                        <Td className="font-medium text-gray-900">{st.fullName}</Td>
+                        <Td className="font-mono text-[var(--ink-secondary)] font-medium">{st.studentCode}</Td>
+                        <Td className="font-medium text-[var(--ink-primary)]">{st.fullName}</Td>
                         <Td>{st.sectionName}</Td>
-                        <Td className="font-bold text-gray-900">{st.rollNumber}</Td>
+                        <Td className="font-bold text-[var(--ink-primary)]">{st.rollNumber}</Td>
                       </tr>
                     ))}
                   </Table>
                   {result.importedStudents.length > 50 && (
-                    <p className="p-2 text-center text-xs text-gray-500">
+                    <p className="p-2 text-center text-xs text-[var(--ink-secondary)]">
                       ... আরও {result.importedStudents.length - 50} জন শিক্ষার্থী সফলভাবে যুক্ত হয়েছে।
                     </p>
                   )}
@@ -276,7 +276,7 @@ export default function StudentBulkImportModal({ onClose, onSuccess }) {
               </div>
             )}
 
-            <div className="mt-4 flex justify-end gap-2 border-t pt-3">
+            <div className="mt-4 flex justify-end gap-2 border-t border-[var(--border-hairline)] pt-3">
               <Button
                 variant="secondary"
                 onClick={() => {

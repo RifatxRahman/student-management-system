@@ -7,13 +7,13 @@ import { useQuery } from '../hooks/useQuery.js'
 import { formatDate } from '../utils/format.js'
 
 const EVENT_TYPES = [
-  { value: 'EXAM', label: 'পরীক্ষা (Exam)', color: 'bg-rose-100 text-rose-800 border-rose-200' },
-  { value: 'SPORTS', label: 'খেলাধুলা (Sports)', color: 'bg-emerald-100 text-emerald-800 border-emerald-200' },
-  { value: 'CULTURAL', label: 'সাংস্কৃতিক অনুষ্ঠান (Cultural)', color: 'bg-[#EAF2EF] text-[#0E3B2E] border-[#C7DDD4]' },
-  { value: 'MEETING', label: 'সমাবেশ / মিটিং (Meeting)', color: 'bg-[#FDF4E7] text-[#B36B18] border-[#F8E1B9]' },
-  { value: 'VACATION', label: 'অবকাশ / ছুটি (Vacation)', color: 'bg-[#FEF3D6] text-[#8C5E0E] border-[#FDE5A3]' },
-  { value: 'OBSERVANCE', label: 'দিবস উদযাপন (Observance)', color: 'bg-sky-100 text-sky-800 border-sky-200' },
-  { value: 'OTHER', label: 'অন্যান্য (Other)', color: 'bg-gray-100 text-gray-800 border-gray-200' },
+  { value: 'EXAM', label: 'পরীক্ষা (Exam)', color: 'bg-rose-100 dark:bg-rose-950/40 text-rose-800 dark:text-rose-300 border-rose-200 dark:border-rose-900/50' },
+  { value: 'SPORTS', label: 'খেলাধুলা (Sports)', color: 'bg-emerald-100 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-900/50' },
+  { value: 'CULTURAL', label: 'সাংস্কৃতিক অনুষ্ঠান (Cultural)', color: 'bg-[#EAF2EF] dark:bg-[#162D23] text-[#0E3B2E] dark:text-[#A7D7C5] border-[#C7DDD4] dark:border-[#244B3B]' },
+  { value: 'MEETING', label: 'সমাবেশ / মিটিং (Meeting)', color: 'bg-[#FDF4E7] dark:bg-[#2A2010] text-[#B36B18] dark:text-[#E8A317] border-[#F8E1B9] dark:border-[#4A381C]' },
+  { value: 'VACATION', label: 'অবকাশ / ছুটি (Vacation)', color: 'bg-[#FEF3D6] dark:bg-[#2C230C] text-[#8C5E0E] dark:text-[#E6B84A] border-[#FDE5A3] dark:border-[#4F3E16]' },
+  { value: 'OBSERVANCE', label: 'দিবস উদযাপন (Observance)', color: 'bg-sky-100 dark:bg-sky-950/40 text-sky-800 dark:text-sky-300 border-sky-200 dark:border-sky-900/50' },
+  { value: 'OTHER', label: 'অন্যান্য (Other)', color: 'bg-[var(--surface-subtle)] text-[var(--ink-secondary)] border-[var(--border-hairline)]' },
 ]
 
 const AUDIENCE_OPTIONS = [
@@ -104,9 +104,9 @@ function EventModal({ initial, onDone, onClose }) {
             type="checkbox"
             checked={values.isHoliday}
             onChange={(e) => setValues((c) => ({ ...c, isHoliday: e.target.checked }))}
-            className="h-4 w-4 rounded border-gray-300 text-[#0E3B2E] focus:ring-[#E8A317]"
+            className="h-4 w-4 rounded border-[var(--border-hairline)] text-[#0E3B2E] focus:ring-[#E8A317]"
           />
-          <label htmlFor="isHoliday" className="text-sm font-medium text-gray-700">
+          <label htmlFor="isHoliday" className="text-sm font-medium text-[var(--ink-secondary)]">
             এই দিনটিতে স্কুল ছুটি থাকবে (হাজিরা বন্ধ থাকবে)
           </label>
         </div>
@@ -118,12 +118,12 @@ function EventModal({ initial, onDone, onClose }) {
           onChange={(e) => setValues((c) => ({ ...c, targetAudience: e.target.value }))}
         />
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">বিস্তারিত বিবরণ (ঐচ্ছিক)</label>
+          <label className="block text-sm font-semibold text-[var(--ink-primary)] mb-1">বিস্তারিত বিবরণ (ঐচ্ছিক)</label>
           <textarea
             rows={3}
             value={values.description}
             onChange={(e) => setValues((c) => ({ ...c, description: e.target.value }))}
-            className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-white p-2.5 text-sm text-[var(--ink-primary)] shadow-sm focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
+            className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-[var(--surface-subtle)] p-2.5 text-sm text-[var(--ink-primary)] placeholder-[var(--ink-tertiary)] shadow-xs focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
             placeholder="ইভেন্টের বিস্তারিত তথ্য, সময়সূচি বা নির্দেশনা..."
           />
         </div>
@@ -216,21 +216,21 @@ export default function AcademicCalendarPage() {
       />
 
       {/* মাস ও সারসংক্ষেপ হেডার */}
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-[var(--border-hairline)] bg-[var(--surface)] p-4 shadow-xs">
         <div>
-          <h2 className="text-xl font-bold text-slate-800">
+          <h2 className="text-xl font-bold text-[var(--ink-primary)]">
             {calendar.data?.monthName} {year}
           </h2>
-          <p className="text-xs text-slate-500">বাংলা শিক্ষাবর্ষ অনুযায়ী ক্যালেন্ডার সূচি</p>
+          <p className="text-xs text-[var(--ink-tertiary)]">বাংলা শিক্ষাবর্ষ অনুযায়ী ক্যালেন্ডার সূচি</p>
         </div>
         <div className="flex gap-4">
           <div className="rounded-[12px] border border-[var(--border-hairline)] bg-[var(--surface-subtle)] px-3.5 py-1.5 text-center">
             <p className="text-xs text-[var(--ink-secondary)] font-medium">মোট ইভেন্ট</p>
             <p className="text-lg font-bold text-[var(--ink-primary)] font-['Anek_Bangla',sans-serif] tabular-nums">{calendar.data?.totalEvents ?? 0}</p>
           </div>
-          <div className="rounded-[12px] border border-[#F6C2BE] bg-[#FCECEB]/60 px-3.5 py-1.5 text-center">
-            <p className="text-xs text-[#C8372D] font-medium">ছুটির দিন</p>
-            <p className="text-lg font-bold text-[#C8372D] font-['Anek_Bangla',sans-serif] tabular-nums">{calendar.data?.totalHolidays ?? 0}</p>
+          <div className="rounded-[12px] border border-[var(--semantic-danger)]/30 bg-[var(--semantic-danger-bg)] px-3.5 py-1.5 text-center">
+            <p className="text-xs text-[var(--semantic-danger)] font-medium">ছুটির দিন</p>
+            <p className="text-lg font-bold text-[var(--semantic-danger)] font-['Anek_Bangla',sans-serif] tabular-nums">{calendar.data?.totalHolidays ?? 0}</p>
           </div>
         </div>
       </div>
@@ -238,18 +238,18 @@ export default function AcademicCalendarPage() {
       {/* ক্যালেন্ডার গ্রিড */}
       <Card className="overflow-hidden p-0">
         <LoadState loading={calendar.loading} error={calendar.error}>
-          <div className="grid grid-cols-7 border-b border-gray-200 bg-slate-50 text-center font-semibold text-xs text-gray-700">
+          <div className="grid grid-cols-7 border-b border-[var(--border-hairline)] bg-[var(--surface-subtle)] text-center font-semibold text-xs text-[var(--ink-secondary)]">
             {WEEKDAY_NAMES.map((name, idx) => (
-              <div key={name} className={`py-2.5 ${idx === 6 ? 'text-rose-600 bg-rose-50/50' : ''}`}>
+              <div key={name} className={`py-2.5 ${idx === 6 ? 'text-[var(--semantic-danger)] bg-[var(--semantic-danger-bg)]/40' : ''}`}>
                 {name}
               </div>
             ))}
           </div>
 
-          <div className="grid grid-cols-7 auto-rows-fr divide-x divide-y divide-gray-100 bg-white">
+          <div className="grid grid-cols-7 auto-rows-fr divide-x divide-y divide-[var(--border-hairline)] bg-[var(--surface)]">
             {/* শুরু ফাঁকা সেল */}
             {Array.from({ length: leadingBlanks }).map((_, i) => (
-              <div key={`blank-${i}`} className="min-h-[110px] bg-slate-50/40 p-2" />
+              <div key={`blank-${i}`} className="min-h-[110px] bg-[var(--surface-subtle)]/40 p-2" />
             ))}
 
             {/* দিনের সেলসমূহ */}
@@ -261,23 +261,23 @@ export default function AcademicCalendarPage() {
                 <div
                   key={day.date}
                   className={`min-h-[110px] p-2 transition flex flex-col justify-between ${
-                    isFriday ? 'bg-rose-50/30' : ''
-                  } ${isToday ? 'ring-2 ring-[#0E3B2E] ring-inset bg-[#0E3B2E]/5' : ''}`}
+                    isFriday ? 'bg-[var(--semantic-danger-bg)]/20' : ''
+                  } ${isToday ? 'ring-2 ring-[#E8A317] dark:ring-[#F0B232] ring-inset bg-[#E8A317]/10' : ''}`}
                 >
                   <div className="flex items-center justify-between">
                     <span
                       className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${
                         isToday
-                          ? 'bg-[#0E3B2E] text-white'
+                          ? 'bg-[#E8A317] dark:bg-[#F0B232] text-[#12231D] dark:text-[#0A1B14]'
                           : isFriday
-                          ? 'text-rose-600'
-                          : 'text-gray-700'
+                          ? 'text-[var(--semantic-danger)]'
+                          : 'text-[var(--ink-primary)]'
                       }`}
                     >
                       {new Date(day.date).getDate()}
                     </span>
                     {day.holidayName && (
-                      <span className="truncate text-[10px] font-semibold text-rose-600" title={day.holidayName}>
+                      <span className="truncate text-[10px] font-semibold text-[var(--semantic-danger)]" title={day.holidayName}>
                         {day.holidayName}
                       </span>
                     )}
@@ -286,7 +286,7 @@ export default function AcademicCalendarPage() {
                   <div className="mt-1 space-y-1 flex-1">
                     {day.events?.map((e) => {
                       const typeObj = EVENT_TYPES.find((t) => t.value === e.eventType)
-                      const colorClass = typeObj ? typeObj.color : 'bg-gray-100 text-gray-800 border-gray-200'
+                      const colorClass = typeObj ? typeObj.color : 'bg-[var(--surface-subtle)] text-[var(--ink-secondary)] border-[var(--border-hairline)]'
 
                       return (
                         <div
@@ -320,11 +320,11 @@ export default function AcademicCalendarPage() {
               {modal.event.holiday && <Badge tone="red">স্কুল বন্ধ</Badge>}
               <Badge tone="gray">শ্রোতা: {modal.event.targetAudience}</Badge>
             </div>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-[var(--ink-secondary)]">
               <strong>তারিখ:</strong> {formatDate(modal.event.startDate)} হতে {formatDate(modal.event.endDate)}
             </p>
             {modal.event.description && (
-              <div className="rounded-lg bg-gray-50 p-3 text-sm text-gray-700">
+              <div className="rounded-lg bg-[var(--surface-subtle)] p-3 text-sm text-[var(--ink-primary)] border border-[var(--border-hairline)]">
                 {modal.event.description}
               </div>
             )}

@@ -6,7 +6,7 @@ import { useQuery } from '../hooks/useQuery.js'
 import { plain } from '../utils/format.js'
 
 const LINK_BUTTON =
-  'rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-700 ring-1 ring-gray-300 hover:bg-gray-50'
+  'rounded-lg bg-[var(--surface-subtle)] px-4 py-2 text-sm font-medium text-[var(--ink-primary)] border border-[var(--border-hairline)] hover:bg-[var(--surface-hover)] transition-colors'
 
 export default function ResultsPage() {
   const { examId } = useParams()
@@ -49,7 +49,7 @@ export default function ResultsPage() {
   return (
     <>
       <div className="mb-3">
-        <Link to={`/exams/${examId}`} className="text-sm text-gray-500 hover:text-gray-700">
+        <Link to={`/exams/${examId}`} className="text-sm text-[var(--ink-secondary)] hover:text-[var(--ink-primary)] transition-colors">
           ← পরীক্ষায় ফিরে যান
         </Link>
       </div>
@@ -107,8 +107,8 @@ export default function ResultsPage() {
                   <tr key={row.enrollmentId}>
                     <Td>{row.sectionName}</Td>
                     <Td>{row.rollNumber}</Td>
-                    <Td className="font-medium text-gray-900">{row.studentName}</Td>
-                    <Td className="font-mono text-xs">{row.studentCode}</Td>
+                    <Td className="font-medium text-[var(--ink-primary)]">{row.studentName}</Td>
+                    <Td className="font-mono text-xs text-[var(--ink-secondary)]">{row.studentCode}</Td>
                     <Td>
                       {plain(row.totalMarks)} / {plain(row.totalFullMarks)}
                     </Td>
@@ -123,7 +123,7 @@ export default function ResultsPage() {
                     <Td>
                       <Link
                         to={`/exams/${examId}/marksheets?sectionId=${row.sectionId}&enrollmentId=${row.enrollmentId}`}
-                        className="text-xs font-semibold text-[#0E3B2E] hover:underline"
+                        className="text-xs font-semibold text-[#E8A317] dark:text-[#F0B232] hover:underline"
                       >
                         মার্কশিট
                       </Link>

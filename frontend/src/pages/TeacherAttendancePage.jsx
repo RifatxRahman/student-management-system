@@ -122,27 +122,27 @@ export default function TeacherAttendancePage() {
 
       {/* সারসংক্ষেপ কার্ড */}
       <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-        <div className="rounded-xl border border-slate-200 bg-white p-3 text-center shadow-sm">
-          <p className="text-xs text-slate-500 font-medium">মোট শিক্ষক</p>
-          <p className="text-xl font-bold text-slate-800">{rows.length}</p>
+        <div className="rounded-[16px] border border-[var(--border-hairline)] bg-[var(--surface-subtle)] p-3 text-center shadow-xs">
+          <p className="text-xs text-[var(--ink-secondary)] font-medium">মোট শিক্ষক</p>
+          <p className="text-xl font-bold text-[var(--ink-primary)] font-['Anek_Bangla',sans-serif] tabular-nums">{rows.length}</p>
         </div>
-        <div className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-3 text-center shadow-sm">
-          <p className="text-xs text-emerald-700 font-medium">উপস্থিত</p>
-          <p className="text-xl font-bold text-emerald-800">{counts.PRESENT}</p>
+        <div className="rounded-[16px] border border-[var(--semantic-success)]/30 bg-[var(--semantic-success-bg)] p-3 text-center shadow-xs">
+          <p className="text-xs text-[var(--semantic-success)] font-medium">উপস্থিত</p>
+          <p className="text-xl font-bold text-[var(--semantic-success)] font-['Anek_Bangla',sans-serif] tabular-nums">{counts.PRESENT}</p>
         </div>
-        <div className="rounded-xl border border-amber-200 bg-amber-50/50 p-3 text-center shadow-sm">
-          <p className="text-xs text-amber-700 font-medium">বিলম্বে</p>
-          <p className="text-xl font-bold text-amber-800">{counts.LATE}</p>
+        <div className="rounded-[16px] border border-[var(--semantic-warning)]/30 bg-[var(--semantic-warning-bg)] p-3 text-center shadow-xs">
+          <p className="text-xs text-[var(--semantic-warning)] font-medium">বিলম্বে</p>
+          <p className="text-xl font-bold text-[var(--semantic-warning)] font-['Anek_Bangla',sans-serif] tabular-nums">{counts.LATE}</p>
         </div>
-        <div className="rounded-xl border border-rose-200 bg-rose-50/50 p-3 text-center shadow-sm">
-          <p className="text-xs text-rose-700 font-medium">অনুপস্থিত</p>
-          <p className="text-xl font-bold text-rose-800">{counts.ABSENT}</p>
+        <div className="rounded-[16px] border border-[var(--semantic-danger)]/30 bg-[var(--semantic-danger-bg)] p-3 text-center shadow-xs">
+          <p className="text-xs text-[var(--semantic-danger)] font-medium">অনুপস্থিত</p>
+          <p className="text-xl font-bold text-[var(--semantic-danger)] font-['Anek_Bangla',sans-serif] tabular-nums">{counts.ABSENT}</p>
         </div>
-        <div className="rounded-xl border border-sky-200 bg-sky-50/50 p-3 text-center shadow-sm">
-          <p className="text-xs text-sky-700 font-medium">ছুটিতে</p>
-          <p className="text-xl font-bold text-sky-800">{counts.LEAVE}</p>
+        <div className="rounded-[16px] border border-[var(--border-hairline)] bg-[var(--surface-subtle)] p-3 text-center shadow-xs">
+          <p className="text-xs text-[var(--ink-secondary)] font-medium">ছুটিতে</p>
+          <p className="text-xl font-bold text-[var(--ink-primary)] font-['Anek_Bangla',sans-serif] tabular-nums">{counts.LEAVE}</p>
         </div>
-        <div className="rounded-[16px] border border-[var(--border-hairline)] bg-[var(--surface-subtle)] p-3 text-center shadow-sm">
+        <div className="rounded-[16px] border border-[var(--border-hairline)] bg-[var(--surface-subtle)] p-3 text-center shadow-xs">
           <p className="text-xs text-[var(--ink-secondary)] font-medium">অর্ধ-দিবস</p>
           <p className="text-xl font-bold text-[var(--ink-primary)] font-['Anek_Bangla',sans-serif] tabular-nums">{counts.HALF_DAY}</p>
         </div>

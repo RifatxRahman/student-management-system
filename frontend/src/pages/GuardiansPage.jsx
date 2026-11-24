@@ -13,16 +13,16 @@ function ChildrenModal({ guardian, onClose }) {
     <Modal title={`${guardian.fullName}-এর সন্তান`} onClose={onClose}>
       <LoadState loading={loading} error={error}>
         {data?.children.length === 0 ? (
-          <p className="text-sm text-gray-500">এখনো কোনো সন্তান যুক্ত নেই।</p>
+          <p className="text-sm text-[var(--ink-secondary)]">এখনো কোনো সন্তান যুক্ত নেই।</p>
         ) : (
-          <ul className="divide-y divide-gray-100 rounded-lg border border-gray-200">
+          <ul className="divide-y divide-[var(--border-hairline)] rounded-lg border border-[var(--border-hairline)]">
             {data?.children.map((child) => (
               <li key={child.studentId} className="flex items-center justify-between gap-3 px-3 py-2">
                 <div>
-                  <Link to={`/students/${child.studentId}`} className="text-sm font-semibold text-gray-900 hover:text-[#0E3B2E] transition">
+                  <Link to={`/students/${child.studentId}`} className="text-sm font-semibold text-[var(--ink-primary)] hover:text-[#E8A317] dark:hover:text-[#F0B232] transition">
                     {child.fullName}
                   </Link>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-[var(--ink-secondary)]">
                     {child.studentCode} · {relationLabel(child.relation)}
                     {child.primary ? ' · প্রধান অভিভাবক' : ''}
                   </p>
@@ -88,7 +88,7 @@ export default function GuardiansPage() {
               <Table headers={['নাম', 'ফোন', 'বিকল্প ফোন', 'ইমেইল', 'কাজ']}>
                 {data?.map((g) => (
                   <tr key={g.id}>
-                    <Td className="font-medium text-gray-900">{g.fullName}</Td>
+                    <Td className="font-medium text-[var(--ink-primary)]">{g.fullName}</Td>
                     <Td className="font-mono">{g.phone}</Td>
                     <Td className="font-mono">{g.altPhone ?? '—'}</Td>
                     <Td>{g.email ?? '—'}</Td>

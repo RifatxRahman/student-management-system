@@ -136,7 +136,7 @@ export default function StudentDetailPage() {
   return (
     <>
       <div className="mb-3">
-        <Link to="/students" className="text-sm text-gray-500 hover:text-gray-700">
+        <Link to="/students" className="text-sm text-[var(--ink-secondary)] hover:text-[var(--ink-primary)] transition-colors">
           ← সব শিক্ষার্থী
         </Link>
       </div>
@@ -173,7 +173,7 @@ export default function StudentDetailPage() {
               <Card className="p-5">
                 <div className="flex flex-col gap-6 sm:flex-row">
                   <PhotoCard student={student} />
-                  <dl className="flex-1 divide-y divide-gray-100">
+                  <dl className="flex-1 divide-y divide-[var(--border-hairline)]">
                     <InfoRow label="অবস্থা">
                       <Badge tone={status.tone}>{status.label}</Badge>
                     </InfoRow>
@@ -189,7 +189,7 @@ export default function StudentDetailPage() {
               {/* ---------- অভিভাবক ---------- */}
               <section>
                 <div className="mb-3 flex items-center justify-between">
-                  <h2 className="text-lg font-semibold text-gray-900">অভিভাবক</h2>
+                  <h2 className="text-lg font-semibold text-[var(--ink-primary)]">অভিভাবক</h2>
                   <Button size="sm" onClick={() => setModal({ type: 'link' })}>
                     অভিভাবক যোগ করুন
                   </Button>
@@ -201,7 +201,7 @@ export default function StudentDetailPage() {
                     <Table headers={['নাম', 'ফোন', 'সম্পর্ক', '', 'কাজ']}>
                       {data.guardians.map((link) => (
                         <tr key={link.guardianId}>
-                          <Td className="font-medium text-gray-900">{link.fullName}</Td>
+                          <Td className="font-medium text-[var(--ink-primary)]">{link.fullName}</Td>
                           <Td className="font-mono">{link.phone}</Td>
                           <Td>{relationLabel(link.relation)}</Td>
                           <Td>{link.primary && <Badge tone="green">প্রধান</Badge>}</Td>
@@ -237,7 +237,7 @@ export default function StudentDetailPage() {
               {/* ---------- ভর্তি ---------- */}
               <section>
                 <div className="mb-3 flex items-center justify-between">
-                  <h2 className="text-lg font-semibold text-gray-900">ভর্তির ইতিহাস</h2>
+                  <h2 className="text-lg font-semibold text-[var(--ink-primary)]">ভর্তির ইতিহাস</h2>
                   <Button size="sm" onClick={() => setModal({ type: 'enroll' })}>
                     নতুন ভর্তি
                   </Button>
@@ -251,7 +251,7 @@ export default function StudentDetailPage() {
                         const info = enrollmentStatusInfo(e.status)
                         return (
                           <tr key={e.id}>
-                            <Td className="font-medium text-gray-900">{e.sessionName}</Td>
+                            <Td className="font-medium text-[var(--ink-primary)]">{e.sessionName}</Td>
                             <Td>
                               {e.className} / {e.sectionName}
                             </Td>

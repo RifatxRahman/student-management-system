@@ -143,8 +143,8 @@ export default function StudentsPage() {
                   return (
                     <tr key={s.id}>
                       <Td className="font-mono text-xs">{s.studentCode}</Td>
-                      <Td className="font-medium text-gray-900">
-                        <Link to={`/students/${s.id}`} className="hover:text-[#0E3B2E]">
+                      <Td className="font-medium text-[var(--ink-primary)]">
+                        <Link to={`/students/${s.id}`} className="hover:text-[#E8A317] dark:hover:text-[#F0B232] transition-colors">
                           {s.fullName}
                         </Link>
                       </Td>

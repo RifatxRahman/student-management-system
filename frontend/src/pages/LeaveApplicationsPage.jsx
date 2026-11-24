@@ -106,13 +106,13 @@ function ApplyLeaveModal({ teachers, isAdmin, onDone, onClose }) {
           onChange={(e) => setValues((c) => ({ ...c, totalDays: e.target.value }))}
         />
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">ছুটির কারণ</label>
+          <label className="block text-sm font-semibold text-[var(--ink-primary)] mb-1">ছুটির কারণ</label>
           <textarea
             required
             rows={3}
             value={values.reason}
             onChange={(e) => setValues((c) => ({ ...c, reason: e.target.value }))}
-            className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-white p-2.5 text-sm text-[var(--ink-primary)] shadow-sm focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
+            className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-[var(--surface-subtle)] p-2.5 text-sm text-[var(--ink-primary)] placeholder-[var(--ink-tertiary)] shadow-xs focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
             placeholder="ছুটির সুনির্দিষ্ট কারণ লিখুন..."
           />
         </div>
@@ -147,7 +147,7 @@ function RejectModal({ leave, onDone, onClose }) {
     <Modal title="ছুটির আবেদন প্রত্যাখ্যান" onClose={onClose}>
       <form onSubmit={submit} className="space-y-4">
         {error && <Alert>{error}</Alert>}
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-[var(--ink-secondary)]">
           <strong>{leave.teacherName}</strong>-এর ({leave.startDate} হতে {leave.endDate}) ছুটির আবেদন প্রত্যাখ্যানের কারণ উল্লেখ করুন:
         </p>
         <textarea
@@ -155,7 +155,7 @@ function RejectModal({ leave, onDone, onClose }) {
           rows={3}
           value={reason}
           onChange={(e) => setReason(e.target.value)}
-          className="w-full rounded-md border border-gray-300 p-2 text-sm shadow-sm focus:border-rose-500 focus:outline-none"
+          className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-[var(--surface-subtle)] p-2.5 text-sm text-[var(--ink-primary)] placeholder-[var(--ink-tertiary)] shadow-xs focus:border-[#C8372D] focus:ring-2 focus:ring-[#C8372D]/25 focus:outline-none"
           placeholder="প্রত্যাখ্যানের সুস্পষ্ট কারণ লিখুন..."
         />
         <div className="flex justify-end gap-2">
@@ -248,8 +248,8 @@ export default function LeaveApplicationsPage() {
               onClick={() => setStatusFilter(f.value)}
               className={`rounded-[8px] px-3 py-1.5 text-xs font-semibold transition ${
                 statusFilter === f.value
-                  ? 'bg-[#0E3B2E] text-white shadow-sm'
-                  : 'bg-white text-[var(--ink-secondary)] border border-[var(--border-hairline)] hover:bg-[var(--surface-subtle)] hover:text-[var(--ink-primary)]'
+                  ? 'bg-[#0E3B2E] dark:bg-[#1D4B3C] text-white shadow-xs'
+                  : 'bg-[var(--surface-subtle)] text-[var(--ink-secondary)] border border-[var(--border-hairline)] hover:bg-[var(--surface-hover)] hover:text-[var(--ink-primary)]'
               }`}
             >
               {f.label}
@@ -267,20 +267,20 @@ export default function LeaveApplicationsPage() {
               {leaves.data?.map((l) => (
                 <tr key={l.id}>
                   <Td>
-                    <p className="font-medium text-gray-900">{l.teacherName}</p>
-                    <p className="font-mono text-xs text-[#0E3B2E] font-medium">{l.employeeId || '—'}</p>
+                    <p className="font-semibold text-[var(--ink-primary)]">{l.teacherName}</p>
+                    <p className="font-mono text-xs text-[var(--ink-secondary)] font-medium">{l.employeeId || '—'}</p>
                   </Td>
                   <Td>
-                    <Badge tone={l.leaveType === 'UNPAID' ? 'red' : 'blue'}>
+                    <Badge tone={l.leaveType === 'UNPAID' ? 'red' : 'brand'}>
                       {l.leaveType}
                     </Badge>
                   </Td>
                   <Td className="text-xs">
-                    <p className="font-medium text-gray-900">{formatDate(l.startDate)}</p>
-                    <p className="text-gray-500">হতে {formatDate(l.endDate)}</p>
+                    <p className="font-medium text-[var(--ink-primary)]">{formatDate(l.startDate)}</p>
+                    <p className="text-[var(--ink-secondary)]">হতে {formatDate(l.endDate)}</p>
                   </Td>
-                  <Td className="font-semibold text-gray-800">{l.totalDays} দিন</Td>
-                  <Td className="max-w-xs truncate text-xs text-gray-700" title={l.reason}>
+                  <Td className="font-semibold text-[var(--ink-primary)] font-['Anek_Bangla',sans-serif]">{l.totalDays} দিন</Td>
+                  <Td className="max-w-xs truncate text-xs text-[var(--ink-secondary)]" title={l.reason}>
                     {l.reason}
                   </Td>
                   <Td>
@@ -288,12 +288,12 @@ export default function LeaveApplicationsPage() {
                   </Td>
                   <Td className="text-xs">
                     {l.actionByName && (
-                      <p className="text-gray-700">দ্বারা: <span className="font-medium">{l.actionByName}</span></p>
+                      <p className="text-[var(--ink-secondary)]">দ্বারা: <span className="font-medium text-[var(--ink-primary)]">{l.actionByName}</span></p>
                     )}
                     {l.actionReason && (
-                      <p className="italic text-gray-500">"{l.actionReason}"</p>
+                      <p className="italic text-[var(--ink-secondary)]">"{l.actionReason}"</p>
                     )}
-                    {!l.actionByName && !l.actionReason && <span className="text-gray-400">—</span>}
+                    {!l.actionByName && !l.actionReason && <span className="text-[var(--ink-tertiary)]">—</span>}
                   </Td>
                   <Td>
                     <div className="flex flex-wrap gap-1.5">

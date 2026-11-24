@@ -134,27 +134,27 @@ function TemplateModal({ initial, onDone, onClose }) {
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-gray-700 mb-1">
+          <label className="block text-xs font-semibold text-[var(--ink-secondary)] mb-1">
             বার্তা বা মেসেজের বডি (ডাইনামিক ভ্যারিয়েবল সহ)
           </label>
           <div className="mb-2 flex flex-wrap gap-1.5 text-xs">
-            <span className="text-gray-500 py-1">ভ্যারিয়েবল যোগ করুন:</span>
-            <button type="button" onClick={() => insertVar('{student_name}')} className="rounded bg-gray-100 px-2 py-0.5 hover:bg-gray-200">
+            <span className="text-[var(--ink-tertiary)] py-1">ভ্যারিয়েবল যোগ করুন:</span>
+            <button type="button" onClick={() => insertVar('{student_name}')} className="rounded-[6px] bg-[var(--surface-subtle)] border border-[var(--border-hairline)] text-[var(--ink-primary)] px-2 py-0.5 hover:bg-[var(--surface-hover)] transition">
               + শিক্ষার্থী নাম
             </button>
-            <button type="button" onClick={() => insertVar('{class_name}')} className="rounded bg-gray-100 px-2 py-0.5 hover:bg-gray-200">
+            <button type="button" onClick={() => insertVar('{class_name}')} className="rounded-[6px] bg-[var(--surface-subtle)] border border-[var(--border-hairline)] text-[var(--ink-primary)] px-2 py-0.5 hover:bg-[var(--surface-hover)] transition">
               + শ্রেণি
             </button>
-            <button type="button" onClick={() => insertVar('{roll_no}')} className="rounded bg-gray-100 px-2 py-0.5 hover:bg-gray-200">
+            <button type="button" onClick={() => insertVar('{roll_no}')} className="rounded-[6px] bg-[var(--surface-subtle)] border border-[var(--border-hairline)] text-[var(--ink-primary)] px-2 py-0.5 hover:bg-[var(--surface-hover)] transition">
               + রোল
             </button>
-            <button type="button" onClick={() => insertVar('{due_amount}')} className="rounded bg-gray-100 px-2 py-0.5 hover:bg-gray-200">
+            <button type="button" onClick={() => insertVar('{due_amount}')} className="rounded-[6px] bg-[var(--surface-subtle)] border border-[var(--border-hairline)] text-[var(--ink-primary)] px-2 py-0.5 hover:bg-[var(--surface-hover)] transition">
               + বকেয়া
             </button>
-            <button type="button" onClick={() => insertVar('{school_name}')} className="rounded bg-gray-100 px-2 py-0.5 hover:bg-gray-200">
+            <button type="button" onClick={() => insertVar('{school_name}')} className="rounded-[6px] bg-[var(--surface-subtle)] border border-[var(--border-hairline)] text-[var(--ink-primary)] px-2 py-0.5 hover:bg-[var(--surface-hover)] transition">
               + বিদ্যালয়
             </button>
-            <button type="button" onClick={() => insertVar('{date}')} className="rounded bg-gray-100 px-2 py-0.5 hover:bg-gray-200">
+            <button type="button" onClick={() => insertVar('{date}')} className="rounded-[6px] bg-[var(--surface-subtle)] border border-[var(--border-hairline)] text-[var(--ink-primary)] px-2 py-0.5 hover:bg-[var(--surface-hover)] transition">
               + তারিখ
             </button>
           </div>
@@ -162,7 +162,7 @@ function TemplateModal({ initial, onDone, onClose }) {
             rows={4}
             value={values.templateBody}
             onChange={(e) => setValues({ ...values, templateBody: e.target.value })}
-            className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-white p-3 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
+            className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-[var(--surface-subtle)] p-3 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
             required
           />
         </div>
@@ -175,7 +175,7 @@ function TemplateModal({ initial, onDone, onClose }) {
             onChange={(e) => setValues({ ...values, active: e.target.checked })}
             className="h-4 w-4 rounded border-gray-300 text-[#0E3B2E] focus:ring-[#E8A317]"
           />
-          <label htmlFor="templateActive" className="text-sm font-medium text-gray-700">
+          <label htmlFor="templateActive" className="text-sm font-medium text-[var(--ink-secondary)]">
             এই টেমপ্লেট সক্রিয় রাখুন
           </label>
         </div>
@@ -342,23 +342,23 @@ function SendCampaignModal({ classes, templates, onDone, onClose }) {
 
         <div>
           <div className="flex justify-between items-center mb-1">
-            <label className="block text-xs font-semibold text-gray-700">এসএমএস মেসেজ বডি</label>
-            <span className="text-xs font-mono text-gray-500">
+            <label className="block text-xs font-semibold text-[var(--ink-secondary)]">এসএমএস মেসেজ বডি</label>
+            <span className="text-xs font-mono text-[var(--ink-tertiary)]">
               {charCount} অক্ষর | {smsParts} টি SMS ({isUnicode ? 'বাংলা' : 'ইংরেজি'})
             </span>
           </div>
 
           <div className="mb-2 flex flex-wrap gap-1.5 text-xs">
-            <button type="button" onClick={() => insertVar('{student_name}')} className="rounded-[6px] bg-[#EAF2EF] text-[#0E3B2E] border border-[#C7DDD4] px-2 py-0.5 hover:bg-[#DCEDE6] font-medium transition">
+            <button type="button" onClick={() => insertVar('{student_name}')} className="rounded-[6px] bg-[var(--surface-subtle)] text-[var(--ink-primary)] border border-[var(--border-hairline)] px-2 py-0.5 hover:bg-[var(--surface-hover)] font-medium transition">
               + নাম
             </button>
-            <button type="button" onClick={() => insertVar('{class_name}')} className="rounded-[6px] bg-[#EAF2EF] text-[#0E3B2E] border border-[#C7DDD4] px-2 py-0.5 hover:bg-[#DCEDE6] font-medium transition">
+            <button type="button" onClick={() => insertVar('{class_name}')} className="rounded-[6px] bg-[var(--surface-subtle)] text-[var(--ink-primary)] border border-[var(--border-hairline)] px-2 py-0.5 hover:bg-[var(--surface-hover)] font-medium transition">
               + শ্রেণি
             </button>
-            <button type="button" onClick={() => insertVar('{due_amount}')} className="rounded-[6px] bg-[#EAF2EF] text-[#0E3B2E] border border-[#C7DDD4] px-2 py-0.5 hover:bg-[#DCEDE6] font-medium transition">
+            <button type="button" onClick={() => insertVar('{due_amount}')} className="rounded-[6px] bg-[var(--surface-subtle)] text-[var(--ink-primary)] border border-[var(--border-hairline)] px-2 py-0.5 hover:bg-[var(--surface-hover)] font-medium transition">
               + বকেয়া
             </button>
-            <button type="button" onClick={() => insertVar('{school_name}')} className="rounded-[6px] bg-[#EAF2EF] text-[#0E3B2E] border border-[#C7DDD4] px-2 py-0.5 hover:bg-[#DCEDE6] font-medium transition">
+            <button type="button" onClick={() => insertVar('{school_name}')} className="rounded-[6px] bg-[var(--surface-subtle)] text-[var(--ink-primary)] border border-[var(--border-hairline)] px-2 py-0.5 hover:bg-[var(--surface-hover)] font-medium transition">
               + প্রতিষ্ঠান
             </button>
           </div>
@@ -368,14 +368,14 @@ function SendCampaignModal({ classes, templates, onDone, onClose }) {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="এসএমএস টেক্সট লিখুন..."
-            className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-white p-3 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
+            className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-[var(--surface-subtle)] p-3 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
             required
           />
         </div>
 
-        <div className="rounded-[10px] bg-[var(--surface-subtle)] p-2.5 text-xs flex justify-between items-center text-gray-600">
+        <div className="rounded-[10px] bg-[var(--surface-subtle)] border border-[var(--border-hairline)] p-2.5 text-xs flex justify-between items-center text-[var(--ink-secondary)]">
           <div>
-            <span className="font-semibold text-gray-800">কাউন্টার: </span>
+            <span className="font-semibold text-[var(--ink-primary)]">কাউন্টার: </span>
             {charCount} ক্যারেক্টার | {smsParts} পার্ট
           </div>
           <Badge tone={isUnicode ? 'brand' : 'green'}>
@@ -540,14 +540,14 @@ export default function NotificationsPage() {
       />
 
       {/* Tabs */}
-      <div className="mb-6 flex border-b border-gray-200">
+      <div className="mb-6 flex border-b border-[var(--border-hairline)]">
         <button
           type="button"
           onClick={() => setActiveTab('campaign')}
           className={`border-b-2 px-5 py-2.5 text-sm font-semibold transition ${
             activeTab === 'campaign'
-              ? 'border-[#0E3B2E] text-[#0E3B2E]'
-              : 'border-transparent text-[var(--ink-secondary)] hover:border-gray-300 hover:text-[var(--ink-primary)]'
+              ? 'border-[#0E3B2E] dark:border-[#E8A317] text-[#0E3B2E] dark:text-[#E8A317]'
+              : 'border-transparent text-[var(--ink-secondary)] hover:border-[var(--border-hairline)] hover:text-[var(--ink-primary)]'
           }`}
         >
           বাল্ক এসএমএস প্রেরণ ও ক্যাম্পেইন
@@ -557,8 +557,8 @@ export default function NotificationsPage() {
           onClick={() => setActiveTab('templates')}
           className={`border-b-2 px-5 py-2.5 text-sm font-semibold transition ${
             activeTab === 'templates'
-              ? 'border-[#0E3B2E] text-[#0E3B2E]'
-              : 'border-transparent text-[var(--ink-secondary)] hover:border-gray-300 hover:text-[var(--ink-primary)]'
+              ? 'border-[#0E3B2E] dark:border-[#E8A317] text-[#0E3B2E] dark:text-[#E8A317]'
+              : 'border-transparent text-[var(--ink-secondary)] hover:border-[var(--border-hairline)] hover:text-[var(--ink-primary)]'
           }`}
         >
           মেসেজ টেমপ্লেটসমূহ ({templates?.length || 0})
@@ -568,8 +568,8 @@ export default function NotificationsPage() {
           onClick={() => setActiveTab('logs')}
           className={`border-b-2 px-5 py-2.5 text-sm font-semibold transition ${
             activeTab === 'logs'
-              ? 'border-[#0E3B2E] text-[#0E3B2E]'
-              : 'border-transparent text-[var(--ink-secondary)] hover:border-gray-300 hover:text-[var(--ink-primary)]'
+              ? 'border-[#0E3B2E] dark:border-[#E8A317] text-[#0E3B2E] dark:text-[#E8A317]'
+              : 'border-transparent text-[var(--ink-secondary)] hover:border-[var(--border-hairline)] hover:text-[var(--ink-primary)]'
           }`}
         >
           ডেলিভারি লগ ও কিউ
@@ -582,8 +582,8 @@ export default function NotificationsPage() {
           {/* Send SMS Form */}
           <div className="lg:col-span-2">
             <Card className="p-6">
-              <h3 className="text-base font-semibold text-gray-900 mb-2">নোটিফিকেশন ও এসএমএস ব্রডকাস্ট</h3>
-              <p className="text-xs text-gray-500 mb-6">
+              <h3 className="text-base font-semibold text-[var(--ink-primary)] mb-2">নোটিফিকেশন ও এসএমএস ব্রডকাস্ট</h3>
+              <p className="text-xs text-[var(--ink-secondary)] mb-6">
                 নির্দিষ্ট গ্রুপ বা সম্পূর্ণ স্কুলের অভিভাবকদের জন্য স্বয়ংক্রিয় ভ্যারিয়েবল প্রতিস্থাপন সহ এসএমএস প্রেরণ করুন।
               </p>
 
@@ -694,16 +694,16 @@ export default function NotificationsPage() {
                   </div>
 
                   <div className="mb-2 flex flex-wrap gap-1.5 text-xs">
-                    <button type="button" onClick={() => insertVarToCampaign('{student_name}')} className="rounded-[6px] bg-[#EAF2EF] text-[#0E3B2E] border border-[#C7DDD4] px-2 py-0.5 hover:bg-[#DCEDE6] font-medium transition">
+                    <button type="button" onClick={() => insertVarToCampaign('{student_name}')} className="rounded-[6px] bg-[var(--surface-subtle)] text-[var(--ink-primary)] border border-[var(--border-hairline)] px-2 py-0.5 hover:bg-[var(--surface-hover)] font-medium transition">
                       + নাম
                     </button>
-                    <button type="button" onClick={() => insertVarToCampaign('{class_name}')} className="rounded-[6px] bg-[#EAF2EF] text-[#0E3B2E] border border-[#C7DDD4] px-2 py-0.5 hover:bg-[#DCEDE6] font-medium transition">
+                    <button type="button" onClick={() => insertVarToCampaign('{class_name}')} className="rounded-[6px] bg-[var(--surface-subtle)] text-[var(--ink-primary)] border border-[var(--border-hairline)] px-2 py-0.5 hover:bg-[var(--surface-hover)] font-medium transition">
                       + শ্রেণি
                     </button>
-                    <button type="button" onClick={() => insertVarToCampaign('{due_amount}')} className="rounded-[6px] bg-[#EAF2EF] text-[#0E3B2E] border border-[#C7DDD4] px-2 py-0.5 hover:bg-[#DCEDE6] font-medium transition">
+                    <button type="button" onClick={() => insertVarToCampaign('{due_amount}')} className="rounded-[6px] bg-[var(--surface-subtle)] text-[var(--ink-primary)] border border-[var(--border-hairline)] px-2 py-0.5 hover:bg-[var(--surface-hover)] font-medium transition">
                       + বকেয়া
                     </button>
-                    <button type="button" onClick={() => insertVarToCampaign('{school_name}')} className="rounded-[6px] bg-[#EAF2EF] text-[#0E3B2E] border border-[#C7DDD4] px-2 py-0.5 hover:bg-[#DCEDE6] font-medium transition">
+                    <button type="button" onClick={() => insertVarToCampaign('{school_name}')} className="rounded-[6px] bg-[var(--surface-subtle)] text-[var(--ink-primary)] border border-[var(--border-hairline)] px-2 py-0.5 hover:bg-[var(--surface-hover)] font-medium transition">
                       + প্রতিষ্ঠান
                     </button>
                   </div>
@@ -713,15 +713,15 @@ export default function NotificationsPage() {
                     value={campMessage}
                     onChange={(e) => setCampMessage(e.target.value)}
                     placeholder="এসএমএস টেক্সট লিখুন..."
-                    className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-white p-3 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
+                    className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-[var(--surface-subtle)] p-3 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
                     required
                   />
                 </div>
 
                 {/* SMS Parts & Cost Live Card */}
-                <div className="rounded-[10px] bg-[var(--surface-subtle)] p-3 text-xs flex justify-between items-center text-gray-600">
+                <div className="rounded-[10px] bg-[var(--surface-subtle)] border border-[var(--border-hairline)] p-3 text-xs flex justify-between items-center text-[var(--ink-secondary)]">
                   <div>
-                    <span className="font-semibold text-gray-800">কাউন্টার: </span>
+                    <span className="font-semibold text-[var(--ink-primary)]">কাউন্টার: </span>
                     {charCount} ক্যারেক্টার | প্রতিটি এসএমএস: {smsParts} পার্ট
                   </div>
                   <Badge tone={isUnicode ? 'brand' : 'green'}>
@@ -741,18 +741,18 @@ export default function NotificationsPage() {
           {/* Recent Campaigns Sidebar */}
           <div>
             <Card className="p-5">
-              <h4 className="text-sm font-semibold text-gray-900 mb-3">সাম্প্রতিক ক্যাম্পেইন হিস্ট্রি</h4>
+              <h4 className="text-sm font-semibold text-[var(--ink-primary)] mb-3">সাম্প্রতিক ক্যাম্পেইন হিস্ট্রি</h4>
               {campaigns?.length === 0 ? (
                 <EmptyState>কোনো ক্যাম্পেইন তৈরি করা হয়নি।</EmptyState>
               ) : (
                 <div className="space-y-3">
                   {campaigns?.slice(0, 6).map((c) => (
-                    <div key={c.id} className="rounded-lg border p-3 text-xs space-y-1 bg-white">
-                      <p className="font-semibold text-gray-900">{c.title}</p>
-                      <p className="text-gray-500 font-mono line-clamp-2">{c.message}</p>
-                      <div className="flex justify-between items-center pt-1 text-gray-400">
+                    <div key={c.id} className="rounded-[10px] border border-[var(--border-hairline)] p-3 text-xs space-y-1 bg-[var(--surface-subtle)]">
+                      <p className="font-semibold text-[var(--ink-primary)]">{c.title}</p>
+                      <p className="text-[var(--ink-secondary)] font-mono line-clamp-2">{c.message}</p>
+                      <div className="flex justify-between items-center pt-1 text-[var(--ink-tertiary)]">
                         <span>প্রাপক: {c.totalRecipients} জন</span>
-                        <span className="text-emerald-600 font-medium">সফল: {c.sentCount}</span>
+                        <span className="text-[#168754] dark:text-emerald-400 font-medium">সফল: {c.sentCount}</span>
                       </div>
                     </div>
                   ))}
@@ -772,10 +772,10 @@ export default function NotificationsPage() {
             <Table headers={['টেমপ্লেট নাম', 'ইউনিক কোড', 'ক্যাটাগরি', 'বার্তা প্রিভিউ', 'অবস্থা', 'অ্যাকশন']}>
               {templates?.map((t) => (
                 <tr key={t.id}>
-                  <Td className="font-semibold text-gray-900">{t.name}</Td>
-                  <Td className="font-mono text-xs text-[#0E3B2E] font-semibold">{t.code}</Td>
+                  <Td className="font-semibold text-[var(--ink-primary)]">{t.name}</Td>
+                  <Td className="font-mono text-xs text-[#0E3B2E] dark:text-[#E8A317] font-semibold">{t.code}</Td>
                   <Td>{getCategoryBadge(t.category)}</Td>
-                  <Td className="text-xs text-gray-600 max-w-xs truncate">{t.templateBody}</Td>
+                  <Td className="text-xs text-[var(--ink-secondary)] max-w-xs truncate">{t.templateBody}</Td>
                   <Td>
                     <Badge tone={t.active ? 'green' : 'gray'}>
                       {t.active ? 'সক্রিয়' : 'নিষ্ক্রিয়'}
@@ -794,7 +794,7 @@ export default function NotificationsPage() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="text-red-600 hover:text-red-700"
+                          className="text-[var(--semantic-danger)] hover:underline"
                           onClick={() => deleteTemplate(t.id)}
                         >
                           মুছুন
@@ -838,12 +838,12 @@ export default function NotificationsPage() {
                 <Table headers={['শিক্ষার্থী', 'অভিভাবক', 'ফোন', 'ধরন', 'তারিখ', 'বার্তা', 'অবস্থা', 'অ্যাকশন']}>
                   {logData?.items?.map((n) => (
                     <tr key={n.id}>
-                      <Td className="font-medium text-gray-900">{n.studentName}</Td>
-                      <Td className="text-gray-700">{n.guardianName || '—'}</Td>
-                      <Td className="font-mono text-xs">{n.phone}</Td>
+                      <Td className="font-medium text-[var(--ink-primary)]">{n.studentName}</Td>
+                      <Td className="text-[var(--ink-secondary)]">{n.guardianName || '—'}</Td>
+                      <Td className="font-mono text-xs text-[var(--ink-primary)]">{n.phone}</Td>
                       <Td>{getCategoryBadge(n.type || n.notificationType)}</Td>
-                      <Td className="text-xs">{formatDate(n.eventDate)}</Td>
-                      <Td className="text-xs text-gray-600 max-w-xs truncate" title={n.message}>
+                      <Td className="text-xs text-[var(--ink-secondary)]">{formatDate(n.eventDate)}</Td>
+                      <Td className="text-xs text-[var(--ink-secondary)] max-w-xs truncate" title={n.message}>
                         {n.message}
                       </Td>
                       <Td>

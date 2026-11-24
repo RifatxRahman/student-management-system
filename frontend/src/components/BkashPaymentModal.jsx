@@ -101,7 +101,7 @@ export function BkashPaymentModal({ invoice, onDone, onClose }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm animate-fade-in">
-      <div className="relative w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl transition-all">
+      <div className="relative w-full max-w-md overflow-hidden rounded-2xl bg-[var(--surface)] border border-[var(--border-hairline)] shadow-2xl transition-all">
         {/* bKash Header */}
         <div className="bg-[#e2136e] px-6 py-4 text-white">
           <div className="flex items-center justify-between">
@@ -141,14 +141,14 @@ export function BkashPaymentModal({ invoice, onDone, onClose }) {
         </div>
 
         {/* Invoice Brief Banner */}
-        <div className="bg-pink-50/70 border-b border-pink-100 px-6 py-3">
+        <div className="bg-pink-50/70 dark:bg-pink-950/20 border-b border-pink-100 dark:border-pink-900/30 px-6 py-3">
           <div className="flex items-center justify-between text-sm">
             <div>
-              <p className="text-xs text-gray-500">ইনভয়েস: {invoice.invoiceNumber}</p>
-              <p className="font-semibold text-gray-900">{invoice.studentName}</p>
+              <p className="text-xs text-[var(--ink-secondary)]">ইনভয়েস: {invoice.invoiceNumber}</p>
+              <p className="font-semibold text-[var(--ink-primary)]">{invoice.studentName}</p>
             </div>
             <div className="text-right">
-              <p className="text-xs text-gray-500">পরিশোধের পরিমাণ</p>
+              <p className="text-xs text-[var(--ink-secondary)]">পরিশোধের পরিমাণ</p>
               <p className="text-lg font-extrabold text-[#e2136e]">
                 ৳ {plain(invoice.dueAmount)}
               </p>
@@ -159,7 +159,7 @@ export function BkashPaymentModal({ invoice, onDone, onClose }) {
         {/* Modal Body */}
         <div className="p-6">
           {error && (
-            <div className="mb-4 rounded-lg bg-rose-50 p-3 text-xs font-medium text-rose-700 border border-rose-200">
+            <div className="mb-4 rounded-lg bg-[var(--semantic-danger-bg)] p-3 text-xs font-medium text-[var(--semantic-danger)] border border-[var(--semantic-danger)]/25">
               ⚠️ {error}
             </div>
           )}
@@ -168,11 +168,11 @@ export function BkashPaymentModal({ invoice, onDone, onClose }) {
           {(step === 'INIT' || step === 'PHONE') && (
             <form onSubmit={handleInitiatePayment} className="space-y-4">
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">
+                <label className="block text-xs font-medium text-[var(--ink-secondary)] mb-1">
                   আপনার বিকাশ অ্যাকাউন্ট নম্বর (Your bKash Account Number)
                 </label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-sm text-gray-400 font-mono">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-sm text-[var(--ink-tertiary)] font-mono">
                     🇧🇩 +88
                   </span>
                   <input
@@ -182,10 +182,10 @@ export function BkashPaymentModal({ invoice, onDone, onClose }) {
                     placeholder="01XXXXXXXXX"
                     maxLength={11}
                     required
-                    className="w-full rounded-xl border border-gray-300 py-2.5 pl-20 pr-4 text-sm font-semibold tracking-wider text-gray-900 focus:border-[#e2136e] focus:outline-none focus:ring-1 focus:ring-[#e2136e]"
+                    className="w-full rounded-xl border border-[var(--border-hairline)] bg-[var(--surface-subtle)] py-2.5 pl-20 pr-4 text-sm font-semibold tracking-wider text-[var(--ink-primary)] focus:border-[#e2136e] focus:outline-none focus:ring-1 focus:ring-[#e2136e]"
                   />
                 </div>
-                <p className="mt-1 text-[11px] text-gray-500">
+                <p className="mt-1 text-[11px] text-[var(--ink-tertiary)]">
                   সিমুলেটর মোড: ডিফল্ট পরীক্ষামূলক নম্বর দেওয়া আছে।
                 </p>
               </div>
@@ -196,9 +196,9 @@ export function BkashPaymentModal({ invoice, onDone, onClose }) {
                   id="bkash-agree"
                   checked={agree}
                   onChange={(e) => setAgree(e.target.checked)}
-                  className="mt-1 h-4 w-4 rounded border-gray-300 text-[#e2136e] focus:ring-[#e2136e]"
+                  className="mt-1 h-4 w-4 rounded border-[var(--border-hairline)] bg-[var(--surface-subtle)] text-[#e2136e] focus:ring-[#e2136e]"
                 />
-                <label htmlFor="bkash-agree" className="text-xs text-gray-600 leading-snug">
+                <label htmlFor="bkash-agree" className="text-xs text-[var(--ink-secondary)] leading-snug">
                   আমি বিকাশ পেমেন্ট গেটওয়ের{' '}
                   <span className="text-[#e2136e] underline cursor-pointer">
                     শর্তাবলী ও নিয়মাবলী
@@ -211,7 +211,7 @@ export function BkashPaymentModal({ invoice, onDone, onClose }) {
                 <button
                   type="button"
                   onClick={onClose}
-                  className="w-1/2 rounded-xl border border-gray-300 py-2.5 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+                  className="w-1/2 rounded-xl border border-[var(--border-hairline)] bg-[var(--surface-subtle)] py-2.5 text-xs font-semibold text-[var(--ink-primary)] hover:bg-[var(--surface-hover)]"
                 >
                   বাতিল করুন
                 </button>
@@ -230,12 +230,12 @@ export function BkashPaymentModal({ invoice, onDone, onClose }) {
           {step === 'OTP' && (
             <form onSubmit={handleConfirmOtp} className="space-y-4">
               <div className="text-center pb-2">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-pink-100 text-[#e2136e] mb-2 font-bold text-lg">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-pink-100 dark:bg-pink-950/40 text-[#e2136e] mb-2 font-bold text-lg">
                   💬
                 </div>
-                <h4 className="text-sm font-bold text-gray-900">ভেরিফিকেশন কোড লিখুন</h4>
-                <p className="text-xs text-gray-500 mt-0.5">
-                  একটি ওটিপি কোড পাঠানো হয়েছে <span className="font-semibold text-gray-800">{phone}</span> নম্বরে
+                <h4 className="text-sm font-bold text-[var(--ink-primary)]">ভেরিফিকেশন কোড লিখুন</h4>
+                <p className="text-xs text-[var(--ink-secondary)] mt-0.5">
+                  একটি ওটিপি কোড পাঠানো হয়েছে <span className="font-semibold text-[var(--ink-primary)]">{phone}</span> নম্বরে
                 </p>
               </div>
 
@@ -248,12 +248,12 @@ export function BkashPaymentModal({ invoice, onDone, onClose }) {
                   maxLength={6}
                   required
                   autoFocus
-                  className="w-full rounded-xl border border-gray-300 py-3 text-center text-xl font-bold tracking-[0.4em] text-gray-900 focus:border-[#e2136e] focus:outline-none focus:ring-1 focus:ring-[#e2136e]"
+                  className="w-full rounded-xl border border-[var(--border-hairline)] bg-[var(--surface-subtle)] py-3 text-center text-xl font-bold tracking-[0.4em] text-[var(--ink-primary)] focus:border-[#e2136e] focus:outline-none focus:ring-1 focus:ring-[#e2136e]"
                 />
-                <div className="mt-2 flex items-center justify-between text-xs text-gray-500">
-                  <span>সিমুলেশন কোড: <b>1234</b></span>
+                <div className="mt-2 flex items-center justify-between text-xs text-[var(--ink-secondary)]">
+                  <span>সিমুলেশন কোড: <b className="text-[var(--ink-primary)]">1234</b></span>
                   {resendTimer > 0 ? (
-                    <span className="text-gray-400">পুনরায় কোড পাঠান ({resendTimer}s)</span>
+                    <span className="text-[var(--ink-tertiary)]">পুনরায় কোড পাঠান ({resendTimer}s)</span>
                   ) : (
                     <button
                       type="button"
@@ -270,7 +270,7 @@ export function BkashPaymentModal({ invoice, onDone, onClose }) {
                 <button
                   type="button"
                   onClick={() => setStep('PHONE')}
-                  className="w-1/2 rounded-xl border border-gray-300 py-2.5 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+                  className="w-1/2 rounded-xl border border-[var(--border-hairline)] bg-[var(--surface-subtle)] py-2.5 text-xs font-semibold text-[var(--ink-primary)] hover:bg-[var(--surface-hover)]"
                 >
                   পেছনে যান
                 </button>
@@ -288,11 +288,11 @@ export function BkashPaymentModal({ invoice, onDone, onClose }) {
           {step === 'PIN' && (
             <form onSubmit={handleConfirmPin} className="space-y-4">
               <div className="text-center pb-2">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-pink-100 text-[#e2136e] mb-2 font-bold text-lg">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-pink-100 dark:bg-pink-950/40 text-[#e2136e] mb-2 font-bold text-lg">
                   🔒
                 </div>
-                <h4 className="text-sm font-bold text-gray-900">বিকাশ পিন (PIN) লিখুন</h4>
-                <p className="text-xs text-gray-500 mt-0.5">
+                <h4 className="text-sm font-bold text-[var(--ink-primary)]">বিকাশ পিন (PIN) লিখুন</h4>
+                <p className="text-xs text-[var(--ink-secondary)] mt-0.5">
                   ফি পরিশোধ নিশ্চিত করতে আপনার ৫ ডিজিটের গোপন পিন প্রদান করুন
                 </p>
               </div>
@@ -306,10 +306,10 @@ export function BkashPaymentModal({ invoice, onDone, onClose }) {
                   maxLength={5}
                   required
                   autoFocus
-                  className="w-full rounded-xl border border-gray-300 py-3 text-center text-xl font-bold tracking-[0.5em] text-gray-900 focus:border-[#e2136e] focus:outline-none focus:ring-1 focus:ring-[#e2136e]"
+                  className="w-full rounded-xl border border-[var(--border-hairline)] bg-[var(--surface-subtle)] py-3 text-center text-xl font-bold tracking-[0.5em] text-[var(--ink-primary)] focus:border-[#e2136e] focus:outline-none focus:ring-1 focus:ring-[#e2136e]"
                 />
-                <p className="mt-1.5 text-center text-[11px] text-gray-400">
-                  সিমুলেটরে পরীক্ষামূলক পিন: <b>12345</b>
+                <p className="mt-1.5 text-center text-[11px] text-[var(--ink-tertiary)]">
+                  সিমুলেটরে পরীক্ষামূলক পিন: <b className="text-[var(--ink-secondary)]">12345</b>
                 </p>
               </div>
 
@@ -317,7 +317,7 @@ export function BkashPaymentModal({ invoice, onDone, onClose }) {
                 <button
                   type="button"
                   onClick={() => setStep('OTP')}
-                  className="w-1/2 rounded-xl border border-gray-300 py-2.5 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+                  className="w-1/2 rounded-xl border border-[var(--border-hairline)] bg-[var(--surface-subtle)] py-2.5 text-xs font-semibold text-[var(--ink-primary)] hover:bg-[var(--surface-hover)]"
                 >
                   পেছনে যান
                 </button>
@@ -336,12 +336,12 @@ export function BkashPaymentModal({ invoice, onDone, onClose }) {
           {step === 'PROCESSING' && (
             <div className="py-8 text-center space-y-4">
               <div className="relative mx-auto h-16 w-16">
-                <div className="absolute inset-0 rounded-full border-4 border-pink-200"></div>
+                <div className="absolute inset-0 rounded-full border-4 border-pink-200 dark:border-pink-950"></div>
                 <div className="absolute inset-0 rounded-full border-4 border-[#e2136e] border-t-transparent animate-spin"></div>
               </div>
               <div>
-                <h4 className="text-base font-bold text-gray-900">পেমেন্ট প্রসেসিং হচ্ছে...</h4>
-                <p className="text-xs text-gray-500 mt-1">
+                <h4 className="text-base font-bold text-[var(--ink-primary)]">পেমেন্ট প্রসেসিং হচ্ছে...</h4>
+                <p className="text-xs text-[var(--ink-secondary)] mt-1">
                   দয়া করে অপেক্ষা করুন, বিকাশ পেমেন্ট গেটওয়ের সাথে ট্রানজেকশন যাচাই করা হচ্ছে
                 </p>
               </div>
@@ -352,35 +352,35 @@ export function BkashPaymentModal({ invoice, onDone, onClose }) {
           {step === 'SUCCESS' && receiptSummary && (
             <div className="space-y-4">
               <div className="text-center">
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 mb-2">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 mb-2">
                   <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <h4 className="text-base font-bold text-gray-900">পেমেন্ট সফল হয়েছে!</h4>
-                <p className="text-xs text-emerald-600 font-medium">ফি সফলভাবে পরিশোধিত ও রসিদ তৈরি হয়েছে</p>
+                <h4 className="text-base font-bold text-[var(--ink-primary)]">পেমেন্ট সফল হয়েছে!</h4>
+                <p className="text-xs text-[#168754] dark:text-emerald-400 font-medium">ফি সফলভাবে পরিশোধিত ও রসিদ তৈরি হয়েছে</p>
               </div>
 
-              <div className="rounded-xl border border-gray-200 bg-gray-50/70 p-4 space-y-2.5 text-xs">
-                <div className="flex justify-between border-b pb-2">
-                  <span className="text-gray-500">অফিসিয়াল রসিদ নম্বর:</span>
-                  <span className="font-bold text-[#0E3B2E]">{receiptSummary.receiptNumber}</span>
+              <div className="rounded-xl border border-[var(--border-hairline)] bg-[var(--surface-subtle)] p-4 space-y-2.5 text-xs">
+                <div className="flex justify-between border-b border-[var(--border-hairline)] pb-2">
+                  <span className="text-[var(--ink-secondary)]">অফিসিয়াল রসিদ নম্বর:</span>
+                  <span className="font-bold text-[#0E3B2E] dark:text-[#E8A317]">{receiptSummary.receiptNumber}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-500">বিকাশ TrxID:</span>
-                  <span className="font-mono font-semibold text-gray-900">{receiptSummary.gatewayTrxId}</span>
+                  <span className="text-[var(--ink-secondary)]">বিকাশ TrxID:</span>
+                  <span className="font-mono font-semibold text-[var(--ink-primary)]">{receiptSummary.gatewayTrxId}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-500">সিস্টেম ট্রানজেকশন ID:</span>
-                  <span className="font-mono text-gray-700">{receiptSummary.trxId}</span>
+                  <span className="text-[var(--ink-secondary)]">সিস্টেম ট্রানজেকশন ID:</span>
+                  <span className="font-mono text-[var(--ink-primary)]">{receiptSummary.trxId}</span>
                 </div>
-                <div className="flex justify-between border-t pt-2">
-                  <span className="font-medium text-gray-700">পরিশোধিত অর্থ:</span>
-                  <span className="text-sm font-bold text-emerald-700">৳ {plain(receiptSummary.amountPaid)}</span>
+                <div className="flex justify-between border-t border-[var(--border-hairline)] pt-2">
+                  <span className="font-medium text-[var(--ink-secondary)]">পরিশোধিত অর্থ:</span>
+                  <span className="text-sm font-bold text-[#168754] dark:text-emerald-400">৳ {plain(receiptSummary.amountPaid)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-500">অবশিষ্ট বকেয়া:</span>
-                  <span className="font-semibold text-gray-900">৳ {plain(receiptSummary.remainingDue)}</span>
+                  <span className="text-[var(--ink-secondary)]">অবশিষ্ট বকেয়া:</span>
+                  <span className="font-semibold text-[var(--ink-primary)]">৳ {plain(receiptSummary.remainingDue)}</span>
                 </div>
               </div>
 
@@ -388,14 +388,14 @@ export function BkashPaymentModal({ invoice, onDone, onClose }) {
                 <button
                   type="button"
                   onClick={() => window.print()}
-                  className="w-1/2 rounded-xl border border-gray-300 py-2.5 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+                  className="w-1/2 rounded-xl border border-[var(--border-hairline)] bg-[var(--surface-subtle)] py-2.5 text-xs font-semibold text-[var(--ink-primary)] hover:bg-[var(--surface-hover)]"
                 >
                   🖨️ প্রিন্ট করুন
                 </button>
                 <button
                   type="button"
                   onClick={onDone}
-                  className="w-1/2 rounded-xl bg-emerald-600 py-2.5 text-xs font-bold text-white shadow hover:bg-emerald-700"
+                  className="w-1/2 rounded-xl bg-[#168754] hover:bg-[#126b42] py-2.5 text-xs font-bold text-white shadow"
                 >
                   সম্পন্ন (Done)
                 </button>

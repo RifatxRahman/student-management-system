@@ -69,16 +69,16 @@ export function ExamCreateModal({ onDone, onClose }) {
           required
         />
         <SelectField label="ধরন" options={EXAM_TYPE_OPTIONS} value={values.type} onChange={change('type')} />
-        <label className="flex items-start gap-2 text-sm text-gray-700">
+        <label className="flex items-start gap-2 text-sm text-[var(--ink-secondary)] cursor-pointer">
           <input
             type="checkbox"
-            className="mt-1"
+            className="mt-1 rounded border-[var(--border-hairline)] text-[#0E3B2E] focus:ring-[#E8A317]"
             checked={values.copySubjects}
             onChange={(event) => setValues((current) => ({ ...current, copySubjects: event.target.checked }))}
           />
           <span>
             ক্লাসের সব বিষয় যোগ করুন (প্রতিটা ফুল ১০০, পাস ৩৩)
-            <span className="block text-xs text-gray-500">পরে প্রতিটা বিষয়ের মার্কস আলাদাভাবে বদলানো যায়।</span>
+            <span className="block text-xs text-[var(--ink-tertiary)]">পরে প্রতিটা বিষয়ের মার্কস আলাদাভাবে বদলানো যায়।</span>
           </span>
         </label>
         <FormActions busy={busy} submitLabel="পরীক্ষা তৈরি করুন" onCancel={onClose} />
@@ -170,9 +170,10 @@ export function SubjectAddModal({ exam, existingSubjectIds, onDone, onClose }) {
         <p className="-mt-2 text-xs text-gray-500">শুধু এই ক্লাসের বিষয় আসে। না পেলে আগে ক্লাস পাতা থেকে বিষয় যোগ করুন।</p>
         <TextField label="ফুল মার্কস" type="number" min="0.01" step="0.01" value={values.fullMarks} onChange={change('fullMarks')} required />
         <TextField label="পাস মার্কস" type="number" min="0" step="0.01" value={values.passMarks} onChange={change('passMarks')} required />
-        <label className="flex items-center gap-2 text-sm text-gray-700">
+        <label className="flex items-center gap-2 text-sm text-[var(--ink-secondary)] cursor-pointer">
           <input
             type="checkbox"
+            className="rounded border-[var(--border-hairline)] text-[#0E3B2E] focus:ring-[#E8A317]"
             checked={values.optional}
             onChange={(event) => setValues((current) => ({ ...current, optional: event.target.checked }))}
           />
@@ -230,15 +231,16 @@ export function SubjectEditModal({ subject, onDone, onClose }) {
         {error && <Alert>{error}</Alert>}
         <TextField label="ফুল মার্কস" type="number" min="0.01" step="0.01" value={values.fullMarks} onChange={change('fullMarks')} required />
         <TextField label="পাস মার্কস" type="number" min="0" step="0.01" value={values.passMarks} onChange={change('passMarks')} required />
-        <label className="flex items-center gap-2 text-sm text-gray-700">
+        <label className="flex items-center gap-2 text-sm text-[var(--ink-secondary)] cursor-pointer">
           <input
             type="checkbox"
+            className="rounded border-[var(--border-hairline)] text-[#0E3B2E] focus:ring-[#E8A317]"
             checked={values.optional}
             onChange={(event) => setValues((current) => ({ ...current, optional: event.target.checked }))}
           />
           ঐচ্ছিক বিষয়
         </label>
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-[var(--ink-tertiary)]">
           এই বিষয়ে ইতিমধ্যে মার্কস এন্ট্রি হয়ে থাকলে ফুল মার্কস তার সর্বোচ্চ নম্বরের কম করা যায় না।
         </p>
         <FormActions busy={busy} submitLabel="সংরক্ষণ করুন" onCancel={onClose} />

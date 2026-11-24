@@ -36,11 +36,11 @@ export default function ChangePasswordPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+    <div className="flex min-h-screen items-center justify-center bg-[var(--canvas)] px-4">
       <div className="w-full max-w-sm">
         <div className="mb-6 text-center">
-          <h1 className="text-2xl font-semibold text-gray-900">পাসওয়ার্ড বদলান</h1>
-          <p className="mt-1 text-sm text-gray-500">{user.fullName}</p>
+          <h1 className="text-2xl font-bold text-[var(--ink-primary)] font-['Anek_Bangla',sans-serif]">পাসওয়ার্ড বদলান</h1>
+          <p className="mt-1 text-sm text-[var(--ink-secondary)]">{user.fullName}</p>
         </div>
 
         <Card className="p-6">
@@ -86,11 +86,11 @@ export default function ChangePasswordPage() {
 
         <div className="mt-4 text-center text-sm">
           {user.mustChangePassword ? (
-            <button type="button" className="text-gray-500 hover:text-gray-700" onClick={logout}>
+            <button type="button" className="text-[var(--ink-secondary)] hover:text-[var(--ink-primary)]" onClick={logout}>
               লগআউট
             </button>
           ) : (
-            <Link to="/" className="text-gray-500 hover:text-gray-700">
+            <Link to="/" className="text-[var(--ink-secondary)] hover:text-[var(--ink-primary)]">
               ← ফিরে যান
             </Link>
           )}

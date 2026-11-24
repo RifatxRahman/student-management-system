@@ -60,7 +60,7 @@ export default function SubjectsPage() {
             <Table headers={['নাম', 'কোড', 'অবস্থা', isAdmin ? 'কাজ' : '']}>
               {data?.map((subject) => (
                 <tr key={subject.id}>
-                  <Td className="font-medium text-gray-900">{subject.name}</Td>
+                  <Td className="font-medium text-[var(--ink-primary)]">{subject.name}</Td>
                   <Td className="font-mono">{subject.code}</Td>
                   <Td>
                     <Badge tone={subject.active ? 'green' : 'gray'}>

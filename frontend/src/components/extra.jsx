@@ -4,7 +4,7 @@ import { Alert, Button, Modal } from './ui.jsx'
 // আগের / পরের পাতা। totalPages <= 1 হলে শুধু মোট সংখ্যা দেখায়।
 export function Pagination({ page, totalPages, totalElements, unit = 'জন', onChange }) {
   return (
-    <div className="flex items-center justify-between border-t border-gray-100 px-4 py-3 text-sm text-gray-600">
+    <div className="flex items-center justify-between border-t border-[var(--border-hairline)] px-4 py-3 text-sm text-[var(--ink-secondary)]">
       <span>
         মোট {totalElements} {unit}
       </span>
@@ -13,7 +13,7 @@ export function Pagination({ page, totalPages, totalElements, unit = 'জন', o
           <Button variant="secondary" size="sm" disabled={page === 0} onClick={() => onChange(page - 1)}>
             আগের
           </Button>
-          <span>
+          <span className="font-semibold text-[var(--ink-primary)]">
             {page + 1} / {totalPages}
           </span>
           <Button variant="secondary" size="sm" disabled={page + 1 >= totalPages} onClick={() => onChange(page + 1)}>
@@ -44,7 +44,7 @@ export function ConfirmModal({ title, message, confirmLabel = 'নিশ্চ�
   return (
     <Modal title={title} onClose={onClose}>
       <div className="space-y-4">
-        <p className="text-sm text-gray-600">{message}</p>
+        <p className="text-sm text-[var(--ink-secondary)] leading-relaxed">{message}</p>
         {error && <Alert>{error}</Alert>}
         <div className="flex justify-end gap-2">
           <Button variant="secondary" onClick={onClose} disabled={busy}>
@@ -62,9 +62,9 @@ export function ConfirmModal({ title, message, confirmLabel = 'নিশ্চ�
 // "নাম ........ মান" এক সারি
 export function InfoRow({ label, children }) {
   return (
-    <div className="flex justify-between gap-4 py-2 text-sm">
-      <dt className="text-gray-500">{label}</dt>
-      <dd className="text-right font-medium text-gray-900">{children}</dd>
+    <div className="flex justify-between gap-4 py-2 text-sm border-b border-[var(--border-hairline)] last:border-b-0">
+      <dt className="text-[var(--ink-secondary)]">{label}</dt>
+      <dd className="text-right font-semibold text-[var(--ink-primary)]">{children}</dd>
     </div>
   )
 }

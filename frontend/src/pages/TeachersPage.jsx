@@ -96,16 +96,16 @@ export default function TeachersPage() {
                     <TeacherPhoto teacherId={t.id} name={t.fullName} className="h-10 w-10 text-sm" />
                   </Td>
                   <Td>
-                    <p className="font-medium text-gray-900">{t.fullName}</p>
-                    <p className="font-mono text-xs text-[#0E3B2E] font-medium">{t.employeeId ?? '—'}</p>
+                    <p className="font-semibold text-[var(--ink-primary)]">{t.fullName}</p>
+                    <p className="font-mono text-xs text-[var(--ink-secondary)] font-medium">{t.employeeId ?? '—'}</p>
                   </Td>
                   <Td>
                     <p className="font-mono text-xs">{t.phone ?? '—'}</p>
-                    <p className="text-xs text-gray-500">{t.email ?? '—'}</p>
+                    <p className="text-xs text-[var(--ink-secondary)]">{t.email ?? '—'}</p>
                   </Td>
                   <Td>
-                    <p className="text-sm font-medium text-gray-800">{t.designation ?? '—'}</p>
-                    <p className="text-xs text-gray-500">{t.qualification ?? '—'}</p>
+                    <p className="text-sm font-medium text-[var(--ink-primary)]">{t.designation ?? '—'}</p>
+                    <p className="text-xs text-[var(--ink-secondary)]">{t.qualification ?? '—'}</p>
                   </Td>
                   <Td className="font-mono text-xs">{t.username ?? '—'}</Td>
                   <Td>

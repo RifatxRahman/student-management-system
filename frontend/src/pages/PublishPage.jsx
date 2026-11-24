@@ -9,8 +9,8 @@ import { plain } from '../utils/format.js'
 function Summary({ label, value, tone }) {
   return (
     <Card className="p-4">
-      <p className="text-xs text-gray-500">{label}</p>
-      <p className={`mt-1 text-xl font-semibold ${tone === 'bad' ? 'text-red-600' : 'text-gray-900'}`}>{value}</p>
+      <p className="text-xs text-[var(--ink-secondary)]">{label}</p>
+      <p className={`mt-1 text-xl font-bold font-['Anek_Bangla',sans-serif] tabular-nums ${tone === 'bad' ? 'text-[var(--semantic-danger)]' : 'text-[var(--ink-primary)]'}`}>{value}</p>
     </Card>
   )
 }
@@ -32,7 +32,7 @@ export default function PublishPage() {
   return (
     <>
       <div className="mb-3">
-        <Link to={`/exams/${examId}`} className="text-sm text-gray-500 hover:text-gray-700">
+        <Link to={`/exams/${examId}`} className="text-sm text-[var(--ink-secondary)] hover:text-[var(--ink-primary)] transition-colors">
           ← পরীক্ষায় ফিরে যান
         </Link>
       </div>
@@ -66,11 +66,11 @@ export default function PublishPage() {
 
             {data.missingTotal > 0 && (
               <Card className="p-4">
-                <p className="mb-2 text-sm font-semibold text-red-700">
+                <p className="mb-2 text-sm font-semibold text-[var(--semantic-danger)]">
                   এই মার্কসগুলো বাকি ({data.missingTotal}টা
                   {data.missing.length < data.missingTotal ? `, প্রথম ${data.missing.length}টা দেখানো হলো` : ''})
                 </p>
-                <ul className="divide-y divide-gray-100 text-sm">
+                <ul className="divide-y divide-[var(--border-hairline)] text-sm">
                   {data.missing.map((m) => (
                     <li key={`${m.enrollmentId}-${m.subjectName}`} className="flex flex-wrap items-center justify-between gap-2 py-1.5">
                       <span>
@@ -80,7 +80,7 @@ export default function PublishPage() {
                     </li>
                   ))}
                 </ul>
-                <p className="mt-2 text-xs text-gray-500">
+                <p className="mt-2 text-xs text-[var(--ink-secondary)]">
                   মার্কস এন্ট্রি পাতা থেকে এগুলো দিয়ে এসে আবার এই পাতা খুলুন (কিছু শিক্ষকের বাকি থাকলে তাঁকে জানান)।
                 </p>
               </Card>
@@ -95,7 +95,7 @@ export default function PublishPage() {
                     <tr key={row.enrollmentId}>
                       <Td>{row.sectionName}</Td>
                       <Td>{row.rollNumber}</Td>
-                      <Td className="font-medium text-gray-900">{row.studentName}</Td>
+                      <Td className="font-medium text-[var(--ink-primary)]">{row.studentName}</Td>
                       <Td>
                         {plain(row.totalMarks)} / {plain(row.totalFullMarks)}
                       </Td>

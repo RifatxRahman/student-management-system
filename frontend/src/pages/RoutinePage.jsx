@@ -74,7 +74,7 @@ export default function RoutinePage() {
           isAdmin && (
             <Link
               to="/routine/setup"
-              className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-700 ring-1 ring-gray-300 hover:bg-gray-50"
+              className="rounded-lg bg-[var(--surface-subtle)] px-4 py-2 text-sm font-medium text-[var(--ink-primary)] border border-[var(--border-hairline)] hover:bg-[var(--surface-hover)] transition-colors"
             >
               রুম ও পিরিয়ড
             </Link>
@@ -136,25 +136,25 @@ export default function RoutinePage() {
               <EmptyState>কোনো শিক্ষক বা রুটিন পাওয়া যায়নি।</EmptyState>
             ) : (
               <div>
-                <div className="mb-4 flex flex-wrap items-center justify-between gap-4 border-b border-gray-100 pb-3">
+                <div className="mb-4 flex flex-wrap items-center justify-between gap-4 border-b border-[var(--border-hairline)] pb-3">
                   <div>
-                    <h3 className="text-base font-bold text-gray-800">শিক্ষক সাপ্তাহিক কাজের চাপ (Workload)</h3>
-                    <p className="text-xs text-gray-500">প্রতি শিক্ষকের সাপ্তাহিক পিরিয়ড ও কর্মবণ্টন সূচক</p>
+                    <h3 className="text-base font-bold text-[var(--ink-primary)]">শিক্ষক সাপ্তাহিক কাজের চাপ (Workload)</h3>
+                    <p className="text-xs text-[var(--ink-tertiary)]">প্রতি শিক্ষকের সাপ্তাহিক পিরিয়ড ও কর্মবণ্টন সূচক</p>
                   </div>
                   <div className="flex gap-4 text-xs">
-                    <span className="font-medium text-gray-700">মোট শিক্ষক: <strong className="text-gray-900">{workload.data?.totalTeachers}</strong></span>
-                    <span className="font-medium text-gray-700">মোট বরাদ্দকৃত পিরিয়ড: <strong className="text-[#0E3B2E] font-bold">{workload.data?.totalAssignedPeriods}</strong></span>
+                    <span className="font-medium text-[var(--ink-secondary)]">মোট শিক্ষক: <strong className="text-[var(--ink-primary)]">{workload.data?.totalTeachers}</strong></span>
+                    <span className="font-medium text-[var(--ink-secondary)]">মোট বরাদ্দকৃত পিরিয়ড: <strong className="text-[#E8A317] dark:text-[#F0B232] font-bold">{workload.data?.totalAssignedPeriods}</strong></span>
                   </div>
                 </div>
                 <Table headers={['শিক্ষক ও আইডি', 'পদবি', 'মোট ক্লাস (সপ্তাহে)', 'শনি', 'রবি', 'সোম', 'মঙ্গল', 'বুধ', 'বৃহঃ', 'অবস্থা']}>
                   {workload.data?.rows?.map((row) => (
                     <tr key={row.teacherId}>
                       <Td>
-                        <p className="font-semibold text-gray-900">{row.teacherName}</p>
-                        <p className="font-mono text-xs text-[#0E3B2E] font-medium">{row.employeeId || '—'}</p>
+                        <p className="font-semibold text-[var(--ink-primary)]">{row.teacherName}</p>
+                        <p className="font-mono text-xs text-[var(--ink-secondary)] font-medium">{row.employeeId || '—'}</p>
                       </Td>
-                      <Td className="text-xs text-gray-600">{row.designation || '—'}</Td>
-                      <Td className="font-bold text-sm text-gray-900">{row.totalWeeklyPeriods} টি</Td>
+                      <Td className="text-xs text-[var(--ink-secondary)]">{row.designation || '—'}</Td>
+                      <Td className="font-bold text-sm text-[var(--ink-primary)]">{row.totalWeeklyPeriods} টি</Td>
                       <Td className="text-xs">{row.periodsPerDay?.SATURDAY || 0}</Td>
                       <Td className="text-xs">{row.periodsPerDay?.SUNDAY || 0}</Td>
                       <Td className="text-xs">{row.periodsPerDay?.MONDAY || 0}</Td>

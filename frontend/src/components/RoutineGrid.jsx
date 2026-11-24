@@ -12,13 +12,13 @@ export default function RoutineGrid({ entries, slots, mode, canEdit, onCellClick
   const byCell = new Map(entries.map((e) => [`${e.dayOfWeek}:${e.timeSlotId}`, e]))
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto rounded-[12px] border border-[var(--border-hairline)] bg-[var(--surface)]">
       <table className="w-full min-w-[640px] border-collapse text-sm">
         <thead>
-          <tr className="bg-gray-50">
-            <th className="border border-gray-200 px-3 py-2 text-left font-semibold text-gray-700">পিরিয়ড</th>
+          <tr className="bg-[var(--surface-subtle)]">
+            <th className="border border-[var(--border-hairline)] px-3 py-2 text-left font-semibold text-[var(--ink-primary)]">পিরিয়ড</th>
             {days.map((day) => (
-              <th key={day} className="border border-gray-200 px-3 py-2 text-left font-semibold text-gray-700">
+              <th key={day} className="border border-[var(--border-hairline)] px-3 py-2 text-left font-semibold text-[var(--ink-primary)]">
                 {dayLabel(day)}
               </th>
             ))}
@@ -27,30 +27,30 @@ export default function RoutineGrid({ entries, slots, mode, canEdit, onCellClick
         <tbody>
           {rows.map((slot) => (
             <tr key={slot.id}>
-              <td className="border border-gray-200 px-3 py-2 align-top">
-                <p className="font-medium text-gray-900">{slot.name}</p>
-                <p className="text-xs text-gray-500">
+              <td className="border border-[var(--border-hairline)] px-3 py-2 align-top bg-[var(--surface-subtle)]">
+                <p className="font-semibold text-[var(--ink-primary)]">{slot.name}</p>
+                <p className="text-xs text-[var(--ink-secondary)]">
                   {shortTime(slot.startTime)}–{shortTime(slot.endTime)}
                 </p>
               </td>
               {days.map((day) => {
                 const entry = byCell.get(`${day}:${slot.id}`)
                 return (
-                  <td key={day} className="h-16 border border-gray-200 p-1 align-top">
+                  <td key={day} className="h-16 border border-[var(--border-hairline)] p-1 align-top bg-[var(--surface)]">
                     {entry ? (
                       <button
                         type="button"
                         disabled={!canEdit}
                         onClick={() => onEntryClick(entry)}
-                        className={`block w-full rounded-[10px] bg-[#EAF2EF] border border-[#C7DDD4]/60 px-2 py-1.5 text-left ${
-                          canEdit ? 'hover:bg-[#DCEDE6] transition' : 'cursor-default'
+                        className={`block w-full rounded-[10px] bg-[#EAF2EF] dark:bg-[#172D24] border border-[#C7DDD4]/60 dark:border-[var(--border-hairline)] px-2 py-1.5 text-left ${
+                          canEdit ? 'hover:bg-[#DCEDE6] dark:hover:bg-[#1E3B2F] transition' : 'cursor-default'
                         }`}
                       >
-                        <span className="block text-sm font-semibold text-[#0E3B2E]">{entry.subjectName}</span>
-                        <span className="block text-xs text-gray-600">
+                        <span className="block text-sm font-semibold text-[#0E3B2E] dark:text-[#EDF4F0]">{entry.subjectName}</span>
+                        <span className="block text-xs text-[var(--ink-secondary)]">
                           {mode === 'section' ? entry.teacherName : `${entry.className} / ${entry.sectionName}`}
                         </span>
-                        {entry.roomName && <span className="block text-xs text-gray-500">রুম {entry.roomName}</span>}
+                        {entry.roomName && <span className="block text-xs text-[var(--ink-tertiary)]">রুম {entry.roomName}</span>}
                       </button>
                     ) : (
                       canEdit && (
@@ -58,7 +58,7 @@ export default function RoutineGrid({ entries, slots, mode, canEdit, onCellClick
                           type="button"
                           onClick={() => onCellClick(day, slot)}
                           aria-label={`${dayLabel(day)} ${slot.name} ঘরে ক্লাস বসান`}
-                          className="flex h-full min-h-12 w-full items-center justify-center rounded-[10px] text-lg text-gray-300 hover:bg-gray-50 hover:text-[#0E3B2E] transition"
+                          className="flex h-full min-h-12 w-full items-center justify-center rounded-[10px] text-lg text-[var(--ink-tertiary)] hover:bg-[var(--surface-hover)] hover:text-[#0E3B2E] dark:hover:text-[#F0B232] transition"
                         >
                           +
                         </button>

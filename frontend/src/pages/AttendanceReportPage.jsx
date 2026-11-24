@@ -150,7 +150,7 @@ export default function AttendanceReportPage() {
                 )}
               </Card>
 
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-[var(--ink-tertiary)]">
                 হার = (উপস্থিত + দেরি) ÷ (উপস্থিত + দেরি + অনুপস্থিত) × ১০০। "ছুটি" হিসাবের বাইরে। ৯০%-এর ওপরে সবুজ,
                 ৭৫%-এর ওপরে হলুদ, তার নিচে লাল।
               </p>

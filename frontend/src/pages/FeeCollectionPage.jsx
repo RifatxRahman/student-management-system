@@ -80,49 +80,49 @@ function PaymentModal({ invoice, onDone, onClose }) {
     return (
       <Modal title="টাকা জমার রসিদ (Money Receipt)" onClose={onDone}>
         <div className="space-y-4 print:p-0">
-          <div className="rounded-xl border border-gray-200 bg-gray-50/70 p-5 text-center">
-            <h2 className="text-xl font-bold text-gray-900">School Management System</h2>
-            <p className="text-xs text-gray-500">অফিসিয়াল ফি আদায় রসিদ</p>
-            <div className="mt-3 inline-block rounded-full bg-[#0E3B2E]/10 px-3 py-1 text-xs font-semibold text-[#0E3B2E]">
+          <div className="rounded-xl border border-[var(--border-hairline)] bg-[var(--surface-subtle)] p-5 text-center">
+            <h2 className="text-xl font-bold text-[var(--ink-primary)]">School Management System</h2>
+            <p className="text-xs text-[var(--ink-tertiary)]">অফিসিয়াল ফি আদায় রসিদ</p>
+            <div className="mt-3 inline-block rounded-full bg-[#E8A317]/20 px-3 py-1 text-xs font-semibold text-[#E8A317] dark:text-[#F0B232]">
               রসিদ নং: {receipt.receiptNumber}
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div>
-              <p className="text-xs text-gray-500">শিক্ষার্থী</p>
-              <p className="font-semibold text-gray-900">{receipt.studentName}</p>
-              <p className="text-xs text-gray-600 font-mono">{receipt.studentCode}</p>
+              <p className="text-xs text-[var(--ink-secondary)]">শিক্ষার্থী</p>
+              <p className="font-semibold text-[var(--ink-primary)]">{receipt.studentName}</p>
+              <p className="text-xs text-[var(--ink-secondary)] font-mono">{receipt.studentCode}</p>
             </div>
             <div className="text-right">
-              <p className="text-xs text-gray-500">শ্রেণি ও সেকশন</p>
-              <p className="font-semibold text-gray-900">{receipt.className} - {receipt.sectionName}</p>
-              <p className="text-xs text-gray-600">বিলিং মাস: {receipt.billingMonth}</p>
+              <p className="text-xs text-[var(--ink-secondary)]">শ্রেণি ও সেকশন</p>
+              <p className="font-semibold text-[var(--ink-primary)]">{receipt.className} - {receipt.sectionName}</p>
+              <p className="text-xs text-[var(--ink-secondary)]">বিলিং মাস: {receipt.billingMonth}</p>
             </div>
           </div>
 
-          <div className="rounded-lg border border-gray-200 p-4 space-y-2 text-sm bg-white">
-            <div className="flex justify-between border-b pb-2">
-              <span className="text-gray-600">ইনভয়েস শিরোনাম:</span>
-              <span className="font-medium text-gray-900">{receipt.invoiceTitle}</span>
+          <div className="rounded-lg border border-[var(--border-hairline)] p-4 space-y-2 text-sm bg-[var(--surface-subtle)]">
+            <div className="flex justify-between border-b border-[var(--border-hairline)] pb-2">
+              <span className="text-[var(--ink-secondary)]">ইনভয়েস শিরোনাম:</span>
+              <span className="font-medium text-[var(--ink-primary)]">{receipt.invoiceTitle}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">পেমেন্ট মাধ্যম:</span>
-              <span className="font-medium text-gray-900">{receipt.paymentMethodBangla}</span>
+              <span className="text-[var(--ink-secondary)]">পেমেন্ট মাধ্যম:</span>
+              <span className="font-medium text-[var(--ink-primary)]">{receipt.paymentMethodBangla}</span>
             </div>
             {receipt.transactionId && (
               <div className="flex justify-between">
-                <span className="text-gray-600">ট্রানজ্যাকশন আইডি / স্লিপ:</span>
-                <span className="font-mono text-gray-900">{receipt.transactionId}</span>
+                <span className="text-[var(--ink-secondary)]">ট্রানজ্যাকশন আইডি / স্লিপ:</span>
+                <span className="font-mono text-[var(--ink-primary)]">{receipt.transactionId}</span>
               </div>
             )}
-            <div className="flex justify-between pt-2 border-t">
-              <span className="font-semibold text-gray-900">এইমাত্র পরিশোধিত টাকা:</span>
-              <span className="text-lg font-bold text-emerald-600">৳ {plain(receipt.amount)}</span>
+            <div className="flex justify-between pt-2 border-t border-[var(--border-hairline)]">
+              <span className="font-semibold text-[var(--ink-primary)]">এইমাত্র পরিশোধিত টাকা:</span>
+              <span className="text-lg font-bold text-[var(--semantic-success)]">৳ {plain(receipt.amount)}</span>
             </div>
-            <div className="flex justify-between text-xs text-gray-500">
+            <div className="flex justify-between text-xs text-[var(--ink-secondary)]">
               <span>অবশিষ্ট বকেয়া:</span>
-              <span className="font-semibold text-rose-600">৳ {plain(receipt.remainingDueAmount)}</span>
+              <span className="font-semibold text-[var(--semantic-danger)]">৳ {plain(receipt.remainingDueAmount)}</span>
             </div>
           </div>
 
@@ -149,12 +149,12 @@ function PaymentModal({ invoice, onDone, onClose }) {
       <form onSubmit={submit} className="space-y-4">
         {error && <Alert>{error}</Alert>}
 
-        <div className="rounded-lg bg-gray-50 p-3 text-sm">
-          <p className="font-medium text-gray-900">{invoice.studentName} ({invoice.studentCode})</p>
-          <p className="text-xs text-gray-500">{invoice.className} - {invoice.sectionName} | {invoice.title}</p>
-          <div className="mt-2 flex justify-between text-xs">
+        <div className="rounded-lg bg-[var(--surface-subtle)] border border-[var(--border-hairline)] p-3 text-sm">
+          <p className="font-semibold text-[var(--ink-primary)]">{invoice.studentName} ({invoice.studentCode})</p>
+          <p className="text-xs text-[var(--ink-secondary)]">{invoice.className} - {invoice.sectionName} | {invoice.title}</p>
+          <div className="mt-2 flex justify-between text-xs text-[var(--ink-secondary)]">
             <span>মোট নিট ফি: ৳ {plain(invoice.netAmount)}</span>
-            <span className="font-bold text-rose-600">বর্তমান বকেয়া: ৳ {plain(invoice.dueAmount)}</span>
+            <span className="font-bold text-[var(--semantic-danger)]">বর্তমান বকেয়া: ৳ {plain(invoice.dueAmount)}</span>
           </div>
         </div>
 
@@ -228,8 +228,8 @@ function LateFineModal({ invoice, onDone, onClose }) {
     <Modal title="বিলম্ব ফি (Late Fine) আরোপ" onClose={onClose}>
       <form onSubmit={submit} className="space-y-4">
         {error && <Alert>{error}</Alert>}
-        <p className="text-sm text-gray-600">
-          ইনভয়েস: <strong>{invoice.invoiceNumber}</strong> ({invoice.studentName})
+        <p className="text-sm text-[var(--ink-secondary)]">
+          ইনভয়েস: <strong className="text-[var(--ink-primary)]">{invoice.invoiceNumber}</strong> ({invoice.studentName})
         </p>
         <TextField
           label="জরিমানা / বিলম্ব ফি এর পরিমাণ (৳)"
@@ -261,18 +261,18 @@ function InvoiceDetailModal({ invoiceId, onClose }) {
       <LoadState loading={loading} error={error}>
         {inv && (
           <div className="space-y-4 text-sm">
-            <div className="rounded-lg bg-gray-50 p-4 border border-gray-200">
+            <div className="rounded-lg bg-[var(--surface-subtle)] p-4 border border-[var(--border-hairline)]">
               <div className="flex justify-between items-start">
                 <div>
-                  <h4 className="font-bold text-gray-900 text-base">{inv.title}</h4>
-                  <p className="text-xs text-gray-500 font-mono">ইনভয়েস নং: {inv.invoiceNumber}</p>
-                  <p className="mt-1 text-sm text-[#0E3B2E] font-semibold">
+                  <h4 className="font-bold text-[var(--ink-primary)] text-base">{inv.title}</h4>
+                  <p className="text-xs text-[var(--ink-secondary)] font-mono">ইনভয়েস নং: {inv.invoiceNumber}</p>
+                  <p className="mt-1 text-sm text-[#E8A317] dark:text-[#F0B232] font-semibold">
                     {inv.studentName} ({inv.studentCode}) — {inv.className} ({inv.sectionName})
                   </p>
                 </div>
                 <div>{getStatusBadge(inv.status)}</div>
               </div>
-              <div className="mt-3 grid grid-cols-2 gap-2 text-xs text-gray-600">
+              <div className="mt-3 grid grid-cols-2 gap-2 text-xs text-[var(--ink-secondary)]">
                 <p>ইস্যু তারিখ: {inv.issueDate}</p>
                 <p>পরিশোধের শেষ তারিখ: {inv.dueDate}</p>
               </div>
@@ -280,10 +280,10 @@ function InvoiceDetailModal({ invoiceId, onClose }) {
 
             {/* Item Breakdown */}
             <div>
-              <h5 className="font-semibold text-gray-900 mb-2">খাতভিত্তিক ফি বিভাজন</h5>
-              <div className="rounded-lg border border-gray-200 overflow-hidden">
+              <h5 className="font-semibold text-[var(--ink-primary)] mb-2">খাতভিত্তিক ফি বিভাজন</h5>
+              <div className="rounded-lg border border-[var(--border-hairline)] overflow-hidden">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-gray-100 text-gray-700">
+                  <thead className="bg-[var(--surface-subtle)] text-[var(--ink-secondary)]">
                     <tr>
                       <th className="p-2.5">ফি খাত</th>
                       <th className="p-2.5 text-right">মূল ফি</th>
@@ -291,15 +291,15 @@ function InvoiceDetailModal({ invoiceId, onClose }) {
                       <th className="p-2.5 text-right">নিট ফি</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200">
+                  <tbody className="divide-y divide-[var(--border-hairline)]">
                     {inv.items?.map((it) => (
                       <tr key={it.id}>
-                        <td className="p-2.5 font-medium">{it.feeHeadName}</td>
+                        <td className="p-2.5 font-medium text-[var(--ink-primary)]">{it.feeHeadName}</td>
                         <td className="p-2.5 text-right">৳ {plain(it.amount)}</td>
-                        <td className="p-2.5 text-right text-emerald-600">
+                        <td className="p-2.5 text-right text-[var(--semantic-success)]">
                           {Number(it.waiverAmount) > 0 ? `-৳ ${plain(it.waiverAmount)}` : '—'}
                         </td>
-                        <td className="p-2.5 text-right font-semibold">৳ {plain(it.netAmount)}</td>
+                        <td className="p-2.5 text-right font-semibold text-[var(--ink-primary)]">৳ {plain(it.netAmount)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -308,32 +308,32 @@ function InvoiceDetailModal({ invoiceId, onClose }) {
             </div>
 
             {/* Financial Summary */}
-            <div className="rounded-lg bg-slate-50 p-3 space-y-1.5 text-xs text-slate-700">
+            <div className="rounded-lg bg-[var(--surface-subtle)] p-3 space-y-1.5 text-xs text-[var(--ink-secondary)] border border-[var(--border-hairline)]">
               <div className="flex justify-between">
                 <span>সাবটোটাল:</span>
                 <span>৳ {plain(inv.subtotalAmount)}</span>
               </div>
               {Number(inv.waiverAmount) > 0 && (
-                <div className="flex justify-between text-emerald-600">
+                <div className="flex justify-between text-[var(--semantic-success)]">
                   <span>মোট ছাড় / ওয়েভার:</span>
                   <span>- ৳ {plain(inv.waiverAmount)}</span>
                 </div>
               )}
               {Number(inv.fineAmount) > 0 && (
-                <div className="flex justify-between text-rose-600">
+                <div className="flex justify-between text-[var(--semantic-danger)]">
                   <span>বিলম্ব জরিমানা:</span>
                   <span>+ ৳ {plain(inv.fineAmount)}</span>
                 </div>
               )}
-              <div className="flex justify-between font-bold text-sm text-slate-900 pt-1 border-t">
+              <div className="flex justify-between font-bold text-sm text-[var(--ink-primary)] pt-1 border-t border-[var(--border-hairline)]">
                 <span>মোট নিট প্রদেয়:</span>
                 <span>৳ {plain(inv.netAmount)}</span>
               </div>
-              <div className="flex justify-between text-emerald-700">
+              <div className="flex justify-between text-[var(--semantic-success)] font-medium">
                 <span>মোট পরিশোধিত:</span>
                 <span>৳ {plain(inv.paidAmount)}</span>
               </div>
-              <div className="flex justify-between font-bold text-rose-700">
+              <div className="flex justify-between font-bold text-[var(--semantic-danger)]">
                 <span>অবশিষ্ট বকেয়া:</span>
                 <span>৳ {plain(inv.dueAmount)}</span>
               </div>
@@ -342,17 +342,17 @@ function InvoiceDetailModal({ invoiceId, onClose }) {
             {/* Payment Receipts History */}
             {inv.payments && inv.payments.length > 0 && (
               <div>
-                <h5 className="font-semibold text-gray-900 mb-2">পরিশোধের ইতিহাস ({inv.payments.length})</h5>
+                <h5 className="font-semibold text-[var(--ink-primary)] mb-2">পরিশোধের ইতিহাস ({inv.payments.length})</h5>
                 <div className="space-y-2">
                   {inv.payments.map((p) => (
-                    <div key={p.paymentId} className="flex justify-between items-center rounded-lg border p-2.5 text-xs">
+                    <div key={p.paymentId} className="flex justify-between items-center rounded-lg border border-[var(--border-hairline)] bg-[var(--surface-subtle)] p-2.5 text-xs">
                       <div>
-                        <p className="font-semibold text-gray-900">
+                        <p className="font-semibold text-[var(--ink-primary)]">
                           ৳ {plain(p.amount)} ({p.paymentMethodBangla})
                         </p>
-                        <p className="text-gray-500 font-mono">রসিদ: {p.receiptNumber}</p>
+                        <p className="text-[var(--ink-secondary)] font-mono">রসিদ: {p.receiptNumber}</p>
                       </div>
-                      <div className="text-right text-gray-500">
+                      <div className="text-right text-[var(--ink-secondary)]">
                         <p>{new Date(p.paymentDate).toLocaleDateString('bn-BD')}</p>
                         <p>আদায়কারী: {p.collectedBy}</p>
                       </div>
@@ -639,8 +639,8 @@ export default function FeeCollectionPage() {
           onClick={() => setActiveTab('invoices')}
           className={`border-b-2 px-5 py-2.5 text-sm font-semibold transition ${
             activeTab === 'invoices'
-              ? 'border-[#0E3B2E] text-[#0E3B2E]'
-              : 'border-transparent text-[var(--ink-secondary)] hover:border-gray-300 hover:text-[var(--ink-primary)]'
+              ? 'border-[#0E3B2E] dark:border-[#E8A317] text-[#0E3B2E] dark:text-[#E8A317]'
+              : 'border-transparent text-[var(--ink-secondary)] hover:border-[var(--border-hairline)] hover:text-[var(--ink-primary)]'
           }`}
         >
           ইনভয়েস ও ফি আদায় ({invoices?.length || 0})
@@ -650,8 +650,8 @@ export default function FeeCollectionPage() {
           onClick={() => setActiveTab('bulk')}
           className={`border-b-2 px-5 py-2.5 text-sm font-semibold transition ${
             activeTab === 'bulk'
-              ? 'border-[#0E3B2E] text-[#0E3B2E]'
-              : 'border-transparent text-[var(--ink-secondary)] hover:border-gray-300 hover:text-[var(--ink-primary)]'
+              ? 'border-[#0E3B2E] dark:border-[#E8A317] text-[#0E3B2E] dark:text-[#E8A317]'
+              : 'border-transparent text-[var(--ink-secondary)] hover:border-[var(--border-hairline)] hover:text-[var(--ink-primary)]'
           }`}
         >
           বাল্ক ইনভয়েস জেনারেটর
@@ -661,8 +661,8 @@ export default function FeeCollectionPage() {
           onClick={() => setActiveTab('waivers')}
           className={`border-b-2 px-5 py-2.5 text-sm font-semibold transition ${
             activeTab === 'waivers'
-              ? 'border-[#0E3B2E] text-[#0E3B2E]'
-              : 'border-transparent text-[var(--ink-secondary)] hover:border-gray-300 hover:text-[var(--ink-primary)]'
+              ? 'border-[#0E3B2E] dark:border-[#E8A317] text-[#0E3B2E] dark:text-[#E8A317]'
+              : 'border-transparent text-[var(--ink-secondary)] hover:border-[var(--border-hairline)] hover:text-[var(--ink-primary)]'
           }`}
         >
           শিক্ষার্থী ওয়েভার / বৃত্তি ({waivers?.length || 0})
@@ -673,14 +673,14 @@ export default function FeeCollectionPage() {
       {activeTab === 'invoices' && (
         <div className="space-y-6">
           {/* Filter Bar */}
-          <Card className="p-4 bg-gray-50/50">
+          <Card className="p-4 bg-[var(--surface-subtle)]">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5 items-end">
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1">শিক্ষাবর্ষ</label>
+                <label className="block text-xs font-semibold text-[var(--ink-secondary)] mb-1">শিক্ষাবর্ষ</label>
                 <select
                   value={effectiveSessionId}
                   onChange={(e) => setFilterSessionId(e.target.value)}
-                  className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-white px-3 py-2 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
+                  className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
                 >
                   {sessions?.map((s) => (
                     <option key={s.id} value={s.id}>
@@ -691,11 +691,11 @@ export default function FeeCollectionPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1">শ্রেণি (ক্লাস)</label>
+                <label className="block text-xs font-semibold text-[var(--ink-secondary)] mb-1">শ্রেণি (ক্লাস)</label>
                 <select
                   value={filterClassId}
                   onChange={(e) => setFilterClassId(e.target.value)}
-                  className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-white px-3 py-2 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
+                  className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
                 >
                   <option value="">সব শ্রেণি</option>
                   {classes?.map((c) => (
@@ -707,11 +707,11 @@ export default function FeeCollectionPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1">পরিশোধের অবস্থা</label>
+                <label className="block text-xs font-semibold text-[var(--ink-secondary)] mb-1">পরিশোধের অবস্থা</label>
                 <select
                   value={filterStatus}
                   onChange={(e) => setFilterStatus(e.target.value)}
-                  className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-white px-3 py-2 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
+                  className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
                 >
                   <option value="">সকল অবস্থা</option>
                   <option value="UNPAID">বকেয়া (Unpaid)</option>
@@ -721,12 +721,12 @@ export default function FeeCollectionPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1">বিলিং মাস</label>
+                <label className="block text-xs font-semibold text-[var(--ink-secondary)] mb-1">বিলিং মাস</label>
                 <input
                   type="month"
                   value={filterMonth}
                   onChange={(e) => setFilterMonth(e.target.value)}
-                  className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-white px-3 py-2 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
+                  className="w-full rounded-[10px] border border-[var(--border-hairline)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--ink-primary)] focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 focus:outline-none"
                 />
               </div>
 
@@ -745,7 +745,7 @@ export default function FeeCollectionPage() {
                 </Button>
                 <Button
                   variant="secondary"
-                  className="flex-1 border-emerald-600 text-emerald-700 hover:bg-emerald-50"
+                  className="flex-1 border-[#168754]/30 text-[#168754] dark:text-emerald-400 hover:bg-[#168754]/10"
                   onClick={handleExportInvoices}
                   disabled={exporting}
                 >
@@ -763,16 +763,16 @@ export default function FeeCollectionPage() {
               <p className="mt-1 text-xs text-[var(--ink-tertiary)]">{invoices?.length || 0} টি ইনভয়েস</p>
             </div>
 
-            <div className="rounded-[16px] border border-[#BDE3CC] bg-[#EAF5EE]/60 p-4">
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-[#168754]">মোট সংগৃহীত ফি</p>
-              <p className="mt-1 text-2xl font-bold text-[#168754] font-['Anek_Bangla',sans-serif] tabular-nums">৳ {plain(totalCollected)}</p>
-              <p className="mt-1 text-xs text-[#168754]">ক্যাশ ও ডিজিটাল পেমেন্ট</p>
+            <div className="rounded-[16px] border border-[#BDE3CC]/30 dark:border-emerald-500/20 bg-[#EAF5EE]/60 dark:bg-emerald-950/20 p-4">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-[#168754] dark:text-emerald-400">মোট সংগৃহীত ফি</p>
+              <p className="mt-1 text-2xl font-bold text-[#168754] dark:text-emerald-400 font-['Anek_Bangla',sans-serif] tabular-nums">৳ {plain(totalCollected)}</p>
+              <p className="mt-1 text-xs text-[#168754] dark:text-emerald-400">ক্যাশ ও ডিজিটাল পেমেন্ট</p>
             </div>
 
-            <div className="rounded-[16px] border border-[#F6C2BE] bg-[#FCECEB]/60 p-4">
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-[#C8372D]">মোট বকেয়া ফি</p>
-              <p className="mt-1 text-2xl font-bold text-[#C8372D] font-['Anek_Bangla',sans-serif] tabular-nums">৳ {plain(totalDue)}</p>
-              <p className="mt-1 text-xs text-[#C8372D]">আদায়যোগ্য অবশিষ্ট</p>
+            <div className="rounded-[16px] border border-[#F6C2BE]/30 dark:border-rose-500/20 bg-[#FCECEB]/60 dark:bg-rose-950/20 p-4">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-[#C8372D] dark:text-rose-400">মোট বকেয়া ফি</p>
+              <p className="mt-1 text-2xl font-bold text-[#C8372D] dark:text-rose-400 font-['Anek_Bangla',sans-serif] tabular-nums">৳ {plain(totalDue)}</p>
+              <p className="mt-1 text-xs text-[#C8372D] dark:text-rose-400">আদায়যোগ্য অবশিষ্ট</p>
             </div>
           </div>
 
@@ -785,28 +785,28 @@ export default function FeeCollectionPage() {
                 <Table headers={['ইনভয়েস নং', 'শিক্ষার্থী ও শ্রেণি', 'শিরোনাম ও মাস', 'নিট ফি', 'পরিশোধিত', 'বকেয়া', 'স্ট্যাটাস', 'অ্যাকশন']}>
                   {invoices?.map((inv) => (
                     <tr key={inv.id}>
-                      <Td className="font-mono text-xs font-semibold text-gray-900">
+                      <Td className="font-mono text-xs font-semibold text-[var(--ink-primary)]">
                         <button
                           type="button"
                           onClick={() => setDetailModal({ open: true, invoiceId: inv.id })}
-                          className="hover:text-[#0E3B2E] underline font-bold"
+                          className="hover:text-[#E8A317] underline font-bold"
                         >
                           {inv.invoiceNumber}
                         </button>
                       </Td>
                       <Td>
-                        <p className="font-semibold text-gray-900">{inv.studentName}</p>
-                        <p className="text-xs text-gray-500 font-mono">
+                        <p className="font-semibold text-[var(--ink-primary)]">{inv.studentName}</p>
+                        <p className="text-xs text-[var(--ink-secondary)] font-mono">
                           {inv.studentCode} | {inv.className} ({inv.sectionName})
                         </p>
                       </Td>
                       <Td>
-                        <p className="text-gray-900">{inv.title}</p>
-                        <p className="text-xs text-gray-500">মাস: {inv.billingMonth}</p>
+                        <p className="text-[var(--ink-primary)]">{inv.title}</p>
+                        <p className="text-xs text-[var(--ink-secondary)]">মাস: {inv.billingMonth}</p>
                       </Td>
-                      <Td className="font-semibold">৳ {plain(inv.netAmount)}</Td>
-                      <Td className="text-emerald-700 font-medium">৳ {plain(inv.paidAmount)}</Td>
-                      <Td className="text-rose-700 font-bold">৳ {plain(inv.dueAmount)}</Td>
+                      <Td className="font-semibold text-[var(--ink-primary)]">৳ {plain(inv.netAmount)}</Td>
+                      <Td className="text-[#168754] dark:text-emerald-400 font-medium">৳ {plain(inv.paidAmount)}</Td>
+                      <Td className="text-[#C8372D] dark:text-rose-400 font-bold">৳ {plain(inv.dueAmount)}</Td>
                       <Td>{getStatusBadge(inv.status)}</Td>
                       <Td>
                         <div className="flex gap-1.5">
@@ -856,8 +856,8 @@ export default function FeeCollectionPage() {
       {/* TAB 2: Bulk Invoice Generator */}
       {activeTab === 'bulk' && (
         <Card className="max-w-2xl p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">বাল্ক ইনভয়েস জেনারেটর (Bulk Fee Invoicing)</h3>
-          <p className="text-sm text-gray-600 mb-6">
+          <h3 className="text-lg font-semibold text-[var(--ink-primary)] mb-2">বাল্ক ইনভয়েস জেনারেটর (Bulk Fee Invoicing)</h3>
+          <p className="text-sm text-[var(--ink-secondary)] mb-6">
             একটি ক্লাসের সকল সক্রিয় শিক্ষার্থীর জন্য এক ক্লিকে মাসিক টিউশন ফি ও অন্যান্য নিয়মিত ফি ইনভয়েস তৈরি করুন।
             সিস্টেম স্বয়ংক্রিয়ভাবে শিক্ষার্থীর জন্য নির্ধারিত বৃত্তি ও ওয়েভার হিসাব করে নিট বিল প্রস্তুত করবে।
           </p>
@@ -953,15 +953,15 @@ export default function FeeCollectionPage() {
                 {waivers?.map((w) => (
                   <tr key={w.id}>
                     <Td>
-                      <p className="font-semibold text-gray-900">{w.studentName}</p>
-                      <p className="text-xs text-gray-500 font-mono">{w.studentCode}</p>
+                      <p className="font-semibold text-[var(--ink-primary)]">{w.studentName}</p>
+                      <p className="text-xs text-[var(--ink-secondary)] font-mono">{w.studentCode}</p>
                     </Td>
-                    <Td>{w.sessionName}</Td>
-                    <Td className="font-medium text-gray-900">{w.feeHeadName}</Td>
-                    <Td className="font-bold text-emerald-700">
+                    <Td className="text-[var(--ink-primary)]">{w.sessionName}</Td>
+                    <Td className="font-medium text-[var(--ink-primary)]">{w.feeHeadName}</Td>
+                    <Td className="font-bold text-[#168754] dark:text-emerald-400">
                       {w.discountType === 'PERCENTAGE' ? `${plain(w.discountValue)}%` : `৳ ${plain(w.discountValue)}`}
                     </Td>
-                    <Td className="text-gray-600">{w.reason || '—'}</Td>
+                    <Td className="text-[var(--ink-secondary)]">{w.reason || '—'}</Td>
                     <Td>
                       <Badge tone={w.active ? 'green' : 'gray'}>
                         {w.active ? 'সক্রিয়' : 'নিষ্ক্রিয়'}
@@ -972,7 +972,7 @@ export default function FeeCollectionPage() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="text-red-600 hover:text-red-700"
+                          className="text-[var(--semantic-danger)] hover:underline"
                           onClick={() => deleteWaiver(w.id)}
                         >
                           মুছুন

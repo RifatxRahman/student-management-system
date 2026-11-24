@@ -4,7 +4,7 @@ import { FormActions } from './extra.jsx'
 import { Alert, Button, Modal } from './ui.jsx'
 
 const INPUT =
-  'block w-full rounded-[10px] border border-[var(--border-hairline)] bg-white px-3 py-2 text-sm text-[var(--ink-primary)] outline-none transition focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25'
+  'block w-full rounded-[10px] border border-[var(--border-hairline)] bg-[var(--surface-subtle)] px-3 py-2 text-sm text-[var(--ink-primary)] placeholder-[var(--ink-tertiary)] outline-none transition focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25'
 
 // ভুল থাকলে বাংলা বার্তা, ঠিক থাকলে ফাঁকা লেখা (Backend-এর নিয়মের হুবহু প্রতিফলন)
 function validate(rows) {

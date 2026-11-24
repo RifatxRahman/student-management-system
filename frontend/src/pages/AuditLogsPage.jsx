@@ -63,25 +63,25 @@ export default function AuditLogsPage() {
               <Table headers={['সময়', 'কে', 'কাজ ও মডিউল', 'বিষয়', 'আইপি ও ক্লায়েন্ট', 'অবস্থা', 'বিবরণ']}>
                 {data?.items.map((log) => (
                   <tr key={log.id}>
-                    <Td className="whitespace-nowrap text-xs text-gray-500 font-mono">
+                    <Td className="whitespace-nowrap text-xs text-[var(--ink-secondary)] font-mono">
                       {formatDateTime(log.createdAt)}
                     </Td>
-                    <Td className="font-mono text-xs font-semibold text-gray-800">
-                      {log.actorUsername ? log.actorUsername : <span className="text-gray-400">সিস্টেম</span>}
+                    <Td className="font-mono text-xs font-semibold text-[var(--ink-primary)]">
+                      {log.actorUsername ? log.actorUsername : <span className="text-[var(--ink-tertiary)]">সিস্টেম</span>}
                     </Td>
                     <Td>
-                      <p className="font-medium text-gray-900 text-xs">{actionLabel(log.action)}</p>
-                      <p className="font-mono text-[11px] text-gray-400">{log.action}</p>
+                      <p className="font-medium text-[var(--ink-primary)] text-xs">{actionLabel(log.action)}</p>
+                      <p className="font-mono text-[11px] text-[var(--ink-tertiary)]">{log.action}</p>
                     </Td>
                     <Td className="whitespace-nowrap text-xs">
-                      <span className="font-medium text-gray-700">{log.entityType}</span>
-                      {log.entityId ? <span className="font-mono text-gray-400"> #{log.entityId}</span> : ''}
+                      <span className="font-medium text-[var(--ink-secondary)]">{log.entityType}</span>
+                      {log.entityId ? <span className="font-mono text-[var(--ink-tertiary)]"> #{log.entityId}</span> : ''}
                     </Td>
                     <Td className="text-xs">
-                      <div className="font-mono text-[#0E3B2E] font-medium">
+                      <div className="font-mono text-[#0E3B2E] dark:text-[#E8A317] font-medium">
                         {log.ipAddress || '127.0.0.1'}
                       </div>
-                      <div className="text-[11px] text-gray-400 truncate max-w-[140px]" title={log.userAgent}>
+                      <div className="text-[11px] text-[var(--ink-tertiary)] truncate max-w-[140px]" title={log.userAgent}>
                         {log.userAgent || 'Unknown'}
                       </div>
                     </Td>
@@ -91,13 +91,13 @@ export default function AuditLogsPage() {
                           {log.status === 'SUCCESS' ? 'সফল' : 'ব্যর্থ'}
                         </Badge>
                         {log.executionTimeMs > 0 && (
-                          <span className="text-[10px] text-gray-400 font-mono">
+                          <span className="text-[10px] text-[var(--ink-tertiary)] font-mono">
                             {log.executionTimeMs} ms
                           </span>
                         )}
                       </div>
                     </Td>
-                    <Td className="max-w-xs text-xs text-gray-700">
+                    <Td className="max-w-xs text-xs text-[var(--ink-primary)]">
                       <span className="break-words font-sans">{log.details ?? '—'}</span>
                     </Td>
                   </tr>

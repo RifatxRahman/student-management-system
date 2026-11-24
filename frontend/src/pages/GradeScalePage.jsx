@@ -45,7 +45,7 @@ export default function GradeScalePage() {
             <Table headers={['গ্রেড', 'গ্রেড পয়েন্ট', 'নম্বর (শতকরা)']}>
               {data?.map((band) => (
                 <tr key={band.grade}>
-                  <Td className="font-semibold text-gray-900">{band.grade}</Td>
+                  <Td className="font-semibold text-[var(--ink-primary)]">{band.grade}</Td>
                   <Td>{Number(band.gradePoint).toFixed(2)}</Td>
                   <Td>
                     {plain(band.fromPercent)}% থেকে{' '}

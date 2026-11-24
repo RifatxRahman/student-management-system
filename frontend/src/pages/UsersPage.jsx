@@ -57,10 +57,10 @@ function PasswordDialog({ title, username, password, onClose }) {
           এই পাসওয়ার্ড শুধু এখন একবারই দেখা যাবে। ব্যবহারকারীকে নিরাপদে জানান। সে প্রথম লগইনেই এটা বদলে নেবে।
         </Alert>
         <div>
-          <p className="text-sm text-gray-500">
-            ইউজারনেম: <span className="font-medium text-gray-900">{username}</span>
+          <p className="text-sm text-[var(--ink-secondary)]">
+            ইউজারনেম: <span className="font-medium text-[var(--ink-primary)]">{username}</span>
           </p>
-          <p className="mt-2 select-all rounded-lg bg-gray-100 px-4 py-3 text-center font-mono text-lg tracking-wider">
+          <p className="mt-2 select-all rounded-lg bg-[var(--surface-subtle)] border border-[var(--border-hairline)] text-[var(--ink-primary)] px-4 py-3 text-center font-mono text-lg tracking-wider">
             {password}
           </p>
         </div>
@@ -155,22 +155,22 @@ function UserPermissionsModal({ user, onClose, onUpdated }) {
     <Modal title={`${user.fullName} (${user.username}) - পারমিশন নিয়ন্ত্রণ`} onClose={onClose}>
       <div className="space-y-4 max-h-[75vh] overflow-y-auto pr-1">
         {error && <Alert>{error}</Alert>}
-        <div className="bg-[#EAF2EF] border border-[#C7DDD4] rounded-[12px] p-3 text-xs text-[#0E3B2E] flex justify-between items-center">
+        <div className="bg-[#EAF2EF] dark:bg-[#1D4B3C]/30 border border-[#C7DDD4] dark:border-[#1D4B3C] rounded-[12px] p-3 text-xs text-[#0E3B2E] dark:text-[#EDF4F0] flex justify-between items-center">
           <div>
             মূল ভূমিকা: <span className="font-semibold">{roleLabel(user.role)}</span>
           </div>
-          <div className="text-gray-600">
+          <div className="text-[var(--ink-secondary)]">
             রোল ডিফল্ট পারমিশনের বাইরে নির্দিষ্ট ইউজারের জন্য বিশেষ অনুমতি দিতে বা বাতিল করতে পারবেন।
           </div>
         </div>
 
         {loading ? (
-          <div className="py-8 text-center text-gray-500 text-sm">অনুমতি ডেটা লোড হচ্ছে...</div>
+          <div className="py-8 text-center text-[var(--ink-secondary)] text-sm">অনুমতি ডেটা লোড হচ্ছে...</div>
         ) : (
           <div className="space-y-6">
             {Object.entries(grouped).map(([moduleName, items]) => (
-              <div key={moduleName} className="border border-gray-200 rounded-lg p-3">
-                <h4 className="font-semibold text-sm text-gray-800 border-b pb-2 mb-3">
+              <div key={moduleName} className="border border-[var(--border-hairline)] bg-[var(--surface-subtle)] rounded-lg p-3">
+                <h4 className="font-semibold text-sm text-[var(--ink-primary)] border-b border-[var(--border-hairline)] pb-2 mb-3">
                   {MODULE_LABELS[moduleName] || moduleName}
                 </h4>
                 <div className="space-y-3">
@@ -179,13 +179,13 @@ function UserPermissionsModal({ user, onClose, onUpdated }) {
                     return (
                       <div
                         key={item.permissionId}
-                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2 rounded hover:bg-gray-50 border-b border-gray-100 last:border-0"
+                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2 rounded hover:bg-[var(--surface-hover)] border-b border-[var(--border-hairline)] last:border-0"
                       >
                         <div className="text-sm">
-                          <div className="font-medium text-gray-900">{item.name}</div>
-                          <div className="text-xs text-gray-500 font-mono">
+                          <div className="font-medium text-[var(--ink-primary)]">{item.name}</div>
+                          <div className="text-xs text-[var(--ink-tertiary)] font-mono">
                             {item.code} • রোলের ডিফল্ট:{' '}
-                            <span className={item.roleDefault ? 'text-green-600 font-semibold' : 'text-gray-500'}>
+                            <span className={item.roleDefault ? 'text-green-600 dark:text-emerald-400 font-semibold' : 'text-[var(--ink-tertiary)]'}>
                               {item.roleDefault ? 'অনুমোদিত' : 'অননুমোদিত'}
                             </span>
                           </div>
@@ -198,8 +198,8 @@ function UserPermissionsModal({ user, onClose, onUpdated }) {
                             }
                             className={`px-2.5 py-1 rounded transition ${
                               currentVal === 'DEFAULT'
-                                ? 'bg-gray-700 text-white font-medium'
-                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                ? 'bg-[#0E3B2E] dark:bg-[#E8A317] text-white dark:text-[#12231D] font-medium'
+                                : 'bg-[var(--surface)] text-[var(--ink-secondary)] border border-[var(--border-hairline)] hover:bg-[var(--surface-hover)]'
                             }`}
                           >
                             রোলের মতো
@@ -212,7 +212,7 @@ function UserPermissionsModal({ user, onClose, onUpdated }) {
                             className={`px-2.5 py-1 rounded transition ${
                               currentVal === 'GRANT'
                                 ? 'bg-green-600 text-white font-medium'
-                                : 'bg-gray-100 text-gray-600 hover:bg-green-50 hover:text-green-700'
+                                : 'bg-[var(--surface)] text-[var(--ink-secondary)] border border-[var(--border-hairline)] hover:bg-green-50 dark:hover:bg-green-950/30 hover:text-green-700 dark:hover:text-emerald-400'
                             }`}
                           >
                             অনুমতি দিন ✓
@@ -225,7 +225,7 @@ function UserPermissionsModal({ user, onClose, onUpdated }) {
                             className={`px-2.5 py-1 rounded transition ${
                               currentVal === 'REVOKE'
                                 ? 'bg-red-600 text-white font-medium'
-                                : 'bg-gray-100 text-gray-600 hover:bg-red-50 hover:text-red-700'
+                                : 'bg-[var(--surface)] text-[var(--ink-secondary)] border border-[var(--border-hairline)] hover:bg-red-50 dark:hover:bg-red-950/30 hover:text-red-700 dark:hover:text-rose-400'
                             }`}
                           >
                             বাতিল করুন ✕
@@ -240,7 +240,7 @@ function UserPermissionsModal({ user, onClose, onUpdated }) {
           </div>
         )}
 
-        <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
+        <div className="flex justify-end gap-2 pt-2 border-t border-[var(--border-hairline)]">
           <Button variant="secondary" onClick={onClose} disabled={saving}>
             বাতিল
           </Button>
@@ -343,7 +343,7 @@ function RoleMatrixTab() {
       {success && <Alert type="success">{success}</Alert>}
 
       {/* ভূমিকা বাছার ট্যাব */}
-      <div className="flex flex-wrap gap-2 border-b pb-3">
+      <div className="flex flex-wrap gap-2 border-b border-[var(--border-hairline)] pb-3">
         {roleList.map((r) => (
           <button
             key={r.code}
@@ -354,8 +354,8 @@ function RoleMatrixTab() {
             }}
             className={`px-4 py-2 rounded-[10px] text-sm font-semibold transition ${
               selectedRole === r.code
-                ? 'bg-[#0E3B2E] text-white shadow-sm'
-                : 'bg-white text-[var(--ink-secondary)] border border-[var(--border-hairline)] hover:bg-[var(--surface-subtle)] hover:text-[var(--ink-primary)]'
+                ? 'bg-[#0E3B2E] dark:bg-[#E8A317] text-white dark:text-[#12231D] shadow-sm'
+                : 'bg-[var(--surface)] text-[var(--ink-secondary)] border border-[var(--border-hairline)] hover:bg-[var(--surface-subtle)] hover:text-[var(--ink-primary)]'
             }`}
           >
             {r.label}
@@ -367,9 +367,9 @@ function RoleMatrixTab() {
         <div className="space-y-6">
           <div className="flex items-center justify-between bg-[var(--surface-subtle)] p-3 rounded-[12px] border border-[var(--border-hairline)]">
             <div>
-              <span className="font-semibold text-gray-900">{roleLabel(selectedRole)}</span> রোলের অনুমোদিত ক্ষমতা
+              <span className="font-semibold text-[var(--ink-primary)]">{roleLabel(selectedRole)}</span> রোলের অনুমোদিত ক্ষমতা
               {selectedRole === 'ADMIN' && (
-                <span className="text-xs text-amber-700 ml-2 font-medium">(অ্যাডমিনের সব পারমিশন অপরিবর্তনীয়ভাবে চালু থাকে)</span>
+                <span className="text-xs text-amber-700 dark:text-amber-400 ml-2 font-medium">(অ্যাডমিনের সব পারমিশন অপরিবর্তনীয়ভাবে চালু থাকে)</span>
               )}
             </div>
             {selectedRole !== 'ADMIN' && (
@@ -382,9 +382,9 @@ function RoleMatrixTab() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {Object.entries(grouped).map(([mod, perms]) => (
               <Card key={mod} className="p-4">
-                <h4 className="font-semibold text-sm text-gray-900 border-b pb-2 mb-3 flex items-center justify-between">
+                <h4 className="font-semibold text-sm text-[var(--ink-primary)] border-b border-[var(--border-hairline)] pb-2 mb-3 flex items-center justify-between">
                   <span>{MODULE_LABELS[mod] || mod}</span>
-                  <span className="text-xs font-normal text-gray-500">{perms.length} টি ক্ষমতা</span>
+                  <span className="text-xs font-normal text-[var(--ink-secondary)]">{perms.length} টি ক্ষমতা</span>
                 </h4>
                 <div className="space-y-2">
                   {perms.map((p) => {
@@ -393,7 +393,7 @@ function RoleMatrixTab() {
                       <label
                         key={p.id}
                         className={`flex items-start gap-2.5 p-2 rounded-[8px] cursor-pointer transition ${
-                          isChecked ? 'bg-[#EAF2EF]' : 'hover:bg-[var(--surface-subtle)]'
+                          isChecked ? 'bg-[#EAF2EF] dark:bg-[#1D4B3C]/40 border border-[#C7DDD4]/50 dark:border-[#1D4B3C]' : 'hover:bg-[var(--surface-subtle)] border border-transparent'
                         } ${selectedRole === 'ADMIN' ? 'cursor-not-allowed opacity-80' : ''}`}
                       >
                         <input
@@ -404,8 +404,8 @@ function RoleMatrixTab() {
                           className="mt-0.5 rounded border-gray-300 text-[#0E3B2E] focus:ring-[#E8A317]"
                         />
                         <div className="text-xs">
-                          <div className="font-medium text-gray-900">{p.name}</div>
-                          <div className="text-gray-500 font-mono">{p.code}</div>
+                          <div className="font-medium text-[var(--ink-primary)]">{p.name}</div>
+                          <div className="text-[var(--ink-secondary)] font-mono">{p.code}</div>
                         </div>
                       </label>
                     )
@@ -486,13 +486,13 @@ export default function UsersPage() {
       )}
 
       {/* ট্যাব নেভিগেশন */}
-      <div className="flex border-b border-gray-200 mb-6 gap-6">
+      <div className="flex border-b border-[var(--border-hairline)] mb-6 gap-6">
         <button
           type="button"
           onClick={() => setActiveTab('users')}
           className={`pb-3 text-sm font-semibold transition border-b-2 -mb-px ${
             activeTab === 'users'
-              ? 'border-[#0E3B2E] text-[#0E3B2E]'
+              ? 'border-[#0E3B2E] dark:border-[#E8A317] text-[#0E3B2E] dark:text-[#E8A317]'
               : 'border-transparent text-[var(--ink-secondary)] hover:text-[var(--ink-primary)]'
           }`}
         >
@@ -503,7 +503,7 @@ export default function UsersPage() {
           onClick={() => setActiveTab('matrix')}
           className={`pb-3 text-sm font-semibold transition border-b-2 -mb-px ${
             activeTab === 'matrix'
-              ? 'border-[#0E3B2E] text-[#0E3B2E]'
+              ? 'border-[#0E3B2E] dark:border-[#E8A317] text-[#0E3B2E] dark:text-[#E8A317]'
               : 'border-transparent text-[var(--ink-secondary)] hover:text-[var(--ink-primary)]'
           }`}
         >
@@ -520,8 +520,8 @@ export default function UsersPage() {
               <Table headers={['নাম', 'ইউজারনেম', 'ভূমিকা', 'অবস্থা', 'পারমিশন', 'কাজ']}>
                 {data?.map((u) => (
                   <tr key={u.id}>
-                    <Td className="font-medium text-gray-900">{u.fullName}</Td>
-                    <Td className="font-mono">{u.username}</Td>
+                    <Td className="font-medium text-[var(--ink-primary)]">{u.fullName}</Td>
+                    <Td className="font-mono text-[var(--ink-primary)]">{u.username}</Td>
                     <Td>
                       <Badge tone={u.role === 'ADMIN' ? 'red' : u.role === 'TEACHER' ? 'brand' : 'amber'}>
                         {roleLabel(u.role)}

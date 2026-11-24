@@ -19,7 +19,7 @@ export default function DeletedStudentsPage() {
   return (
     <>
       <div className="mb-3">
-        <Link to="/students" className="text-sm text-gray-500 hover:text-gray-700">
+        <Link to="/students" className="text-sm text-[var(--ink-secondary)] hover:text-[var(--ink-primary)] transition-colors">
           ← সব শিক্ষার্থী
         </Link>
       </div>
@@ -35,7 +35,7 @@ export default function DeletedStudentsPage() {
               {data?.map((s) => (
                 <tr key={s.id}>
                   <Td className="font-mono text-xs">{s.studentCode}</Td>
-                  <Td className="font-medium text-gray-900">{s.fullName}</Td>
+                  <Td className="font-medium text-[var(--ink-primary)]">{s.fullName}</Td>
                   <Td>{genderLabel(s.gender)}</Td>
                   <Td>
                     <Button variant="secondary" size="sm" onClick={() => setTarget(s)}>

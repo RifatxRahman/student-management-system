@@ -77,8 +77,8 @@ export default function ExamsPage() {
                 const info = examStatusInfo(exam.status)
                 return (
                   <tr key={exam.id}>
-                    <Td className="font-medium text-gray-900">
-                      <Link to={`/exams/${exam.id}`} className="hover:text-[#0E3B2E]">
+                    <Td className="font-medium text-[var(--ink-primary)]">
+                      <Link to={`/exams/${exam.id}`} className="hover:text-[#E8A317] dark:hover:text-[#F0B232] transition-colors">
                         {exam.name}
                       </Link>
                     </Td>

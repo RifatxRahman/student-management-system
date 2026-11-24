@@ -74,7 +74,7 @@ export default function RoutineSetupPage() {
   return (
     <>
       <div className="mb-3">
-        <Link to="/routine" className="text-sm text-gray-500 hover:text-gray-700">
+        <Link to="/routine" className="text-sm text-[var(--ink-secondary)] hover:text-[var(--ink-primary)] transition-colors">
           ← রুটিনে ফিরে যান
         </Link>
       </div>
@@ -85,7 +85,7 @@ export default function RoutineSetupPage() {
         {/* ---------- পিরিয়ড ---------- */}
         <section>
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-900">পিরিয়ড (সময়ের স্লট)</h2>
+            <h2 className="text-lg font-semibold text-[var(--ink-primary)]">পিরিয়ড (সময়ের স্লট)</h2>
             <Button size="sm" onClick={() => setModal({ kind: 'slot' })}>
               নতুন পিরিয়ড
             </Button>
@@ -98,7 +98,7 @@ export default function RoutineSetupPage() {
                 <Table headers={['পিরিয়ড', 'সময়', 'অবস্থা', 'কাজ']}>
                   {slots.data?.map((slot) => (
                     <tr key={slot.id}>
-                      <Td className="font-medium text-gray-900">{slot.name}</Td>
+                      <Td className="font-medium text-[var(--ink-primary)]">{slot.name}</Td>
                       <Td>
                         {shortTime(slot.startTime)}–{shortTime(slot.endTime)}
                       </Td>
@@ -126,7 +126,7 @@ export default function RoutineSetupPage() {
         {/* ---------- রুম ---------- */}
         <section>
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-900">রুম</h2>
+            <h2 className="text-lg font-semibold text-[var(--ink-primary)]">রুম</h2>
             <Button size="sm" onClick={() => setModal({ kind: 'room' })}>
               নতুন রুম
             </Button>
@@ -139,7 +139,7 @@ export default function RoutineSetupPage() {
                 <Table headers={['রুম', 'ধারণক্ষমতা', 'অবস্থা', 'কাজ']}>
                   {rooms.data?.map((room) => (
                     <tr key={room.id}>
-                      <Td className="font-medium text-gray-900">{room.name}</Td>
+                      <Td className="font-medium text-[var(--ink-primary)]">{room.name}</Td>
                       <Td>{room.capacity ?? '—'}</Td>
                       <Td>
                         <Badge tone={room.active ? 'green' : 'gray'}>{room.active ? 'সক্রিয়' : 'নিষ্ক্রিয়'}</Badge>

@@ -245,7 +245,7 @@ export function LinkGuardianModal({ studentId, onDone, onClose }) {
       {!guardian ? (
         <div className="space-y-4">
           <GuardianPicker onSelect={setGuardian} />
-          <div className="flex items-center justify-between gap-2 border-t border-gray-100 pt-3">
+          <div className="flex items-center justify-between gap-2 border-t border-[var(--border-hairline)] pt-3">
             <Button variant="ghost" size="sm" onClick={() => setShowNew(true)}>
               নতুন অভিভাবক বানান
             </Button>
@@ -257,9 +257,9 @@ export function LinkGuardianModal({ studentId, onDone, onClose }) {
       ) : (
         <form onSubmit={submit} className="space-y-4">
           {error && <Alert>{error.message}</Alert>}
-          <div className="rounded-lg bg-gray-50 px-4 py-3 text-sm">
-            <p className="font-medium text-gray-900">{guardian.fullName}</p>
-            <p className="text-gray-500">{guardian.phone}</p>
+          <div className="rounded-lg bg-[var(--surface-subtle)] border border-[var(--border-hairline)] px-4 py-3 text-sm">
+            <p className="font-medium text-[var(--ink-primary)]">{guardian.fullName}</p>
+            <p className="text-[var(--ink-secondary)]">{guardian.phone}</p>
           </div>
           <SelectField
             label="সম্পর্ক"
@@ -267,7 +267,7 @@ export function LinkGuardianModal({ studentId, onDone, onClose }) {
             value={relation}
             onChange={(event) => setRelation(event.target.value)}
           />
-          <label className="flex items-center gap-2 text-sm text-gray-700">
+          <label className="flex items-center gap-2 text-sm text-[var(--ink-secondary)]">
             <input type="checkbox" checked={primary} onChange={(event) => setPrimary(event.target.checked)} />
             প্রধান অভিভাবক করুন (অনুপস্থিতির বার্তা এই নম্বরে যাবে)
           </label>

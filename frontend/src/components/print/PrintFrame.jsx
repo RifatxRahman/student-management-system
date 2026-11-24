@@ -8,19 +8,19 @@ const FONT = "'Noto Sans Bengali', 'Nirmala UI', sans-serif"
 // orientation: 'portrait' (মার্কশিট) অথবা 'landscape' (রেজাল্ট শিট)
 export default function PrintFrame({ title, hint, orientation = 'portrait', backTo, children }) {
   return (
-    <div className="min-h-screen bg-gray-100 py-6 print:bg-white print:py-0" style={{ fontFamily: FONT }}>
+    <div className="min-h-screen bg-[var(--canvas)] py-6 print:bg-white print:py-0" style={{ fontFamily: FONT }}>
       <style>{`@page { size: A4 ${orientation}; margin: 10mm; }`}</style>
 
       <div className="mx-auto mb-4 flex max-w-[297mm] flex-wrap items-center justify-between gap-3 px-4 print:hidden">
         <div>
-          <h1 className="text-lg font-semibold text-gray-900">{title}</h1>
-          {hint && <p className="text-sm text-gray-600">{hint}</p>}
+          <h1 className="text-lg font-semibold text-[var(--ink-primary)]">{title}</h1>
+          {hint && <p className="text-sm text-[var(--ink-secondary)]">{hint}</p>}
         </div>
         <div className="flex gap-2">
           {backTo && (
             <Link
               to={backTo}
-              className="rounded-[10px] bg-white px-4 py-2 text-sm font-medium text-[var(--ink-primary)] border border-[var(--border-hairline)] hover:bg-[var(--surface-subtle)] transition min-h-[40px]"
+              className="rounded-[10px] bg-[var(--surface-subtle)] px-4 py-2 text-sm font-medium text-[var(--ink-primary)] border border-[var(--border-hairline)] hover:bg-[var(--surface-hover)] transition min-h-[40px]"
             >
               ← ফিরে যান
             </Link>

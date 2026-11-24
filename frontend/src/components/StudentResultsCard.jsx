@@ -8,7 +8,7 @@ export default function StudentResultsCard({ studentId }) {
 
   return (
     <section>
-      <h2 className="mb-3 text-lg font-semibold text-gray-900">পরীক্ষার ফল</h2>
+      <h2 className="mb-3 text-lg font-bold text-[var(--ink-primary)] font-['Anek_Bangla',sans-serif]">পরীক্ষার ফল</h2>
       <Card>
         <LoadState loading={loading} error={error}>
           {data?.length === 0 ? (
@@ -17,11 +17,11 @@ export default function StudentResultsCard({ studentId }) {
             <Table headers={['পরীক্ষা', 'সেশন', 'ক্লাস', 'GPA', 'গ্রেড', 'ফল', 'অবস্থান', '']}>
               {data?.map((r) => (
                 <tr key={r.resultId}>
-                  <Td className="font-medium text-gray-900">
-                    <Link to={`/exams/${r.examId}`} className="hover:text-[#0E3B2E]">
+                  <Td className="font-medium text-[var(--ink-primary)]">
+                    <Link to={`/exams/${r.examId}`} className="hover:text-[#E8A317]">
                       {r.examName}
                     </Link>
-                    <p className="text-xs font-normal text-gray-500">{examTypeLabel(r.examType)}</p>
+                    <p className="text-xs font-normal text-[var(--ink-secondary)]">{examTypeLabel(r.examType)}</p>
                   </Td>
                   <Td>{r.sessionName}</Td>
                   <Td>
@@ -38,7 +38,7 @@ export default function StudentResultsCard({ studentId }) {
                   <Td>
                     <Link
                       to={`/exams/${r.examId}/marksheets?sectionId=${r.sectionId}&enrollmentId=${r.enrollmentId}`}
-                      className="text-xs font-semibold text-[#0E3B2E] hover:underline"
+                      className="text-xs font-semibold text-[#0E3B2E] dark:text-[#E8A317] hover:underline"
                     >
                       মার্কশিট
                     </Link>

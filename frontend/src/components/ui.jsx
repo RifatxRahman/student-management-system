@@ -21,13 +21,13 @@ export function FullPageSpinner() {
 
 const BUTTON_VARIANTS = {
   primary:
-    'bg-[#E8A317] text-[#12231D] hover:bg-[#D49210] active:bg-[#BF800B] font-semibold shadow-sm focus-visible:ring-2 focus-visible:ring-[#12231D] focus-visible:ring-offset-2',
+    'bg-[#E8A317] dark:bg-[#F0B232] text-[#12231D] dark:text-[#0A1B14] hover:bg-[#D49210] dark:hover:bg-[#DDA022] active:bg-[#BF800B] font-semibold shadow-xs focus-visible:ring-2 focus-visible:ring-[#12231D] focus-visible:ring-offset-2',
   secondary:
-    'bg-white text-[var(--ink-primary)] border border-[var(--border-hairline)] hover:bg-[var(--surface-hover)] active:bg-[var(--surface-subtle)] font-medium shadow-sm focus-visible:ring-2 focus-visible:ring-[#12231D] focus-visible:ring-offset-2',
+    'bg-[var(--surface-subtle)] text-[var(--ink-primary)] border border-[var(--border-hairline)] hover:bg-[var(--surface-hover)] active:bg-[var(--surface)] font-medium shadow-xs focus-visible:ring-2 focus-visible:ring-[var(--ink-primary)] focus-visible:ring-offset-2',
   danger:
-    'bg-[#C8372D] text-white hover:bg-[#B32D24] active:bg-[#9B241C] font-semibold shadow-sm focus-visible:ring-2 focus-visible:ring-[#C8372D] focus-visible:ring-offset-2',
+    'bg-[#C8372D] text-white hover:bg-[#B32D24] active:bg-[#9B241C] font-semibold shadow-xs focus-visible:ring-2 focus-visible:ring-[#C8372D] focus-visible:ring-offset-2',
   ghost:
-    'text-[var(--ink-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--ink-primary)] font-medium focus-visible:ring-2 focus-visible:ring-[#12231D] focus-visible:ring-offset-2',
+    'text-[var(--ink-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--ink-primary)] font-medium focus-visible:ring-2 focus-visible:ring-[var(--ink-primary)] focus-visible:ring-offset-2',
 }
 
 const BUTTON_SIZES = {
@@ -48,7 +48,7 @@ export function Button({ variant = 'primary', size = 'md', className = '', type 
 export function Card({ children, className = '' }) {
   return (
     <div
-      className={`rounded-[16px] border border-[var(--border-hairline)] bg-[var(--surface)] shadow-[0_2px_8px_rgba(18,35,29,0.04)] ${className}`}
+      className={`rounded-[16px] border border-[var(--border-hairline)] bg-[var(--surface)] shadow-xs ${className}`}
     >
       {children}
     </div>
@@ -69,24 +69,24 @@ export function PageHeader({ title, subtitle, action }) {
 
 export function Alert({ type = 'error', children }) {
   const styles = {
-    error: 'bg-[#FCECEB] text-[#C8372D] border border-[#F6C2BE]',
-    success: 'bg-[#EAF5EE] text-[#168754] border border-[#BDE3CC]',
-    info: 'bg-[#FDF4E7] text-[#B36B18] border border-[#F8E1B9]',
+    error: 'bg-[var(--semantic-danger-bg)] text-[var(--semantic-danger)] border border-[var(--semantic-danger)]/30',
+    success: 'bg-[var(--semantic-success-bg)] text-[var(--semantic-success)] border border-[var(--semantic-success)]/30',
+    info: 'bg-[var(--semantic-warning-bg)] text-[var(--semantic-warning)] border border-[var(--semantic-warning)]/30',
   }
 
   const icons = {
     error: (
-      <svg className="h-5 w-5 shrink-0 text-[#C8372D]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg className="h-5 w-5 shrink-0 text-[var(--semantic-danger)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
       </svg>
     ),
     success: (
-      <svg className="h-5 w-5 shrink-0 text-[#168754]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg className="h-5 w-5 shrink-0 text-[var(--semantic-success)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
     ),
     info: (
-      <svg className="h-5 w-5 shrink-0 text-[#B36B18]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg className="h-5 w-5 shrink-0 text-[var(--semantic-warning)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
     ),
