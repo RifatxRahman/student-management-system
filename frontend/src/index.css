@@ -42,6 +42,8 @@
 
 @layer base {
   :root {
+    color-scheme: light;
+
     /* Base Brand: Bottle Green */
     --brand-primary: #0E3B2E;
     --brand-hover: #164E3D;
@@ -63,7 +65,7 @@
     --ink-primary: #12231D;
     --ink-secondary: #4D6259;
     --ink-tertiary: #5F736A;
-    --border-hairline: rgba(18, 35, 29, 0.09);
+    --border-hairline: rgba(18, 35, 29, 0.12);
 
     /* Signature Margin Line */
     --signature-margin: rgba(200, 55, 45, 0.5);
@@ -122,6 +124,8 @@
 
   @media (prefers-color-scheme: dark) {
     :root {
+      color-scheme: dark;
+
       --brand-primary: #0A241C;
       --brand-hover: #13392D;
       --brand-active: #1D4B3C;
@@ -133,13 +137,13 @@
 
       --canvas: #091510;
       --surface: #10211A;
-      --surface-subtle: #152B22;
-      --surface-hover: #1A342A;
+      --surface-subtle: #172D24;
+      --surface-hover: #1F3B30;
 
-      --ink-primary: #EDF4F0;
-      --ink-secondary: #ADC3B9;
+      --ink-primary: #F0F6F2;
+      --ink-secondary: #B4CCC2;
       --ink-tertiary: #849E93;
-      --border-hairline: rgba(237, 244, 240, 0.1);
+      --border-hairline: rgba(237, 244, 240, 0.16);
 
       --signature-margin: rgba(230, 85, 75, 0.55);
 
@@ -167,6 +171,8 @@
 
   :root.dark,
   [data-theme="dark"] {
+    color-scheme: dark;
+
     --brand-primary: #0A241C;
     --brand-hover: #13392D;
     --brand-active: #1D4B3C;
@@ -178,13 +184,13 @@
 
     --canvas: #091510;
     --surface: #10211A;
-    --surface-subtle: #152B22;
-    --surface-hover: #1A342A;
+    --surface-subtle: #172D24;
+    --surface-hover: #1F3B30;
 
-    --ink-primary: #EDF4F0;
-    --ink-secondary: #ADC3B9;
+    --ink-primary: #F0F6F2;
+    --ink-secondary: #B4CCC2;
     --ink-tertiary: #849E93;
-    --border-hairline: rgba(237, 244, 240, 0.1);
+    --border-hairline: rgba(237, 244, 240, 0.16);
 
     --signature-margin: rgba(230, 85, 75, 0.55);
 
@@ -224,6 +230,11 @@
     line-height: 1.35;
     color: var(--ink-primary);
     letter-spacing: normal !important;
+  }
+
+  input, select, textarea {
+    color-scheme: inherit;
+    font-family: inherit;
   }
 }
 

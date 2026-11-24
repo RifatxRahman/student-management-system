@@ -8,12 +8,13 @@ const MIN_REASON = 5
 
 // বাছা বোতামের রং (Tailwind-এর ক্লাস পুরোটা লেখা থাকতে হয়, তাই আলাদা করে লেখা)
 const ACTIVE_STYLES = {
-  PRESENT: 'bg-green-600 text-white',
-  ABSENT: 'bg-red-600 text-white',
-  LATE: 'bg-amber-500 text-white',
-  LEAVE: 'bg-[#0E3B2E] text-white',
+  PRESENT: 'bg-[#168754] text-white font-semibold shadow-xs',
+  ABSENT: 'bg-[#C8372D] text-white font-semibold shadow-xs',
+  LATE: 'bg-[#B36B18] text-white font-semibold shadow-xs',
+  LEAVE: 'bg-[#0E3B2E] dark:bg-[#1D4B3C] text-white font-semibold shadow-xs border border-emerald-400/30',
 }
-const IDLE_STYLE = 'bg-white text-gray-600 ring-1 ring-gray-300 hover:bg-gray-50'
+const IDLE_STYLE =
+  'bg-[var(--surface-subtle)] text-[var(--ink-secondary)] border border-[var(--border-hairline)] hover:bg-[var(--surface-hover)] hover:text-[var(--ink-primary)] font-semibold'
 
 function clean(text) {
   return (text ?? '').trim()
@@ -150,7 +151,7 @@ function SheetEditor({ sheet, onSaved }) {
       ) : (
         <>
           <Card>
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 px-4 py-3">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--border-hairline)] px-4 py-3">
               <div className="flex flex-wrap gap-2">
                 <Badge tone="green">উপস্থিত {counts.PRESENT}</Badge>
                 <Badge tone="red">অনুপস্থিত {counts.ABSENT}</Badge>
@@ -166,19 +167,19 @@ function SheetEditor({ sheet, onSaved }) {
               )}
             </div>
 
-            <ul className="divide-y divide-gray-100">
+            <ul className="divide-y divide-[var(--border-hairline)]">
               {rows.map((row) => {
                 const current = draft[row.enrollmentId]
                 return (
                   <li key={row.enrollmentId} className="space-y-2 px-4 py-3">
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div className="flex items-center gap-3">
-                        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-sm font-medium text-gray-700">
+                        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--surface-subtle)] border border-[var(--border-hairline)] text-sm font-bold text-[var(--ink-primary)] font-['Anek_Bangla',sans-serif] tabular-nums">
                           {row.rollNumber}
                         </span>
                         <div>
-                          <p className="text-sm font-medium text-gray-900">{row.studentName}</p>
-                          <p className="font-mono text-xs text-gray-500">{row.studentCode}</p>
+                          <p className="text-sm font-semibold text-[var(--ink-primary)]">{row.studentName}</p>
+                          <p className="font-mono text-xs text-[var(--ink-secondary)]">{row.studentCode}</p>
                         </div>
                       </div>
                       <StatusButtons
@@ -196,7 +197,7 @@ function SheetEditor({ sheet, onSaved }) {
                         onChange={(event) => setRemark(row.enrollmentId, event.target.value)}
                         placeholder="মন্তব্য (ঐচ্ছিক)"
                         aria-label={`${row.studentName}-এর মন্তব্য`}
-                        className="block w-full min-h-[38px] rounded-[10px] border border-[var(--border-hairline)] px-3 py-1.5 text-sm bg-white text-[var(--ink-primary)] outline-none focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 disabled:bg-gray-50"
+                        className="block w-full min-h-[38px] rounded-[10px] border border-[var(--border-hairline)] px-3 py-1.5 text-sm bg-[var(--surface-subtle)] text-[var(--ink-primary)] placeholder-[var(--ink-tertiary)] outline-none focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 disabled:opacity-50"
                       />
                     )}
                   </li>
@@ -223,9 +224,9 @@ function SheetEditor({ sheet, onSaved }) {
                 </>
               )}
               {error && <Alert>{error}</Alert>}
-              {unmarked > 0 && <p className="text-xs text-gray-500">সবার হাজিরা বাছা বাকি: {unmarked} জন।</p>}
+              {unmarked > 0 && <p className="text-xs text-[var(--ink-secondary)] font-medium">সবার হাজিরা বাছা বাকি: {unmarked} জন।</p>}
               {counts.ABSENT > 0 && (
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-[var(--ink-secondary)]">
                   অনুপস্থিত শিক্ষার্থীর প্রধান অভিভাবকের জন্য একটা বার্তা জমা হবে (Admin পরে পাঠাবেন)।
                 </p>
               )}
@@ -308,10 +309,14 @@ export default function AttendancePage() {
               value={date}
               onChange={(event) => changeDate(event.target.value)}
             />
-            <div className="mt-2">
-              <Button variant="ghost" size="sm" onClick={() => changeDate(today)}>
-                আজকের তারিখ
-              </Button>
+            <div className="mt-2.5">
+              <button
+                type="button"
+                onClick={() => changeDate(today)}
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#E8A317] dark:text-[#F0B232] hover:underline focus-ring-apple rounded px-1 py-0.5"
+              >
+                <span aria-hidden="true">📅</span> আজকের তারিখ নির্বাচন করুন
+              </button>
             </div>
           </div>
           <SelectField

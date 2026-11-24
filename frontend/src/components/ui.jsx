@@ -105,21 +105,21 @@ export function Alert({ type = 'error', children }) {
 
 export function Badge({ tone = 'gray', children }) {
   const tones = {
-    gray: 'bg-[#EEF2F0] text-[#5F736A] border border-[#DCE4E0]',
-    green: 'bg-[#EAF5EE] text-[#168754] border border-[#BDE3CC]',
-    brand: 'bg-[#EAF2EF] text-[#0E3B2E] border border-[#C7DDD4]',
-    indigo: 'bg-[#EAF2EF] text-[#0E3B2E] border border-[#C7DDD4]',
-    amber: 'bg-[#FDF4E7] text-[#B36B18] border border-[#F8E1B9]',
-    red: 'bg-[#FCECEB] text-[#C8372D] border border-[#F6C2BE]',
+    gray: 'bg-[var(--semantic-neutral-bg)] text-[var(--semantic-neutral)] border border-[var(--border-hairline)]',
+    green: 'bg-[var(--semantic-success-bg)] text-[var(--semantic-success)] border border-[var(--semantic-success)]/25',
+    brand: 'bg-[#0E3B2E]/10 dark:bg-[#1D4B3C]/50 text-[#0E3B2E] dark:text-[#EDF4F0] border border-[#0E3B2E]/20 dark:border-[#1D4B3C]',
+    indigo: 'bg-[#0E3B2E]/10 dark:bg-[#1D4B3C]/50 text-[#0E3B2E] dark:text-[#EDF4F0] border border-[#0E3B2E]/20 dark:border-[#1D4B3C]',
+    amber: 'bg-[var(--semantic-warning-bg)] text-[var(--semantic-warning)] border border-[var(--semantic-warning)]/25',
+    red: 'bg-[var(--semantic-danger-bg)] text-[var(--semantic-danger)] border border-[var(--semantic-danger)]/25',
   }
 
   const dotColors = {
-    gray: 'bg-[#5F736A]',
-    green: 'bg-[#168754]',
-    brand: 'bg-[#0E3B2E]',
-    indigo: 'bg-[#0E3B2E]',
-    amber: 'bg-[#B36B18]',
-    red: 'bg-[#C8372D]',
+    gray: 'bg-[var(--semantic-neutral)]',
+    green: 'bg-[var(--semantic-success)]',
+    brand: 'bg-[#0E3B2E] dark:bg-[#34B376]',
+    indigo: 'bg-[#0E3B2E] dark:bg-[#34B376]',
+    amber: 'bg-[var(--semantic-warning)]',
+    red: 'bg-[var(--semantic-danger)]',
   }
 
   return (
@@ -141,7 +141,7 @@ export function TextField({ label, error, hint, className = '', ...props }) {
   return (
     <div>
       {label && (
-        <label htmlFor={id} className="block text-[13px] font-medium text-[var(--ink-secondary)] mb-1.5">
+        <label htmlFor={id} className="block text-[13px] font-semibold text-[var(--ink-primary)] mb-1.5">
           {label}
         </label>
       )}
@@ -149,13 +149,13 @@ export function TextField({ label, error, hint, className = '', ...props }) {
         id={id}
         aria-describedby={describedBy}
         aria-invalid={Boolean(error)}
-        className={`block w-full min-h-[44px] rounded-[10px] border px-3.5 py-2.5 text-sm bg-white text-[var(--ink-primary)] shadow-sm outline-none transition duration-150 focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 ${
+        className={`block w-full min-h-[44px] rounded-[10px] border px-3.5 py-2.5 text-sm bg-[var(--surface-subtle)] text-[var(--ink-primary)] placeholder-[var(--ink-tertiary)] shadow-sm outline-none transition duration-150 focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 ${
           error ? 'border-[#C8372D] focus:border-[#C8372D] focus:ring-[#C8372D]/20' : 'border-[var(--border-hairline)]'
         } ${className}`}
         {...props}
       />
       {hint && !error && (
-        <p id={hintId} className="mt-1 text-xs text-[var(--ink-tertiary)]">
+        <p id={hintId} className="mt-1 text-xs text-[var(--ink-secondary)]">
           {hint}
         </p>
       )}
@@ -175,7 +175,7 @@ export function SelectField({ label, error, options, children, className = '', .
   return (
     <div>
       {label && (
-        <label htmlFor={id} className="block text-[13px] font-medium text-[var(--ink-secondary)] mb-1.5">
+        <label htmlFor={id} className="block text-[13px] font-semibold text-[var(--ink-primary)] mb-1.5">
           {label}
         </label>
       )}
@@ -183,14 +183,14 @@ export function SelectField({ label, error, options, children, className = '', .
         id={id}
         aria-describedby={error ? errorId : undefined}
         aria-invalid={Boolean(error)}
-        className={`block w-full min-h-[44px] rounded-[10px] border bg-white px-3.5 py-2.5 text-sm text-[var(--ink-primary)] shadow-sm outline-none transition duration-150 focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 ${
+        className={`block w-full min-h-[44px] rounded-[10px] border bg-[var(--surface-subtle)] px-3.5 py-2.5 text-sm text-[var(--ink-primary)] shadow-sm outline-none transition duration-150 focus:border-[#E8A317] focus:ring-2 focus:ring-[#E8A317]/25 ${
           error ? 'border-[#C8372D] focus:border-[#C8372D] focus:ring-[#C8372D]/20' : 'border-[var(--border-hairline)]'
         } ${className}`}
         {...props}
       >
         {options
           ? options.map((option) => (
-              <option key={option.value} value={option.value}>
+              <option key={option.value} value={option.value} className="bg-[var(--surface)] text-[var(--ink-primary)]">
                 {option.label}
               </option>
             ))
@@ -253,7 +253,7 @@ export function Table({ headers, children }) {
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-[var(--border-hairline)] bg-white">{children}</tbody>
+        <tbody className="divide-y divide-[var(--border-hairline)] bg-[var(--surface)]">{children}</tbody>
       </table>
     </div>
   )
@@ -264,7 +264,16 @@ export function Td({ children, className = '' }) {
 }
 
 export function EmptyState({ children }) {
-  return <p className="px-4 py-12 text-center text-sm text-[var(--ink-secondary)]">{children}</p>
+  return (
+    <div className="flex flex-col items-center justify-center px-4 py-12 text-center">
+      <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-[var(--surface-subtle)] border border-[var(--border-hairline)] text-[var(--ink-secondary)] shadow-xs">
+        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.6} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+        </svg>
+      </div>
+      <p className="max-w-md text-sm font-semibold text-[var(--ink-primary)] leading-relaxed">{children}</p>
+    </div>
+  )
 }
 
 export function LoadState({ loading, error, children }) {

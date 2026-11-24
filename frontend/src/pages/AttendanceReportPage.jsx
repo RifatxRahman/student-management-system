@@ -28,8 +28,8 @@ function rateTone(rate) {
 function Summary({ label, value }) {
   return (
     <Card className="p-4">
-      <p className="text-xs text-gray-500">{label}</p>
-      <p className="mt-1 text-xl font-semibold text-gray-900">{value}</p>
+      <p className="text-xs text-[var(--ink-secondary)]">{label}</p>
+      <p className="mt-1 text-2xl font-bold text-[var(--ink-primary)] font-['Anek_Bangla',sans-serif] tabular-nums">{value}</p>
     </Card>
   )
 }
@@ -105,7 +105,7 @@ export default function AttendanceReportPage() {
           {report.data && (
             <div className="space-y-4">
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">
+                <h2 className="text-lg font-bold text-[var(--ink-primary)]">
                   {report.data.className} / {report.data.sectionName} · {formatMonth(report.data.month)}
                 </h2>
               </div>
@@ -133,7 +133,7 @@ export default function AttendanceReportPage() {
                     {report.data.students.map((s) => (
                       <tr key={s.enrollmentId}>
                         <Td>{s.rollNumber}</Td>
-                        <Td className="font-medium text-gray-900">{s.studentName}</Td>
+                        <Td className="font-semibold text-[var(--ink-primary)]">{s.studentName}</Td>
                         <Td className="font-mono text-xs">{s.studentCode}</Td>
                         <Td>{s.present}</Td>
                         <Td>{s.late}</Td>
